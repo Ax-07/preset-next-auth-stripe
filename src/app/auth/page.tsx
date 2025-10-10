@@ -1,9 +1,9 @@
 import { MainLayout } from "@/components/layout/main";
 
-export default function Home() {
+export default function AuthPage() {
   return (
     <MainLayout>
-      <h1>Welcome to MyApp</h1>
+      <div>Auth Page</div>
     </MainLayout>
   );
 }
