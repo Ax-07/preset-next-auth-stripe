@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { buttonVariants } from "../ui/button";
+import { AuthButtons } from "../../lib/auth/auth-buttons";
+import { Suspense } from "react";
+import { Skeleton } from "../ui/skeleton";
 
 export const Header = () => {
   return (
@@ -7,9 +9,9 @@ export const Header = () => {
       <Link href="/" className="text-lg font-bold">
         MyApp
       </Link>
-      <Link href="/auth/signup" className={buttonVariants({ size: "sm", variant: "outline" })}>
-        Sign up
-      </Link>
+      <Suspense fallback={<Skeleton className="h-9 w-32" />}>
+        <AuthButtons />
+      </Suspense>
     </header>
   );
 };
