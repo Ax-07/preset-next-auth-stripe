@@ -1,18 +1,17 @@
 import { MainLayout } from "@/components/layout/main";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SignupForm } from "./signup-form";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { SignupForm } from "../../../lib/auth/signup-form";
 
 export default function SignUpPage() {
   return (
-    <MainLayout>
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Sign Up</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <SignupForm />
-        </CardContent>
-      </Card>
-    </MainLayout>
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle>Create an account</CardTitle>
+        <CardDescription>Enter your information below to create your account</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <SignupForm />
+      </CardContent>
+    </Card>
   );
 }
