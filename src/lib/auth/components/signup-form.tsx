@@ -102,10 +102,10 @@ export const SignupForm = () => {
             <Button type="submit">Créer un compte</Button>
             <Button variant="outline" type="button">
               <FcGoogle className="mr-2 inline-block" />
-              S'inscrire avec Google
+              {"S'inscrire avec Google"}
             </Button>
             <FieldDescription className="px-6 text-center">
-              Vous avez déjà un compte ? <a href="/auth/signin">Se connecter</a>
+              {"Vous avez déjà un compte ?"} <a href="/auth/signin">Se connecter</a>
             </FieldDescription>
           </Field>
         </FieldGroup>
