@@ -82,9 +82,10 @@ export const useAuthentification = () => {
       });
       toast.success(AUTH_MESSAGES.success.verificationEmailSent);
       return true;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Erreur lors de l'envoi:", error);
-      toast.error(formatErrorMessage(AUTH_MESSAGES.error.verificationEmail, error));
+      const errorMessage = error instanceof Error ? error : undefined;
+      toast.error(formatErrorMessage(AUTH_MESSAGES.error.verificationEmail, errorMessage));
       return false;
     }
   };
@@ -158,9 +159,10 @@ export const useProfile = () => {
       toast.success(AUTH_MESSAGES.success.accountDeleted);
       router.push("/");
       router.refresh();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erreur lors de la suppression:", error);
-      toast.error(formatErrorMessage(AUTH_MESSAGES.error.accountDelete, error));
+      const errorMessage = error instanceof Error ? error : undefined;
+      toast.error(formatErrorMessage(AUTH_MESSAGES.error.accountDelete, errorMessage));
     }
   };
 
