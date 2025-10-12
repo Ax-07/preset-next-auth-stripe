@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { AuthButtons } from "../../lib/auth/auth-buttons";
 import { Suspense } from "react";
+import { AuthButtons } from "@/lib/auth/components/auth-buttons";
 import { Skeleton } from "../ui/skeleton";
 
 export const Header = () => {
