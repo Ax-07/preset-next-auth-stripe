@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
     // Exemple :
     // await sendContactEmail({ name, email, subject, message });
 
-    console.log('📧 Message de contact reçu:', { name, email, subject });
+    console.log('📧 Message de contact reçu:', { name, email, subject, message });
 
     return NextResponse.json(
       {
