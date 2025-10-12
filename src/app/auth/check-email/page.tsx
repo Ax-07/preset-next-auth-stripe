@@ -17,30 +17,30 @@ export default async function CheckEmailPage(props: { searchParams: Promise<Reco
         <CardDescription>
           {email ? (
             <>
-              Nous avons envoyé un email de vérification à <strong>{email}</strong>.
-              Veuillez vérifier votre boîte de réception et cliquer sur le lien pour activer votre compte.
+              {`Nous avons envoyé un email de vérification à ${email}.
+              Veuillez vérifier votre boîte de réception et cliquer sur le lien pour activer votre compte.`}
             </>
           ) : (
             <>
-              Un email de vérification a été envoyé à votre adresse.
-              Veuillez vérifier votre boîte de réception et cliquer sur le lien pour activer votre compte.
+              {`Un email de vérification a été envoyé à votre adresse.
+              Veuillez vérifier votre boîte de réception et cliquer sur le lien pour activer votre compte.`}
             </>
           )}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         <p className="text-sm text-muted-foreground">
-          Si vous n'avez pas reçu l'email, vérifiez votre dossier spam ou demandez un nouveau lien.
+          {`Si vous n'avez pas reçu l'email, vérifiez votre dossier spam ou demandez un nouveau lien.`}
         </p>
         <div className="flex flex-col gap-2">
           <Button asChild variant="default" className="w-full">
             <Link href="/auth/resend-verification">
-              Renvoyer le lien de vérification
+              {`Renvoyer le lien de vérification`}
             </Link>
           </Button>
           <Button asChild variant="outline" className="w-full">
             <Link href="/auth/signin">
-              Retour à la connexion
+              {`Retour à la connexion`}
             </Link>
           </Button>
         </div>
