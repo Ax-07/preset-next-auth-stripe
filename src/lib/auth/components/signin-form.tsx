@@ -57,7 +57,7 @@ export const SigninForm = () => {
               <FormControl>
                 <Input type="password" placeholder="" autoComplete="new-password" {...field} />
               </FormControl>
-              <FormDescription><Link href="/auth/forget-password">Mot de passe oublié ?</Link></FormDescription>
+              <FormDescription><Link href="/auth/forget-password">{"Mot de passe oublié ?"}</Link></FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -67,10 +67,10 @@ export const SigninForm = () => {
             <Button type="submit">Se connecter</Button>
             <Button variant="outline" type="button" onClick={() => signInWithProvider("google")}>
               <FcGoogle className="mr-2 inline-block" />
-              Se connecter avec Google
+              {"Se connecter avec Google"}
             </Button>
             <FieldDescription className="px-6 text-center">
-              Vous n'avez pas de compte ? <a href="/auth/signup">Inscrivez-vous</a>
+              {"Vous n'avez pas de compte ?"} <a href="/auth/signup">Inscrivez-vous</a>
             </FieldDescription>
           </Field>
         </FieldGroup>
