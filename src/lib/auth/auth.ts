@@ -79,7 +79,7 @@ export const auth = betterAuth({
         enabled: true,
         autoSignIn: false, // Ne pas connecter automatiquement - l'utilisateur doit vérifier son email d'abord
         requireEmailVerification: true, // Exiger la vérification de l'email avant de se connecter
-        sendResetPassword: async ({ user, url, token }, request) => {
+        sendResetPassword: async ({ user, url }) => {
             // L'URL générée par better-auth contient déjà le token
             // Elle pointe vers /auth/reset-password?token=xxx grâce au redirectTo
             await sendEmail({
@@ -104,7 +104,7 @@ export const auth = betterAuth({
     },
     emailVerification: {
         sendOnSignUp: true, // Envoyer automatiquement l'email de vérification lors de l'inscription
-        sendVerificationEmail: async ({ user, url, token }, request) => {
+        sendVerificationEmail: async ({ user, url }) => {
             await sendEmail({
                 to: user.email,
                 subject: "Vérification de votre adresse email",
