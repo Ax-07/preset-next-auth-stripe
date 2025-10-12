@@ -24,7 +24,7 @@ export async function sendEmail({
     const transporter = createTransporter();
 
     const mailOptions = {
-      from: process.env.EMAIL_USER, // Valeur par défaut
+      from: from || process.env.EMAIL_USER, // Valeur par défaut
       to,
       subject,
       text,
