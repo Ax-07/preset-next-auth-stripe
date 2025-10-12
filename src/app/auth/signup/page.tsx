@@ -1,6 +1,5 @@
-import { MainLayout } from "@/components/layout/main";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { SignupForm } from "../../../lib/auth/signup-form";
+import { SignupForm } from "@/lib/auth/components/signup-form";
 
 export default function SignUpPage() {
   return (
