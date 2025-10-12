@@ -18,3 +18,16 @@ export const signOut = async () => {
   await auth.api.signOut({ headers: await headers() });
   redirect("/");
 };
+
+export const verifyEmail = async (token: string) => {
+  try {
+    const result = await auth.api.verifyEmail({
+      headers: await headers(),
+      query: { token }
+    });
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    return { success: false, error };
+  }
+};
