@@ -73,3 +73,15 @@ model Verification {
 
   @@map("verification")
 }
+
+model RateLimit {
+  id         String   @id @default(cuid())
+  key        String   @unique // IP ou identifier
+  points     Int      // Nombre de requêtes
+  expire     DateTime // Quand réinitialiser
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([key])
+  @@index([expire])
+}
