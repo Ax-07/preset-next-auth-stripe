@@ -134,23 +134,23 @@ export const auth = betterAuth({
                 enabled: true,
                 plans: [
                     {
-                        name: "basic", // the name of the plan, it'll be automatically lower cased when stored in the database
-                        priceId: "price_1234567890", // the price ID from stripe
-                        annualDiscountPriceId: "price_1234567890", // (optional) the price ID for annual billing with a discount
-                        limits: {
-                            projects: 5,
-                            storage: 10
+                        name: "free", // the name of the plan, it'll be automatically lower cased when stored in the database
+                        priceId: "prod_TEHZKD7Jth3PQx", // the price ID from stripe
+                    },
+                    {
+                        name: "basic",
+                        priceId: "prod_TEHZG7HedW2Ug7",
+                        annualDiscountPriceId: "prod_TEHbiNiS5DC3KP",
+                        freeTrial: {
+                            days: 90,
                         }
                     },
                     {
-                        name: "pro",
-                        priceId: "price_0987654321",
-                        limits: {
-                            projects: 20,
-                            storage: 50
-                        },
+                        name: "premium",
+                        priceId: "prod_TEHa29EHoOwENB",
+                        annualDiscountPriceId: "prod_TEHcskbx1AriUb",
                         freeTrial: {
-                            days: 14,
+                            days: 90,
                         }
                     }
                 ]
