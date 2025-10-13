@@ -7,7 +7,7 @@ import { authClient } from "@/lib/auth/auth-client";
 export default function PricingPage() {
   const [loading, setLoading] = useState<string | null>(null);
 
-  async function subscribe(plan: "basic" | "pro") {
+  async function subscribe(plan: "basic" | "premium") {
     try {
       setLoading(plan);
       await authClient.subscription.upgrade({
@@ -29,8 +29,8 @@ export default function PricingPage() {
       <button disabled={loading==="basic"} onClick={() => subscribe("basic")}>
         {loading==="basic" ? "Redirection…" : "Choisir Basic"}
       </button>
-      <button disabled={loading==="pro"} onClick={() => subscribe("pro")}>
-        {loading==="pro" ? "Redirection…" : "Choisir Pro"}
+      <button disabled={loading==="premium"} onClick={() => subscribe("premium")}>
+        {loading==="premium" ? "Redirection…" : "Choisir Premium"}
       </button>
     </main>
   );
