@@ -2,8 +2,15 @@ import { createAuthClient } from "better-auth/react"
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { AUTH_MESSAGES, formatErrorMessage, getErrorMessage } from "./auth-messages";
+import { stripeClient } from "@better-auth/stripe/client"
 
-export const authClient = createAuthClient({})
+export const authClient = createAuthClient({
+      plugins: [
+        stripeClient({
+            subscription: true //if you want to enable subscription management
+        })
+    ]
+})
 export const { useSession, signIn, signOut, signUp } = authClient
 
 export type ProviderEnum = Parameters<typeof signIn.social>[0]["provider"];
