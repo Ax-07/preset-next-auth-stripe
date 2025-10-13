@@ -3,7 +3,12 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 // If your Prisma file is located elsewhere, you can change the path
 import { prisma } from "@/lib/database/prisma.client";
 import { sendEmail } from "@/lib/mail/mail.service";
+import { stripe } from "@better-auth/stripe"
+import Stripe from "stripe"
 
+const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2025-08-27.basil",
+})
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql", // or "mysql", "sqlite", ...etc
@@ -13,7 +18,7 @@ export const auth = betterAuth({
         enabled: true,
         window: 60, // 60 secondes = 1 minute (fenêtre par défaut)
         max: 10, // 10 requêtes max par minute (par défaut pour routes non spécifiées)
-        
+
         // Règles personnalisées par endpoint Better Auth
         customRules: {
             // Inscription - très restrictif
@@ -21,56 +26,56 @@ export const auth = betterAuth({
                 window: 3600, // 1 heure
                 max: 3, // Maximum 3 inscriptions par heure par IP
             },
-            
+
             // Connexion - modérément restrictif (protection brute force)
             "/sign-in/email": {
                 window: 900, // 15 minutes
                 max: 5, // Maximum 5 tentatives de connexion
             },
-            
+
             // OAuth - moins restrictif (pas de brute force possible)
             "/sign-in/social": {
                 window: 300, // 5 minutes
                 max: 10, // 10 tentatives max
             },
-            
+
             // Mot de passe oublié - très restrictif
             "/forget-password": {
                 window: 3600, // 1 heure
                 max: 3, // Maximum 3 demandes par heure
             },
-            
+
             // Réinitialisation mot de passe - restrictif
             "/reset-password": {
                 window: 3600, // 1 heure
                 max: 5, // Maximum 5 tentatives avec différents tokens
             },
-            
+
             // Envoi email de vérification - restrictif
             "/send-verification-email": {
                 window: 3600, // 1 heure
                 max: 3, // Maximum 3 renvois par heure
             },
-            
+
             // Vérification email - modéré
             "/verify-email": {
                 window: 300, // 5 minutes
                 max: 10, // 10 tentatives (cas où utilisateur clique plusieurs fois)
             },
-            
+
             // Mise à jour profil - modéré
             "/update-user": {
                 window: 300, // 5 minutes
                 max: 10, // 10 modifications max
             },
-            
+
             // Session/Refresh - moins restrictif
             "/get-session": {
                 window: 60, // 1 minute
                 max: 30, // 30 vérifications de session par minute
             },
         },
-        
+
         // IMPORTANT: Utiliser "database" en production pour persistance entre instances
         // "memory" uniquement pour développement local
         storage: process.env.NODE_ENV === "production" ? "database" : "memory",
@@ -119,5 +124,37 @@ export const auth = betterAuth({
                 from: process.env.EMAIL_USER || "no-reply@example.com"
             });
         },
-    }
-});
+    },
+    plugins: [
+        stripe({
+            stripeClient,
+            stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET!,
+            createCustomerOnSignUp: true,
+            subscription: {
+                enabled: true,
+                plans: [
+                    {
+                        name: "basic", // the name of the plan, it'll be automatically lower cased when stored in the database
+                        priceId: "price_1234567890", // the price ID from stripe
+                        annualDiscountPriceId: "price_1234567890", // (optional) the price ID for annual billing with a discount
+                        limits: {
+                            projects: 5,
+                            storage: 10
+                        }
+                    },
+                    {
+                        name: "pro",
+                        priceId: "price_0987654321",
+                        limits: {
+                            projects: 20,
+                            storage: 50
+                        },
+                        freeTrial: {
+                            days: 14,
+                        }
+                    }
+                ]
+            }
+        })
+    ]
+})
