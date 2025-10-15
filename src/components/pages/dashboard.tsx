@@ -259,7 +259,7 @@ export default function DashboardPage() {
                 {!session.user?.emailVerified && (
                   <div className="rounded-lg bg-yellow-50 p-4 dark:bg-yellow-900/20">
                     <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                      Votre email n'est pas vérifié. Vérifiez votre boîte de réception.
+                      Votre email n&apos;est pas vérifié. Vérifiez votre boîte de réception.
                     </p>
                   </div>
                 )}
@@ -311,7 +311,7 @@ export default function DashboardPage() {
                 <div className="space-y-2">
                   <h3 className="text-sm font-semibold">Préférences</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Gérez vos préférences de notification et d'affichage
+                    Gérez vos préférences de notification et d&apos;affichage
                   </p>
                 </div>
               </CardContent>
