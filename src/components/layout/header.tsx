@@ -9,9 +9,11 @@ export const Header = () => {
       <Link href="/" className="text-lg font-bold">
         MyApp
       </Link>
-      <Suspense fallback={<Skeleton className="h-9 w-32" />}>
-        <AuthButtons />
-      </Suspense>
+      <div className="flex items-center gap-3">
+        <Suspense fallback={<Skeleton className="h-9 w-32" />}>
+          <AuthButtons />
+        </Suspense>
+      </div>
     </header>
   );
 };
