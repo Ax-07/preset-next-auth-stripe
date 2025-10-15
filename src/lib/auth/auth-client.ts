@@ -167,9 +167,9 @@ export const useProfile = () => {
       toast.success(AUTH_MESSAGES.success.accountDeleted);
       router.push("/profile/delete/verify");
       router.refresh();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Erreur lors de la suppression:", error);
-      const errorMessage = error?.error?.message || error?.message || "Erreur inconnue";
+      const errorMessage = (error as { error?: { message?: string }; message?: string })?.error?.message || (error as { message?: string })?.message || "Erreur inconnue";
       toast.error(formatErrorMessage(AUTH_MESSAGES.error.accountDelete, errorMessage));
     }
   };
