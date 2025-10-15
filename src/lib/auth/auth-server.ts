@@ -3,15 +3,15 @@ import { auth } from "./auth"; // path to your Better Auth server instance
 import { headers } from "next/headers";
 
 export const getSession = async () => {
-    const session = await auth.api.getSession({
-        headers: await headers()
-    });
-    return session;
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
+  return session;
 };
 
 export const getUser = async () => {
-    const session = await getSession();
-    return session?.user;
+  const session = await getSession();
+  return session?.user;
 }
 
 export const signOut = async () => {
@@ -28,6 +28,16 @@ export const verifyEmail = async (token: string) => {
     return { success: true, data: result };
   } catch (error) {
     console.error("Error verifying email:", error);
+    return { success: false, error };
+  }
+};
+
+export const getActiveSubscriptions = async () => {
+  try {
+    const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() });
+    return { success: true, data: subscriptions };
+  } catch (error) {
+    console.error("Error fetching active subscriptions:", error);
     return { success: false, error };
   }
 };
