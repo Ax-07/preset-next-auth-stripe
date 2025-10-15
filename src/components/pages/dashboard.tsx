@@ -271,7 +271,7 @@ export default function DashboardPage() {
           <TabsContent value="subscription" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Gestion de l'abonnement</CardTitle>
+                <CardTitle>Gestion de l&apos;abonnement</CardTitle>
                 <CardDescription>
                   Gérez votre plan, vos factures et votre moyen de paiement
                 </CardDescription>
