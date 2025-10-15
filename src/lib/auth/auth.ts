@@ -177,7 +177,6 @@ export const auth = betterAuth({
           }),
         onSubscriptionComplete: async ({ subscription, stripeSubscription }) => {
           const refId = subscription.referenceId;          // <- référence (user/org)
-          const customerId = stripeSubscription.customer as string;
 
           // Exemple 1 : via referenceId (si ta table le stocke)
           await prisma.subscription.updateMany({
