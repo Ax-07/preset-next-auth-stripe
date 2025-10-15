@@ -6,6 +6,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, X } from "lucide-react";
+import Image from "next/image";
 
 const FEATURES_COMPARISON = [
   {
@@ -190,9 +191,11 @@ export function PricingTestimonials() {
                 &ldquo;{testimonial.content}&rdquo;
               </p>
               <div className="flex items-center gap-3">
-                <img
+                <Image
                   src={testimonial.avatar}
                   alt={testimonial.name}
+                  width={40}
+                  height={40}
                   className="h-10 w-10 rounded-full"
                 />
                 <div>
