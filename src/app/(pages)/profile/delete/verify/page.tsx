@@ -20,10 +20,10 @@ export default function DeleteVerifyPage() {
           Toutes vos données ont été définitivement supprimées de nos serveurs.
         </p>
         <p className="text-sm text-muted-foreground text-center">
-          Nous sommes désolés de vous voir partir. N'hésitez pas à revenir quand vous le souhaitez.
+          Nous sommes désolés de vous voir partir. N&apos;hésitez pas à revenir quand vous le souhaitez.
         </p>
         <Link href="/">
-          <Button>Retour à l'accueil</Button>
+          <Button>Retour à l&apos;accueil</Button>
         </Link>
       </CardContent>
     </Card>
