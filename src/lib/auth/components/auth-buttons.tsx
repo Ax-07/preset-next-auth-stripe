@@ -1,9 +1,15 @@
 import { getUser, signOut } from "@/lib/auth/auth-server";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { LogOutIcon, User2 } from "lucide-react";
+import { LogOutIcon, Trash2, User2, CreditCard, Crown } from "lucide-react";
 import { AvatarImage } from "@radix-ui/react-avatar";
 
 export const AuthButtons = async () => {
@@ -36,6 +42,19 @@ export const AuthButtons = async () => {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
+          <Link href="/dashboard" className="flex items-center gap-2 w-full">
+            <CreditCard className="size-4" />
+            Mon abonnement
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/pricing" className="flex items-center gap-2 w-full">
+            <Crown className="size-4" />
+            Voir les plans
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
           <form>
             <button
               formAction={async () => {
@@ -48,6 +67,15 @@ export const AuthButtons = async () => {
               Se déconnecter
             </button>
           </form>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link
+            href="/profile/delete"
+            className="flex items-center gap-2 w-full text-destructive hover:text-destructive/90"
+          >
+            <Trash2 className="size-4" />
+            Supprimer mon compte
+          </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
