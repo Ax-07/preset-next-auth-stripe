@@ -35,7 +35,7 @@ export const useStripeSubscribe = () => {
     });
   };
 
-  const downgradeToPlan = (_plan: "free" | "basic") => {
+  const downgradeToPlan = () => {
     // Implémentez la logique de rétrogradation ici
   };
 
