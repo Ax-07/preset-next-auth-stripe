@@ -1,0 +1,71 @@
+export const PLANS = [
+    {
+        name: "free" as const,
+        displayName: "Gratuit",
+        description: "Parfait pour démarrer",
+        priceId: null,
+        price: 0,
+        currency: "EUR",
+        interval: "month" as const,
+        annualDiscountPriceId: null,
+        annualPrice: undefined,
+        freeTrial: null,
+        features: [
+            "Accès de base",
+            "Support par email",
+            "1 projet",
+            "500 MB de stockage",
+        ],
+        highlighted: false,
+    },
+    {
+        name: "basic" as const,
+        displayName: "Basic",
+        description: "Pour les professionnels",
+        priceId: "price_1SHp0RFRFvv55BTbWqLEqStX",
+        price: 9.99,
+        currency: "EUR",
+        interval: "month" as const,
+        annualDiscountPriceId: "price_1SHp29FRFvv55BTbnRUuHPIp",
+        annualPrice: 99,
+        freeTrial: {
+            days: 90,
+        },
+        features: [
+            "Tout du plan Gratuit",
+            "10 projets",
+            "10 GB de stockage",
+            "Support prioritaire",
+            "Analyses avancées",
+            "API accès",
+        ],
+        highlighted: false,
+    },
+    {
+        name: "premium" as const,
+        displayName: "Premium",
+        description: "Pour les équipes",
+        priceId: "price_1SHp0rFRFvv55BTb3EI8cSHo",
+        price: 29.99,
+        currency: "EUR",
+        interval: "month" as const,
+        annualDiscountPriceId: "price_1SHp33FRFvv55BTbi51r4brP",
+        annualPrice: 299,
+        freeTrial: {
+            days: 90,
+        },
+        features: [
+            "Tout du plan Basic",
+            "Projets illimités",
+            "100 GB de stockage",
+            "Support dédié 24/7",
+            "Intégrations avancées",
+            "Collaboration en équipe",
+            "Rapports personnalisés",
+            "SLA garanti",
+        ],
+        highlighted: true,
+    }
+] as const;
+
+export type PlanName = typeof PLANS[number]["name"];
