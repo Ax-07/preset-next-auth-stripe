@@ -7,7 +7,7 @@ import { stripeClient } from "@better-auth/stripe/client"
 export const authClient = createAuthClient({
       plugins: [
         stripeClient({
-            subscription: true //if you want to enable subscription management
+            subscription: true // expose client.subscription.
         })
     ]
 })
@@ -160,15 +160,16 @@ export const useProfile = () => {
     }
 
     try {
+      // Suppression directe du compte
       await deleteUser({
-        callbackURL: "/auth/signin"
+        callbackURL: "/"
       });
       toast.success(AUTH_MESSAGES.success.accountDeleted);
-      router.push("/");
+      router.push("/profile/delete/verify");
       router.refresh();
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("Erreur lors de la suppression:", error);
-      const errorMessage = error instanceof Error ? error : undefined;
+      const errorMessage = error?.error?.message || error?.message || "Erreur inconnue";
       toast.error(formatErrorMessage(AUTH_MESSAGES.error.accountDelete, errorMessage));
     }
   };
