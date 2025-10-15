@@ -1,4 +1,3 @@
-import { stripe } from '@better-auth/stripe';
 import { authClient } from "@/lib/auth/auth-client";
 import { PlanName } from "@/lib/stripe/stripe-plan";
 import { stripeClient } from "./stripe";
@@ -26,17 +25,17 @@ export const useStripeSubscribe = () => {
     // Implémentez la logique pour obtenir les détails de l'abonnement ici
   };
 
-  const upgradeToPlan = async (newPlan: "basic" | "premium") => {
+  const upgradeToPlan = async (plan: "basic" | "premium") => {
     // Implémentez la logique de mise à niveau ici
     await authClient.subscription.upgrade({
-      plan: newPlan,
+      plan,
       successUrl: "/dashboard",
       cancelUrl: "/pricing",
       subscriptionId: "sub_123", // the Stripe subscription ID of the user's current plan
     });
   };
 
-  const downgradeToPlan = (newPlan: "free" | "basic") => {
+  const downgradeToPlan = (_plan: "free" | "basic") => {
     // Implémentez la logique de rétrogradation ici
   };
 
@@ -74,7 +73,14 @@ export const useStripePrices = () => {
   /**
    * Formate le prix Stripe pour l'affichage
    */
-  const formatPrice = (price: any) => {
+  const formatPrice = (price: { 
+    unit_amount?: number | null; 
+    currency: string;
+    recurring?: {
+      interval?: string;
+      interval_count?: number;
+    } | null;
+  }) => {
     if (!price.unit_amount) return { amount: 0, currency: 'eur', formatted: '0€' };
     
     const amount = price.unit_amount / 100;
