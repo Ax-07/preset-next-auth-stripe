@@ -31,10 +31,14 @@ export default function PricingPage() {
   const handleSubscribe = async (plan: "basic" | "premium") => {
     setLoading(plan);
     try {
+      const subscriptionResult = await authClient.subscription.list();
+      console.log(subscriptionResult.data);
+      const stripeSubscriptionId = subscriptionResult.data && subscriptionResult.data.length > 0 ? subscriptionResult.data[0].stripeSubscriptionId : null;
       await authClient.subscription.upgrade({
         plan,
         successUrl: window.location.origin + "/dashboard?subscription=success",
         cancelUrl: window.location.origin + "/pricing",
+        subscriptionId: stripeSubscriptionId || ""
       });
     } catch (error) {
       console.error("Erreur lors de la souscription:", error);
