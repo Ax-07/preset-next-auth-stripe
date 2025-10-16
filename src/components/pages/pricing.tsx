@@ -39,7 +39,7 @@ export default function PricingPage() {
         plan,
         successUrl: window.location.origin + "/dashboard?subscription=success",
         cancelUrl: window.location.origin + "/pricing",
-        subscriptionId: existing?.stripeSubscriptionId, // Si déjà abonné, permet de mettre à niveau/downgrader
+        subscriptionId: existing?.stripeSubscriptionId || "", // Si déjà abonné, permet de mettre à niveau/downgrader
       });
     } catch (error) {
       console.error("Erreur lors de la souscription:", error);
