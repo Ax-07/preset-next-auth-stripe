@@ -16,42 +16,31 @@ import toast from "react-hot-toast";
 export default function PricingPage() {
   const [loading, setLoading] = useState<string | null>(null);
   const [billingInterval, setBillingInterval] = useState<"monthly" | "annual">("monthly");
-  
+
   // Utiliser le hook pour récupérer les prix depuis Stripe
-  const { 
-    plans, 
-    loading: pricesLoading, 
+  const {
+    plans,
+    loading: pricesLoading,
     error: pricesError,
-    getPrice, 
+    getPrice,
     getAnnualPrice,
     formatPrice,
-    calculateAnnualSavings 
+    calculateAnnualSavings,
   } = usePricing();
 
   const handleSubscribe = async (plan: "basic" | "premium") => {
     setLoading(plan);
     try {
-    const { data: subs } = await authClient.subscription.list();
-    const existing = subs?.[0];
+      const { data: subs } = await authClient.subscription.list();
+      const existing = subs?.[0];
 
-    if (existing?.stripeSubscriptionId) {
-      // Déjà abonné → on ouvre le Portal
-      const { data, error } = await authClient.subscription.billingPortal({
-        referenceId: existing.referenceId,
-        returnUrl: window.location.origin + "/dashboard?subscription=updated",
+      // Pas encore abonné → Checkout
+      await authClient.subscription.upgrade({
+        plan,
+        successUrl: window.location.origin + "/dashboard?subscription=success",
+        cancelUrl: window.location.origin + "/pricing",
+        subscriptionId: existing?.stripeSubscriptionId, // Si déjà abonné, permet de mettre à niveau/downgrader
       });
-      if (error) throw error;
-      window.location.href = data.url;
-      return;
-    }
-
-    // Pas encore abonné → Checkout
-    await authClient.subscription.upgrade({
-      plan,
-      successUrl: window.location.origin + "/dashboard?subscription=success",
-      cancelUrl: window.location.origin + "/pricing",
-      // Surtout PAS de subscriptionId ici
-    });
     } catch (error) {
       console.error("Erreur lors de la souscription:", error);
       toast.error("Une erreur est survenue. Veuillez réessayer.");
@@ -94,7 +83,11 @@ export default function PricingPage() {
 
         {/* Toggle Mensuel/Annuel */}
         <div className="mb-12 flex justify-center">
-          <Tabs value={billingInterval} onValueChange={(v) => setBillingInterval(v as "monthly" | "annual")} className="w-fit">
+          <Tabs
+            value={billingInterval}
+            onValueChange={(v) => setBillingInterval(v as "monthly" | "annual")}
+            className="w-fit"
+          >
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="monthly">Mensuel</TabsTrigger>
               <TabsTrigger value="annual">
@@ -114,7 +107,7 @@ export default function PricingPage() {
             const displayPrice = getPrice(plan, billingInterval);
             const totalAnnualPrice = getAnnualPrice(plan);
             const savings = calculateAnnualSavings(plan);
-            
+
             return (
               <Card
                 key={plan.name}
@@ -136,7 +129,7 @@ export default function PricingPage() {
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl">{plan.displayName}</CardTitle>
                   <CardDescription className="text-base">{plan.description}</CardDescription>
-                  
+
                   <div className="mt-6">
                     <div className="flex items-baseline justify-center">
                       <span className="text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -144,7 +137,7 @@ export default function PricingPage() {
                       </span>
                       <span className="ml-2 text-gray-500 dark:text-gray-400">/mois</span>
                     </div>
-                    
+
                     {billingInterval === "annual" && totalAnnualPrice && (
                       <>
                         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -157,7 +150,7 @@ export default function PricingPage() {
                         )}
                       </>
                     )}
-                    
+
                     {plan.freeTrial && (
                       <Badge variant="secondary" className="mt-4">
                         Essai gratuit de {plan.freeTrial.days} jours
@@ -179,20 +172,12 @@ export default function PricingPage() {
 
                 <CardFooter>
                   {plan.name === "free" ? (
-                    <Button
-                      className="w-full"
-                      variant="outline"
-                      asChild
-                    >
+                    <Button className="w-full" variant="outline" asChild>
                       <a href="/auth/sign-up">Commencer gratuitement</a>
                     </Button>
                   ) : (
                     <Button
-                      className={`w-full ${
-                        plan.highlighted
-                          ? "bg-blue-600 hover:bg-blue-700"
-                          : ""
-                      }`}
+                      className={`w-full ${plan.highlighted ? "bg-blue-600 hover:bg-blue-700" : ""}`}
                       variant={plan.highlighted ? "default" : "outline"}
                       disabled={isLoading}
                       onClick={() => handleSubscribe(plan.name as "basic" | "premium")}
@@ -225,7 +210,7 @@ export default function PricingPage() {
         {/* Contact */}
         <div className="mt-20 text-center">
           <p className="text-gray-600 dark:text-gray-400">
-            Des questions ? {" "}
+            Des questions ?{" "}
             <a href="/contact" className="font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-500">
               Contactez-nous
             </a>
