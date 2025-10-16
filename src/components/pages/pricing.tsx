@@ -31,15 +31,27 @@ export default function PricingPage() {
   const handleSubscribe = async (plan: "basic" | "premium") => {
     setLoading(plan);
     try {
-      const subscriptionResult = await authClient.subscription.list();
-      console.log(subscriptionResult.data);
-      const stripeSubscriptionId = subscriptionResult.data && subscriptionResult.data.length > 0 ? subscriptionResult.data[0].stripeSubscriptionId : null;
-      await authClient.subscription.upgrade({
-        plan,
-        successUrl: window.location.origin + "/dashboard?subscription=success",
-        cancelUrl: window.location.origin + "/pricing",
-        subscriptionId: stripeSubscriptionId || ""
+    const { data: subs } = await authClient.subscription.list();
+    const existing = subs?.[0];
+
+    if (existing?.stripeSubscriptionId) {
+      // Déjà abonné → on ouvre le Portal
+      const { data, error } = await authClient.subscription.billingPortal({
+        referenceId: existing.referenceId,
+        returnUrl: window.location.origin + "/dashboard?subscription=updated",
       });
+      if (error) throw error;
+      window.location.href = data.url;
+      return;
+    }
+
+    // Pas encore abonné → Checkout
+    await authClient.subscription.upgrade({
+      plan,
+      successUrl: window.location.origin + "/dashboard?subscription=success",
+      cancelUrl: window.location.origin + "/pricing",
+      // Surtout PAS de subscriptionId ici
+    });
     } catch (error) {
       console.error("Erreur lors de la souscription:", error);
       toast.error("Une erreur est survenue. Veuillez réessayer.");
