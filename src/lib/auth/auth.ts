@@ -183,7 +183,7 @@ export const auth = betterAuth({
             where: { referenceId: refId },
             data: { stripeSubscriptionId: stripeSubscription.id },
           });
-        },
+        }, 
       }
     })
   ],
