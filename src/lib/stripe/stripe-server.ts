@@ -1,3 +1,5 @@
+"use server";
+
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import { PLANS } from "./stripe-plan";
@@ -124,5 +126,28 @@ export const getStripePlans = async () => {
       error: "Impossible de récupérer les prix",
       plans: PLANS // Fallback sur les prix statiques
     };
+  }
+};
+
+export const cancelSubscription = async (referenceId: string, subscriptionId: string) => {
+const data = await auth.api.cancelSubscription({
+    body: {
+        referenceId,
+        subscriptionId,
+        returnUrl: '/account', // required
+    },
+    // This endpoint requires session cookies.
+    headers: await headers(),
+});
+return data;
+};
+
+export const activeSubscription = async () => {
+  try {
+    const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() });
+    return { success: true, data: subscriptions };
+  } catch (error) {
+    console.error("Error fetching active subscriptions:", error);
+    return { success: false, error };
   }
 };
