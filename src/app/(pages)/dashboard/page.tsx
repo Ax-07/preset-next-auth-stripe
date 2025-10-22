@@ -3,6 +3,7 @@
 import { Suspense } from "react";
 import DashboardPage from "@/components/pages/dashboard";
 import { Loader2 } from "lucide-react";
+import { getActiveSubscription } from "@/lib/stripe/stripe-server";
 
 function DashboardLoading() {
   return (
@@ -12,7 +13,9 @@ function DashboardLoading() {
   );
 }
 
-export default function Page() {
+export default async function Page() {
+  const activeSubscription = await getActiveSubscription(); console.log("Active subscription in Dashboard page:", activeSubscription);
+
   return (
     <Suspense fallback={<DashboardLoading />}>
       <DashboardPage />
