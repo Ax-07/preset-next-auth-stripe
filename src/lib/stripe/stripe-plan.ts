@@ -3,11 +3,14 @@ export const PLANS = [
         name: "free" as const,
         displayName: "Gratuit",
         description: "Parfait pour démarrer",
+        // IDs Stripe non utilisés pour le plan gratuit
         priceId: null,
+        priceLookupKey: null,
         price: 0,
         currency: "EUR",
         interval: "month" as const,
         annualDiscountPriceId: null,
+        annualLookupKey: null,
         annualPrice: undefined,
         freeTrial: null,
         features: [
@@ -22,14 +25,17 @@ export const PLANS = [
         name: "basic" as const,
         displayName: "Basic",
         description: "Pour les professionnels",
-        priceId: "price_1SHp0RFRFvv55BTbWqLEqStX",
-        price: 9.99,
+        // Option B: Stripe = source de vérité via lookup keys
+        priceId: null,
+        priceLookupKey: "basic_monthly", // définir ce lookup_key dans Stripe
+        price: null, // Le montant sera récupéré dynamiquement depuis Stripe
         currency: "EUR",
         interval: "month" as const,
-        annualDiscountPriceId: "price_1SHp29FRFvv55BTbnRUuHPIp",
-        annualPrice: 99,
+        annualDiscountPriceId: null,
+        annualLookupKey: "basic_yearly", // définir ce lookup_key annuel dans Stripe (optionnel)
+        annualPrice: null, // Le montant sera récupéré dynamiquement depuis Stripe
         freeTrial: {
-            days: 90,
+            days: 30,
         },
         features: [
             "Tout du plan Gratuit",
@@ -40,31 +46,6 @@ export const PLANS = [
             "API accès",
         ],
         highlighted: false,
-    },
-    {
-        name: "premium" as const,
-        displayName: "Premium",
-        description: "Pour les équipes",
-        priceId: "price_1SHp0rFRFvv55BTb3EI8cSHo",
-        price: 29.99,
-        currency: "EUR",
-        interval: "month" as const,
-        annualDiscountPriceId: "price_1SHp33FRFvv55BTbi51r4brP",
-        annualPrice: 299,
-        freeTrial: {
-            days: 90,
-        },
-        features: [
-            "Tout du plan Basic",
-            "Projets illimités",
-            "100 GB de stockage",
-            "Support dédié 24/7",
-            "Intégrations avancées",
-            "Collaboration en équipe",
-            "Rapports personnalisés",
-            "SLA garanti",
-        ],
-        highlighted: true,
     }
 ] as const;
 
