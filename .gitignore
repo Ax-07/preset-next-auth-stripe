@@ -43,3 +43,6 @@ next-env.d.ts
 # prisma
 /generated
 /prisma/migrations
+
+/scripts
+/docs
