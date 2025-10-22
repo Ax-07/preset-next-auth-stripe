@@ -39,7 +39,7 @@ export default function PricingPage() {
         plan,
         successUrl: window.location.origin + "/dashboard?subscription=success",
         cancelUrl: window.location.origin + "/pricing",
-        subscriptionId: existing?.stripeSubscriptionId || "", // Si déjà abonné, permet de mettre à niveau/downgrader
+        ...(existing && { subscriptionId: existing?.stripeSubscriptionId }), // Si déjà abonné, permet de mettre à niveau/downgrader
       });
     } catch (error) {
       console.error("Erreur lors de la souscription:", error);
@@ -101,7 +101,7 @@ export default function PricingPage() {
         </div>
 
         {/* Grille de prix */}
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid gap-8 lg:grid-cols-2">
           {plans.map((plan) => {
             const isLoading = loading === plan.name;
             const displayPrice = getPrice(plan, billingInterval);
