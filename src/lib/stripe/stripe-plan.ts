@@ -50,5 +50,4 @@ export const PLANS = [
 ];
 
 export type PlanName = typeof PLANS[number]["name"];
-export const getPlans = async () => PLANS.filter(plan => plan.name !== "free");
 
