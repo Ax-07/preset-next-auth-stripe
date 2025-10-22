@@ -32,9 +32,14 @@ export const useStripeSubscribe = () => {
       });
     }
   };
-
-  const getSubscriptionDetails = () => {
-    // Implémentez la logique pour obtenir les détails de l'abonnement ici
+  /**
+   * Récupère les détails de l'abonnement actuel de l'utilisateur
+   * @returns 
+   */
+  const getSubscriptionDetails = async () => {
+    const { data: subs } = await authClient.subscription.list();
+    const existing = subs?.[0];
+    return { subscription: existing };
   };
 
   const upgradeToPlan = async (plan: "basic" | "premium") => {
