@@ -9,7 +9,7 @@ export const CancelSubscriptionBtn = () => {
       variant="destructive"
       onClick={async () => cancelSubscription()}
     >
-      Annuler l'abonnement
+      {"Annuler l'abonnement"}
     </Button>
   );
 };
