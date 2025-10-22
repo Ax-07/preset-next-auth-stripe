@@ -9,38 +9,42 @@ import { PLANS } from "@/lib/stripe/stripe-plan";
 
 export async function GET() {
   try {
-    // Récupérer tous les price IDs depuis PLANS
-    const priceIds = PLANS
-      .filter(plan => plan.priceId !== null)
-      .flatMap(plan => [
-        plan.priceId,
-        plan.annualDiscountPriceId
-      ])
-      .filter((id) => id !== null && id !== undefined) as string[];
+    // Préparer liste des identifiants à récupérer (lookup_key prioritaire)
+    type PriceRef = { key: string; type: "lookup" | "id" };
+    const refs: PriceRef[] = PLANS.flatMap(plan => {
+      const list: PriceRef[] = [];
+      if (plan.priceLookupKey) list.push({ key: plan.priceLookupKey, type: "lookup" });
+      else if (plan.priceId) list.push({ key: plan.priceId, type: "id" });
+      if (plan.annualLookupKey) list.push({ key: plan.annualLookupKey, type: "lookup" });
+      else if (plan.annualDiscountPriceId) list.push({ key: plan.annualDiscountPriceId, type: "id" });
+      return list;
+    });
 
-    if (priceIds.length === 0) {
+    if (refs.length === 0) {
       return NextResponse.json({ plans: PLANS });
     }
 
-    // Récupérer les prix depuis Stripe
-    const pricePromises = priceIds.map(async (priceId) => {
+    // Résoudre chaque référence en Price Stripe
+    const pricePromises = refs.map(async (ref) => {
       try {
-        const price = await stripeClient.prices.retrieve(priceId, {
-          expand: ['product']
-        });
-        return { id: priceId, data: price };
+        if (ref.type === "lookup") {
+          const list = await stripeClient.prices.list({ lookup_keys: [ref.key], expand: ['data.product'] });
+          const price = list.data?.[0] || null;
+          return { ref: ref.key, data: price };
+        } else {
+          const price = await stripeClient.prices.retrieve(ref.key, { expand: ['product'] });
+          return { ref: ref.key, data: price };
+        }
       } catch (error) {
-        console.error(`Erreur lors de la récupération du prix ${priceId}:`, error);
-        return { id: priceId, data: null };
+        console.error(`Erreur lors de la récupération du prix (${ref.type}=${ref.key}):`, error);
+        return { ref: ref.key, data: null };
       }
     });
 
     const pricesResults = await Promise.all(pricePromises);
-    const pricesMap = new Map(
-      pricesResults
-        .filter(p => p.data !== null)
-        .map(p => [p.id, p.data])
-    );
+    const pricesMap = new Map(pricesResults
+      .filter(p => p.data !== null)
+      .map(p => [p.ref, p.data]));
 
     // Enrichir les plans avec les données Stripe
     const enrichedPlans = PLANS.map(plan => {
@@ -48,10 +52,12 @@ export async function GET() {
         return { ...plan, stripeData: null };
       }
 
-      const monthlyPrice = pricesMap.get(plan.priceId);
-      const annualPrice = plan.annualDiscountPriceId 
-        ? pricesMap.get(plan.annualDiscountPriceId)
-        : null;
+      const monthlyPrice = plan.priceLookupKey
+        ? pricesMap.get(plan.priceLookupKey)
+        : plan.priceId ? pricesMap.get(plan.priceId) : null;
+      const annualPrice = plan.annualLookupKey
+        ? pricesMap.get(plan.annualLookupKey)
+        : plan.annualDiscountPriceId ? pricesMap.get(plan.annualDiscountPriceId) : null;
 
       return {
         ...plan,
