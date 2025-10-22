@@ -5,7 +5,7 @@ import { prisma } from "@/lib/database/prisma.client";
 import { sendEmail } from "@/lib/mail/mail.service";
 import { stripe } from "@better-auth/stripe"
 import { stripeClient } from "../stripe/stripe";
-import { PLANS } from "../stripe/stripe-plan";
+import { getPlans, PLANS } from "../stripe/stripe-plan";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -176,17 +176,13 @@ export const auth = betterAuth({
         //     return plan;
         //   }),
         plans: async () => {
-          const plan = PLANS
-          .filter(p => p.priceId) // on n’envoie à Stripe que les plans payants
-          .map(p => {
-            return {
-              name: p.name,
-              priceId: p.priceId!,
-              annualDiscountPriceId: p.annualDiscountPriceId || undefined,
-              freeTrial: p.freeTrial || undefined,
-            };
-          });
-          return plan;
+          const plans = await getPlans();
+          return plans.map(p => ({
+            name: p.name,
+            priceId: p.priceId!,
+            annualDiscountPriceId: p.annualDiscountPriceId || undefined,
+            freeTrial: p.freeTrial || undefined,
+          }));
         },
         onSubscriptionComplete: async ({ subscription, stripeSubscription }) => {
           const refId = subscription.referenceId;          // <- référence (user/org)
