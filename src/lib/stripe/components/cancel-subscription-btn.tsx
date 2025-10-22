@@ -2,6 +2,7 @@
 
 import React from "react";
 import { cancelSubscription } from "../stripe-server";
+import { Button } from "@/components/ui/button";
 
 export const CancelSubscriptionBtn = () => {
   const handleCancelSubscription = async () => {
@@ -16,8 +17,8 @@ export const CancelSubscriptionBtn = () => {
   };
 
   return (
-    <button onClick={handleCancelSubscription}>
+    <Button onClick={handleCancelSubscription}>
       {"Annuler l'abonnement"}
-    </button>
+    </Button>
   );
 };
