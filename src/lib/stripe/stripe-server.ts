@@ -13,6 +13,7 @@ export const subscribe = async (plan: string, successUrl: string, cancelUrl: str
       plan,
       successUrl,
       cancelUrl,
+      disableRedirect: true,
     },
   });
 
@@ -130,11 +131,14 @@ export const getStripePlans = async () => {
 };
 
 export const cancelSubscription = async () => {
-  const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() });
-  const referenceId = subscriptions[0].referenceId;
-  const subscriptionId = subscriptions[0].id;
+  const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() }); console.log("subscriptions:", subscriptions);
+  if (!subscriptions || subscriptions.length === 0) {
+    console.log("Aucun abonnement actif trouvé pour l'utilisateur.");
+  }
+  const referenceId = subscriptions[0].referenceId; console.log("referenceId:", referenceId);
+  const subscriptionId = subscriptions[0].id; console.log("subscriptionId:", subscriptionId);
   if (!referenceId) {
-    throw new Error("Aucun abonnement actif trouvé pour l'utilisateur.");
+    console.error("Aucun referenceId trouvé pour l'abonnement.");
   }
   const data = await auth.api.cancelSubscription({
     body: {
@@ -148,9 +152,9 @@ export const cancelSubscription = async () => {
   return data;
 };
 
-export const activeSubscription = async () => {
+export const getActiveSubscription = async () => {
   try {
-    const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() });
+    const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() }); console.log("Active subscriptions:", subscriptions);
     return { success: true, data: subscriptions };
   } catch (error) {
     console.error("Error fetching active subscriptions:", error);
