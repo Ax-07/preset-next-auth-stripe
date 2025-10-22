@@ -29,18 +29,24 @@ export default function PricingPage() {
   } = usePricing();
 
   const handleSubscribe = async (plan: "basic" | "premium") => {
-    setLoading(plan); console.log(`Souscription au plan: ${plan}`);
+    setLoading(plan);
+    console.log(`Souscription au plan: ${plan}`);
     try {
       const { data: subs } = await authClient.subscription.list();
       const existing = subs?.[0];
 
       // Pas encore abonné → Checkout
-      await authClient.subscription.upgrade({
+      const payload: Parameters<typeof authClient.subscription.upgrade>[0] = {
         plan,
-        successUrl: window.location.origin + "/dashboard?subscription=success",
-        cancelUrl: window.location.origin + "/pricing",
-        ...(existing && { subscriptionId: existing?.stripeSubscriptionId }), // Si déjà abonné, permet de mettre à niveau/downgrader
-      });
+        successUrl: `${window.location.origin}/dashboard?subscription=success`,
+        cancelUrl: `${window.location.origin}/pricing`,
+      };
+
+      if (existing?.stripeSubscriptionId) {
+        payload.subscriptionId = existing.stripeSubscriptionId; // seulement si présent
+      }
+
+      await authClient.subscription.upgrade(payload);
     } catch (error) {
       console.error("Erreur lors de la souscription:", error);
       toast.error("Une erreur est survenue. Veuillez réessayer.");
