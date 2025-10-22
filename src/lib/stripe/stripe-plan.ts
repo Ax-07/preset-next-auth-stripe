@@ -26,16 +26,16 @@ export const PLANS = [
         displayName: "Basic",
         description: "Pour les professionnels",
         // Option B: Stripe = source de vérité via lookup keys
-        priceId: null,
+        priceId:  "",
         priceLookupKey: "basic_monthly", // définir ce lookup_key dans Stripe
-        price: null, // Le montant sera récupéré dynamiquement depuis Stripe
+        price: "", // Le montant sera récupéré dynamiquement depuis Stripe
         currency: "EUR",
         interval: "month" as const,
-        annualDiscountPriceId: null,
+        annualDiscountPriceId: "",
         annualLookupKey: "basic_yearly", // définir ce lookup_key annuel dans Stripe (optionnel)
-        annualPrice: null, // Le montant sera récupéré dynamiquement depuis Stripe
+        annualPrice: "", // Le montant sera récupéré dynamiquement depuis Stripe
         freeTrial: {
-            days: 30,
+            days: 0,
         },
         features: [
             "Tout du plan Gratuit",
@@ -47,6 +47,6 @@ export const PLANS = [
         ],
         highlighted: false,
     }
-] as const;
+];
 
 export type PlanName = typeof PLANS[number]["name"];
