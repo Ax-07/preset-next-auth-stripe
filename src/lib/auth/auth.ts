@@ -5,7 +5,7 @@ import { prisma } from "@/lib/database/prisma.client";
 import { sendEmail } from "@/lib/mail/mail.service";
 import { stripe } from "@better-auth/stripe"
 import { stripeClient } from "../stripe/stripe";
-import { getPlans, PLANS } from "../stripe/stripe-plan";
+import { getStripePlans } from "../stripe/stripe-server";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -176,7 +176,7 @@ export const auth = betterAuth({
         //     return plan;
         //   }),
         plans: async () => {
-          const plans = await getPlans();
+          const plans = (await getStripePlans()).plans;
           return plans.map(p => ({
             name: p.name,
             priceId: p.priceId!,
