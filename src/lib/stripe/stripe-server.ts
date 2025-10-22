@@ -129,7 +129,7 @@ export const getStripePlans = async () => {
   }
 };
 
-export const cancelSubscription = async (referenceId: string, subscriptionId: string) => {
+export const cancelSubscription = async (referenceId?: string, subscriptionId?: string) => {
 const data = await auth.api.cancelSubscription({
     body: {
         referenceId,
