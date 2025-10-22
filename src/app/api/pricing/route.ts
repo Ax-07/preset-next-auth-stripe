@@ -41,40 +41,40 @@ export async function GET() {
       }
     });
 
-    const pricesResults = await Promise.all(pricePromises);
+    const pricesResults = await Promise.all(pricePromises); console.log(pricesResults.map(p => p.data));
     const pricesMap = new Map(pricesResults
       .filter(p => p.data !== null)
-      .map(p => [p.ref, p.data]));
+      .map(p => [p.ref, p.data])); 
+      
+      // Enrichir les plans avec les données Stripe
+      const enrichedPlans = PLANS.map(plan => {
+      // Récupérer les prix mensuels et annuels
+      const monthlyPrice = plan.priceLookupKey ? pricesMap.get(plan.priceLookupKey) : plan.priceId ? pricesMap.get(plan.priceId) : null;
+      const annualPrice = plan.annualLookupKey ? pricesMap.get(plan.annualLookupKey) : plan.annualDiscountPriceId ? pricesMap.get(plan.annualDiscountPriceId) : null;
 
-    // Enrichir les plans avec les données Stripe
-    const enrichedPlans = PLANS.map(plan => {
-      if (!plan.priceId) {
-        return { ...plan, stripeData: null };
-      }
-
-      const monthlyPrice = plan.priceLookupKey
-        ? pricesMap.get(plan.priceLookupKey)
-        : plan.priceId ? pricesMap.get(plan.priceId) : null;
-      const annualPrice = plan.annualLookupKey
-        ? pricesMap.get(plan.annualLookupKey)
-        : plan.annualDiscountPriceId ? pricesMap.get(plan.annualDiscountPriceId) : null;
+      // Extraire le nom du produit si product est un objet Product (non deleted)
+      const productName = monthlyPrice?.product && typeof monthlyPrice.product === 'object' && 'name' in monthlyPrice.product
+        ? monthlyPrice.product.name 
+        : null;
+      // const productDescription = monthlyPrice?.product && typeof monthlyPrice.product === 'object' && 'description' in monthlyPrice.product
+      //   ? monthlyPrice.product.description
+      //   : null;
 
       return {
         ...plan,
-        stripeData: {
-          monthly: monthlyPrice ? {
-            amount: monthlyPrice.unit_amount ? monthlyPrice.unit_amount / 100 : 0,
-            currency: monthlyPrice.currency,
-            interval: monthlyPrice.recurring?.interval,
-            intervalCount: monthlyPrice.recurring?.interval_count,
-          } : null,
-          annual: annualPrice ? {
-            amount: annualPrice.unit_amount ? annualPrice.unit_amount / 100 : 0,
-            currency: annualPrice.currency,
-            interval: annualPrice.recurring?.interval,
-            intervalCount: annualPrice.recurring?.interval_count,
-          } : null,
-        }
+        name: productName || plan.name,
+        displayName: productName && productName.charAt(0).toUpperCase() + productName.slice(1) || plan.displayName,
+        // description: productDescription || plan.description,
+        // Mettre à jour les IDs Stripe
+        priceId: monthlyPrice?.id || plan.priceId || null,
+        annualDiscountPriceId: annualPrice?.id || plan.annualDiscountPriceId || null,
+        // Mettre à jour les prix
+        price: monthlyPrice?.unit_amount ? monthlyPrice.unit_amount / 100 : plan.price,
+        annualPrice: annualPrice?.unit_amount ? annualPrice.unit_amount / 100 : plan.annualPrice,
+        // Mettre à jour la devise si disponible
+        currency: monthlyPrice?.currency || plan.currency,
+        // Mettre à jour l'intervalle si disponible
+        interval: monthlyPrice?.recurring?.interval || plan.interval,
       };
     });
 
