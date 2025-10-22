@@ -18,7 +18,19 @@ export const useStripeSubscribe = () => {
     };
   };
 
-  const unsubscribeFromPlan = async () => {
+  /**
+   * Annule l'abonnement actuel de l'utilisateur
+   */
+  const cancelSubscription = async () => {
+    const { data: subs } = await authClient.subscription.list();
+    const existing = subs?.[0];
+    if (existing) {
+      await authClient.subscription.cancel({
+        referenceId: existing.referenceId,
+        subscriptionId: existing.stripeSubscriptionId || "",
+        returnUrl: window.location.origin + "/dashboard?subscription=canceled",
+      });
+    }
   };
 
   const getSubscriptionDetails = () => {
@@ -41,7 +53,7 @@ export const useStripeSubscribe = () => {
 
   return {
     subscribeToPlan,
-    unsubscribeFromPlan,
+    cancelSubscription,
     getSubscriptionDetails,
     upgradeToPlan,
     downgradeToPlan
