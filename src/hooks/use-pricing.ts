@@ -64,6 +64,10 @@ export function usePricing() {
     fetchPricing();
   }, []);
 
+  const getPlans = async () => {
+    return plans.filter(plan => plan.priceId !== null);
+  };
+
   /**
    * Obtient le prix réel depuis Stripe (si disponible) ou fallback sur le prix statique
    */
@@ -117,6 +121,7 @@ export function usePricing() {
     plans,
     loading,
     error,
+    getPlans,
     getPrice,
     getAnnualPrice,
     formatPrice,
