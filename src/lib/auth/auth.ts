@@ -173,28 +173,79 @@ export const auth = betterAuth({
             freeTrial: p.freeTrial || undefined,
           }));
         },
-        onSubscriptionComplete: async ({ subscription, stripeSubscription }) => {
-          const stripeSubData = stripeSubscription as Stripe.Subscription;
-          await prisma.subscription.updateMany({
-            where: { referenceId: subscription.referenceId },
-            data: {
-              stripeCustomerId: subscription.stripeCustomerId ?? null,
-              stripeSubscriptionId: stripeSubData.id,
-              status: stripeSubData.status,
-              periodStart: stripeSubData.trial_start ? new Date(stripeSubData.trial_start * 1000) : null,
-              periodEnd: stripeSubData.trial_end ? new Date(stripeSubData.trial_end * 1000) : null,
-              cancelAtPeriodEnd: !!stripeSubData.cancel_at_period_end,
-            },
-          });
+onSubscriptionComplete: async ({ subscription, stripeSubscription, plan }) => {
+    const sub = stripeSubscription as Stripe.Subscription;
 
-          await prisma.user.update({
-            where: { id: subscription.referenceId },
-            data: {
-              stripeCustomerId: subscription.stripeCustomerId ?? null,
-              stripeSubscriptionId: stripeSubscription.id,
-            },
-          });
+    // (Optionnel) bornes de période via la facture
+    let periodStart: Date | null = null;
+    let periodEnd: Date | null = null;
+    try {
+      if (sub.latest_invoice) {
+        const invId = typeof sub.latest_invoice === "string" ? sub.latest_invoice : sub.latest_invoice.id;
+        if (invId) {
+          const inv = await stripeClient.invoices.retrieve(invId, { expand: ["lines.data"] });
+          const line = inv.lines?.data?.[0];
+          if (line?.period) {
+            periodStart = line.period.start ? new Date(line.period.start * 1000) : null;
+            periodEnd   = line.period.end   ? new Date(line.period.end   * 1000) : null;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("Invoice lookup failed:", e);
+    }
+
+    // Find existing subscription or create new one
+    const existingSubscription = await prisma.subscription.findFirst({
+      where: { referenceId: subscription.referenceId },
+    });
+
+    if (existingSubscription) {
+      await prisma.subscription.update({
+        where: { id: existingSubscription.id },
+        data: {
+          stripeCustomerId: subscription.stripeCustomerId ?? null,
+          stripeSubscriptionId: sub.id,
+          status: sub.status,                                  // ← source Stripe
+          periodStart,
+          periodEnd,
+          cancelAtPeriodEnd: !!sub.cancel_at_period_end,
+          plan: plan?.name ?? undefined,                       // si tu stockes le plan ici
         },
+      });
+    } else {
+      await prisma.subscription.create({
+        data: {
+          id: crypto.randomUUID(),
+          referenceId: subscription.referenceId,
+          stripeCustomerId: subscription.stripeCustomerId ?? null,
+          stripeSubscriptionId: sub.id,
+          status: sub.status,
+          periodStart,
+          periodEnd,
+          cancelAtPeriodEnd: !!sub.cancel_at_period_end,
+          plan: plan?.name ?? undefined,
+        },
+      });
+    }
+
+    await prisma.user.update({
+      where: { id: subscription.referenceId },
+      data: {
+        stripeCustomerId: subscription.stripeCustomerId ?? null,
+        stripeSubscriptionId: sub.id,
+      },
+    });
+
+    // Debug utile
+    console.log("✅ Sync sub:", {
+      userId: subscription.referenceId,
+      stripeSub: sub.id,
+      statusStripe: sub.status, // expected: "trialing"
+      periodStart,
+      periodEnd,
+    });
+  },
 
         onSubscriptionUpdate: async ({ subscription }) => {
           await prisma.subscription.updateMany({
