@@ -7,7 +7,7 @@ export const CancelSubscriptionBtn = () => {
   return (
     <Button
       variant="destructive"
-      onClick={async () => cancelSubscription()}
+      onClick={async () => await cancelSubscription()}
     >
       {"Annuler l'abonnement"}
     </Button>
