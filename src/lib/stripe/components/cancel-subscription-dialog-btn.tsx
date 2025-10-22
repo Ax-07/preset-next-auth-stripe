@@ -17,7 +17,17 @@ import { Card } from "@/components/ui/card";
 export const CancelSubscriptionDialogBtn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [subscription, setSubscription] = useState<any>(null);
+  const [subscription, setSubscription] = useState<{
+    limits: Record<string, number> | undefined;
+    priceId: string | undefined;
+    id: string;
+    plan: string;
+    stripeCustomerId?: string | undefined;
+    stripeSubscriptionId?: string | undefined;
+    status: string;
+    periodEnd?: number;
+    seats?: number | undefined;
+  } | null>(null);
   const { cancelSubscription, getSubscriptionDetails } = useStripeSubscribe();
 
   useEffect(() => {
@@ -29,7 +39,14 @@ export const CancelSubscriptionDialogBtn = () => {
   const loadSubscription = async () => {
     try {
       const { subscription: sub } = await getSubscriptionDetails();
-      setSubscription(sub);
+      if (sub) {
+        setSubscription({
+          ...sub,
+          periodEnd: sub.periodEnd instanceof Date ? sub.periodEnd.getTime() : sub.periodEnd
+        });
+      } else {
+        setSubscription(null);
+      }
     } catch (error) {
       console.error("Erreur lors du chargement de l'abonnement:", error);
     }
