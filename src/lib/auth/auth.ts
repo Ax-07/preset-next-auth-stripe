@@ -164,17 +164,30 @@ export const auth = betterAuth({
       createCustomerOnSignUp: true,
       subscription: {
         enabled: true,
-        plans: PLANS
+        // plans: PLANS
+        //   .filter(p => p.priceId) // on n’envoie à Stripe que les plans payants
+        //   .map(p => {
+        //     const plan = {
+        //       name: p.name,
+        //       priceId: p.priceId!,
+        //       annualDiscountPriceId: p.annualDiscountPriceId || undefined,
+        //       freeTrial: p.freeTrial || undefined,
+        //     };
+        //     return plan;
+        //   }),
+        plans: async () => {
+          const plan = PLANS
           .filter(p => p.priceId) // on n’envoie à Stripe que les plans payants
           .map(p => {
-            const plan = {
+            return {
               name: p.name,
               priceId: p.priceId!,
               annualDiscountPriceId: p.annualDiscountPriceId || undefined,
               freeTrial: p.freeTrial || undefined,
             };
-            return plan;
-          }),
+          });
+          return plan;
+        },
         onSubscriptionComplete: async ({ subscription, stripeSubscription }) => {
           const refId = subscription.referenceId;          // <- référence (user/org)
 
