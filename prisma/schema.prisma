@@ -94,13 +94,10 @@ model Subscription {
 }
 
 model RateLimit {
-  id        String   @id
-  key       String   @unique
-  count     Int
+  id          String   @id
+  key         String   @unique
+  count       Int
   lastRequest BigInt
-  resetAt   DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
 
   @@map("rateLimit")
 }
