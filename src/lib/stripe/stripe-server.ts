@@ -40,15 +40,15 @@ export const getStripePlans = async () => {
     const pricePromises = refs.map(async (ref) => {
       try {
         if (ref.type === "lookup") {
-          const list = await stripeClient.prices.list({ 
-            lookup_keys: [ref.key], 
-            expand: ['data.product'] 
+          const list = await stripeClient.prices.list({
+            lookup_keys: [ref.key],
+            expand: ['data.product']
           });
           const price = list.data?.[0] || null;
           return { ref: ref.key, data: price };
         } else {
-          const price = await stripeClient.prices.retrieve(ref.key, { 
-            expand: ['product'] 
+          const price = await stripeClient.prices.retrieve(ref.key, {
+            expand: ['product']
           });
           return { ref: ref.key, data: price };
         }
@@ -64,49 +64,49 @@ export const getStripePlans = async () => {
         .filter((p): p is { ref: string; data: Stripe.Price } => p.data !== null)
         .map(p => [p.ref, p.data])
     );
-    
+
     // Enrichir les plans avec les données Stripe
     const enrichedPlans = PLANS.map(plan => {
       // Récupérer les prix mensuels et annuels
-      const monthlyPrice = plan.priceLookupKey 
-        ? pricesMap.get(plan.priceLookupKey) 
-        : plan.priceId 
-          ? pricesMap.get(plan.priceId) 
+      const monthlyPrice = plan.priceLookupKey
+        ? pricesMap.get(plan.priceLookupKey)
+        : plan.priceId
+          ? pricesMap.get(plan.priceId)
           : null;
-      const annualPrice = plan.annualLookupKey 
-        ? pricesMap.get(plan.annualLookupKey) 
-        : plan.annualDiscountPriceId 
-          ? pricesMap.get(plan.annualDiscountPriceId) 
+      const annualPrice = plan.annualLookupKey
+        ? pricesMap.get(plan.annualLookupKey)
+        : plan.annualDiscountPriceId
+          ? pricesMap.get(plan.annualDiscountPriceId)
           : null;
 
       // Extraire le nom du produit si product est un objet Product (non deleted)
-      const productName = monthlyPrice?.product 
-        && typeof monthlyPrice.product === 'object' 
+      const productName = monthlyPrice?.product
+        && typeof monthlyPrice.product === 'object'
         && 'name' in monthlyPrice.product
-          ? monthlyPrice.product.name 
-          : null;
-      const productDescription = monthlyPrice?.product 
-        && typeof monthlyPrice.product === 'object' 
+        ? monthlyPrice.product.name
+        : null;
+      const productDescription = monthlyPrice?.product
+        && typeof monthlyPrice.product === 'object'
         && 'description' in monthlyPrice.product
-          ? monthlyPrice.product.description
-          : null;
+        ? monthlyPrice.product.description
+        : null;
 
       return {
         ...plan,
         name: productName || plan.name,
-        displayName: productName 
-          ? productName.charAt(0).toUpperCase() + productName.slice(1) 
+        displayName: productName
+          ? productName.charAt(0).toUpperCase() + productName.slice(1)
           : plan.displayName,
         description: productDescription || plan.description,
         // Mettre à jour les IDs Stripe
         priceId: monthlyPrice?.id || plan.priceId || null,
         annualDiscountPriceId: annualPrice?.id || plan.annualDiscountPriceId || null,
         // Mettre à jour les prix
-        price: monthlyPrice?.unit_amount 
-          ? monthlyPrice.unit_amount / 100 
+        price: monthlyPrice?.unit_amount
+          ? monthlyPrice.unit_amount / 100
           : plan.price,
-        annualPrice: annualPrice?.unit_amount 
-          ? annualPrice.unit_amount / 100 
+        annualPrice: annualPrice?.unit_amount
+          ? annualPrice.unit_amount / 100
           : plan.annualPrice,
         // Mettre à jour la devise si disponible
         currency: monthlyPrice?.currency || plan.currency,
@@ -115,31 +115,37 @@ export const getStripePlans = async () => {
       };
     });
 
-    return { 
+    return {
       plans: enrichedPlans,
       timestamp: new Date().toISOString(),
     };
 
   } catch (error) {
     console.error("Erreur lors de la récupération des prix:", error);
-    return { 
+    return {
       error: "Impossible de récupérer les prix",
       plans: PLANS // Fallback sur les prix statiques
     };
   }
 };
 
-export const cancelSubscription = async (referenceId?: string, subscriptionId?: string) => {
-const data = await auth.api.cancelSubscription({
+export const cancelSubscription = async () => {
+  const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() });
+  const referenceId = subscriptions[0].referenceId;
+  const subscriptionId = subscriptions[0].id;
+  if (!referenceId) {
+    throw new Error("Aucun abonnement actif trouvé pour l'utilisateur.");
+  }
+  const data = await auth.api.cancelSubscription({
     body: {
-        referenceId,
-        subscriptionId,
-        returnUrl: '/account', // required
+      referenceId,
+      subscriptionId,
+      returnUrl: '/account', // required
     },
     // This endpoint requires session cookies.
     headers: await headers(),
-});
-return data;
+  });
+  return data;
 };
 
 export const activeSubscription = async () => {
