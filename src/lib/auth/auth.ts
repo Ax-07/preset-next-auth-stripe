@@ -6,6 +6,7 @@ import { sendEmail } from "@/lib/mail/mail.service";
 import { stripe } from "@better-auth/stripe"
 import { stripeClient } from "../stripe/stripe";
 import { getStripePlans } from "../stripe/stripe-server";
+import Stripe from "stripe";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -173,9 +174,50 @@ export const auth = betterAuth({
           }));
         },
         onSubscriptionComplete: async ({ subscription, stripeSubscription }) => {
-          console.log(`Abonnement créé: ${subscription.id} pour l'utilisateur ${subscription.stripeCustomerId} et stripeSubscription ${stripeSubscription.id}`);
+          const stripeSubData = stripeSubscription as Stripe.Subscription;
+          await prisma.subscription.updateMany({
+            where: { referenceId: subscription.referenceId },
+            data: {
+              stripeCustomerId: subscription.stripeCustomerId ?? null,
+              stripeSubscriptionId: stripeSubData.id,
+              status: stripeSubData.status,
+              periodStart: stripeSubData.trial_start ? new Date(stripeSubData.trial_start * 1000) : null,
+              periodEnd: stripeSubData.trial_end ? new Date(stripeSubData.trial_end * 1000) : null,
+              cancelAtPeriodEnd: !!stripeSubData.cancel_at_period_end,
+            },
+          });
+
+          await prisma.user.update({
+            where: { id: subscription.referenceId },
+            data: {
+              stripeCustomerId: subscription.stripeCustomerId ?? null,
+              stripeSubscriptionId: stripeSubscription.id,
+            },
+          });
         },
-      }
-    })
+
+        onSubscriptionUpdate: async ({ subscription }) => {
+          await prisma.subscription.updateMany({
+            where: { referenceId: subscription.referenceId },
+            data: {
+              status: subscription.status,
+              cancelAtPeriodEnd: !!subscription.cancelAtPeriodEnd,
+            },
+          });
+        },
+
+        onSubscriptionCancel: async ({ subscription }) => {
+          await prisma.subscription.updateMany({
+            where: { referenceId: subscription.referenceId },
+            data: { status: "canceled" },
+          });
+
+          await prisma.user.update({
+            where: { id: subscription.referenceId },
+            data: { stripeSubscriptionId: null },
+          });
+        },
+      },
+    }),
   ],
-})
+});
