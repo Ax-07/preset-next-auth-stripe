@@ -29,7 +29,7 @@ export default function PricingPage() {
   } = usePricing();
 
   const handleSubscribe = async (plan: "basic" | "premium") => {
-    setLoading(plan);
+    setLoading(plan); console.log(`Souscription au plan: ${plan}`);
     try {
       const { data: subs } = await authClient.subscription.list();
       const existing = subs?.[0];
