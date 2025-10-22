@@ -16,8 +16,7 @@ export const auth = betterAuth({
   },
   user: {
     stripe: {
-      customerIdField: "stripeCustomerId" // Champ dans la table User pour stocker l'ID client Stripe
-
+      customerIdField: "stripeCustomerId", // Champ dans la table User pour stocker l'ID client Stripe
     },
     deleteUser: {
       enabled: true,
@@ -174,13 +173,8 @@ export const auth = betterAuth({
           }));
         },
         onSubscriptionComplete: async ({ subscription, stripeSubscription }) => {
-          const refId = subscription.referenceId;          // <- référence (user/org)
-          // Exemple 1 : via referenceId (si ta table le stocke)
-          await prisma.subscription.updateMany({
-            where: { referenceId: refId },
-            data: { stripeSubscriptionId: stripeSubscription.id },
-          });
-        }, 
+          console.log(`Abonnement créé: ${subscription.id} pour l'utilisateur ${subscription.stripeCustomerId} et stripeSubscription ${stripeSubscription.id}`);
+        },
       }
     })
   ],
