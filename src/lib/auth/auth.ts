@@ -171,6 +171,8 @@ export const auth = betterAuth({
               name: p.name,
               priceId: p.priceId!,
               annualDiscountPriceId: p.annualDiscountPriceId || undefined,
+              lookupKey: p.priceLookupKey || undefined,
+              annualLookupKey: p.annualLookupKey || undefined,
               freeTrial: p.freeTrial || undefined,
             };
             return plan;
