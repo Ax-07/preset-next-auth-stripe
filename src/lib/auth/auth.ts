@@ -164,17 +164,6 @@ export const auth = betterAuth({
       createCustomerOnSignUp: true,
       subscription: {
         enabled: true,
-        // plans: PLANS
-        //   .filter(p => p.priceId) // on n’envoie à Stripe que les plans payants
-        //   .map(p => {
-        //     const plan = {
-        //       name: p.name,
-        //       priceId: p.priceId!,
-        //       annualDiscountPriceId: p.annualDiscountPriceId || undefined,
-        //       freeTrial: p.freeTrial || undefined,
-        //     };
-        //     return plan;
-        //   }),
         plans: async () => {
           const plans = (await getStripePlans()).plans;
           return plans.map(p => ({
@@ -186,7 +175,6 @@ export const auth = betterAuth({
         },
         onSubscriptionComplete: async ({ subscription, stripeSubscription }) => {
           const refId = subscription.referenceId;          // <- référence (user/org)
-
           // Exemple 1 : via referenceId (si ta table le stocke)
           await prisma.subscription.updateMany({
             where: { referenceId: refId },
