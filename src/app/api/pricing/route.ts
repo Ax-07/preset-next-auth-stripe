@@ -56,15 +56,15 @@ export async function GET() {
       const productName = monthlyPrice?.product && typeof monthlyPrice.product === 'object' && 'name' in monthlyPrice.product
         ? monthlyPrice.product.name 
         : null;
-      // const productDescription = monthlyPrice?.product && typeof monthlyPrice.product === 'object' && 'description' in monthlyPrice.product
-      //   ? monthlyPrice.product.description
-      //   : null;
+      const productDescription = monthlyPrice?.product && typeof monthlyPrice.product === 'object' && 'description' in monthlyPrice.product
+        ? monthlyPrice.product.description
+        : null;
 
       return {
         ...plan,
         name: productName || plan.name,
         displayName: productName && productName.charAt(0).toUpperCase() + productName.slice(1) || plan.displayName,
-        // description: productDescription || plan.description,
+        description: productDescription || plan.description,
         // Mettre à jour les IDs Stripe
         priceId: monthlyPrice?.id || plan.priceId || null,
         annualDiscountPriceId: annualPrice?.id || plan.annualDiscountPriceId || null,
