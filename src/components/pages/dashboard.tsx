@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import { CancelSubscriptionBtn } from "@/lib/stripe/components/cancel-subscription-btn";
+import { CancelSubscriptionDialogBtn } from "@/lib/stripe/components";
 
 export default function DashboardPage() {
   const { data: session, isPending } = useSession();
@@ -288,7 +288,7 @@ export default function DashboardPage() {
                       Passer à un plan premium
                     </Link>
                   </Button>
-                  <CancelSubscriptionBtn />
+                  <CancelSubscriptionDialogBtn />
                 </div>
               </CardContent>
             </Card>
