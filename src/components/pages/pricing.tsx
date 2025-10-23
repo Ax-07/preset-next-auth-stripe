@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Check, Sparkles, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { SubscriptionBtn } from "@/lib/stripe/components/subscription-btn";
 
 // Composants optionnels - Décommentez pour les utiliser
 // import { PricingFAQ, PricingComparison, PricingTestimonials } from "./pricing-features";
@@ -27,32 +28,6 @@ export default function PricingPage() {
     formatPrice,
     calculateAnnualSavings,
   } = usePricing();
-
-  const handleSubscribe = async (plan: "basic" | "premium") => {
-    setLoading(plan);
-    console.log(`Souscription au plan: ${plan}`);
-    try {
-      const { data: subs } = await authClient.subscription.list();
-      const existing = subs?.[0];
-
-      // Pas encore abonné → Checkout
-      const payload: Parameters<typeof authClient.subscription.upgrade>[0] = {
-        plan,
-        successUrl: `${window.location.origin}/dashboard?subscription=success`,
-        cancelUrl: `${window.location.origin}/pricing`,
-      };
-
-      if (existing?.stripeSubscriptionId) {
-        payload.subscriptionId = existing.stripeSubscriptionId; // seulement si présent
-      }
-
-      await authClient.subscription.upgrade(payload);
-    } catch (error) {
-      console.error("Erreur lors de la souscription:", error);
-      toast.error("Une erreur est survenue. Veuillez réessayer.");
-      setLoading(null);
-    }
-  };
 
   // État de chargement des prix
   if (pricesLoading) {
@@ -182,21 +157,7 @@ export default function PricingPage() {
                       <a href="/auth/sign-up">Commencer gratuitement</a>
                     </Button>
                   ) : (
-                    <Button
-                      className={`w-full ${plan.highlighted ? "bg-blue-600 hover:bg-blue-700" : ""}`}
-                      variant={plan.highlighted ? "default" : "outline"}
-                      disabled={isLoading}
-                      onClick={() => handleSubscribe(plan.name as "basic" | "premium")}
-                    >
-                      {isLoading ? (
-                        <>
-                          <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                          Redirection...
-                        </>
-                      ) : (
-                        `Choisir ${plan.displayName}`
-                      )}
-                    </Button>
+                    <SubscriptionBtn plan={plan.name} />
                   )}
                 </CardFooter>
               </Card>
