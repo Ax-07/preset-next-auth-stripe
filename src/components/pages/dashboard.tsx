@@ -29,14 +29,44 @@ import Link from "next/link";
 import { CancelSubscriptionBtn } from "@/lib/stripe/components/cancel-subscription-btn";
 import { getActiveSubscription, getUserInvoices } from "@/lib/stripe/stripe-server";
 
+// Types pour les données
+interface Subscription {
+  id: string;
+  plan: string;
+  status: string;
+  periodStart?: Date | string;
+  periodEnd?: Date | string;
+  trialEnd?: Date | string;
+  cancelAtPeriodEnd?: boolean;
+  seats?: number;
+  stripeSubscriptionId?: string;
+}
+
+interface Invoice {
+  id: string;
+  number: string | null;
+  status: string | null;
+  total: number;
+  currency: string;
+  created: Date;
+  dueDate: Date | null;
+  hostedInvoiceUrl?: string | null;
+  invoicePdf?: string | null;
+  periodStart: Date | null;
+  periodEnd: Date | null;
+  description?: string | null;
+  amountDue: number;
+  amountPaid: number;
+}
+
 export default function DashboardPage() {
   const { data: session, isPending } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("overview");
-  const [subscriptions, setSubscriptions] = useState<any[]>([]);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [loadingSubscriptions, setLoadingSubscriptions] = useState(true);
-  const [invoices, setInvoices] = useState<any[]>([]);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loadingInvoices, setLoadingInvoices] = useState(true);
   // Vérifier si l'utilisateur est connecté
   useEffect(() => {
@@ -73,17 +103,17 @@ export default function DashboardPage() {
 
     fetchSubscriptions();
   }, [session]);
-// Récupérer les 20 dernières factures de l'utilisateur
+  // Récupérer les 20 dernières factures de l'utilisateur
   useEffect(() => {
-  async function fetchInvoices() {
-    const { success, data } = await getUserInvoices(20); // 20 dernières factures
-    if (success && data) {
-      setInvoices(data);
-      setLoadingInvoices(false);
+    async function fetchInvoices() {
+      const { success, data } = await getUserInvoices(20); // 20 dernières factures
+      if (success && data) {
+        setInvoices(data as Invoice[]);
+        setLoadingInvoices(false);
+      }
     }
-  }
-  fetchInvoices();
-}, []);
+    fetchInvoices();
+  }, []);
 
   // Gérer les paramètres d'URL (redirection après paiement, etc.)
   useEffect(() => {
@@ -138,7 +168,7 @@ export default function DashboardPage() {
 
   // Déterminer le statut et le badge de l'abonnement
   const getSubscriptionBadge = (status: string) => {
-    const badges: Record<string, { variant: any; label: string }> = {
+    const badges: Record<string, { variant: "default" | "secondary" | "destructive" | "outline" | null | undefined; label: string }> = {
       'active': { variant: 'default', label: 'Actif' },
       'trialing': { variant: 'secondary', label: 'Essai gratuit' },
       'canceled': { variant: 'destructive', label: 'Annulé' },
@@ -433,7 +463,7 @@ export default function DashboardPage() {
                           {activeSubscription.cancelAtPeriodEnd && (
                             <div className="mt-3 rounded-md bg-yellow-50 p-3 dark:bg-yellow-900/20">
                               <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                                ⚠️ Votre abonnement sera annulé le {formatDate(activeSubscription.periodEnd)}
+                                ⚠️ Votre abonnement sera annulé le {formatDate(activeSubscription.periodEnd || null)}
                               </p>
                             </div>
                           )}
@@ -489,7 +519,7 @@ export default function DashboardPage() {
                   <div className="mt-6">
                     <h4 className="text-sm font-semibold mb-3">Historique des abonnements</h4>
                     <div className="space-y-2">
-                      {subscriptions.map((sub, index) => (
+                      {subscriptions.map((sub) => (
                         <div 
                           key={sub.id} 
                           className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
@@ -497,7 +527,7 @@ export default function DashboardPage() {
                           <div>
                             <p className="font-medium capitalize">{sub.plan}</p>
                             <p className="text-xs text-gray-500">
-                              {formatDate(sub.periodStart)} - {formatDate(sub.periodEnd)}
+                              {formatDate(sub.periodStart || null)} - {formatDate(sub.periodEnd || null)}
                             </p>
                           </div>
                           <Badge variant={getSubscriptionBadge(sub.status).variant}>
@@ -534,15 +564,15 @@ export default function DashboardPage() {
                     {/* Liste des factures */}
                     <div className="divide-y divide-gray-200 dark:divide-gray-700">
                       {invoices.map((invoice) => {
-                        const getInvoiceStatusBadge = (status: string) => {
-                          const badges: Record<string, { variant: any; label: string }> = {
+                        const getInvoiceStatusBadge = (status: string | null) => {
+                          const badges: Record<string, { variant: "default" | "secondary" | "destructive" | "outline" | null | undefined; label: string }> = {
                             'paid': { variant: 'default', label: 'Payée' },
                             'open': { variant: 'secondary', label: 'En attente' },
                             'draft': { variant: 'secondary', label: 'Brouillon' },
                             'void': { variant: 'destructive', label: 'Annulée' },
                             'uncollectible': { variant: 'destructive', label: 'Impayée' },
                           };
-                          return badges[status] || { variant: 'secondary', label: status };
+                          return badges[status || 'open'] || { variant: 'secondary', label: status || 'inconnu' };
                         };
 
                         const statusBadge = getInvoiceStatusBadge(invoice.status);
