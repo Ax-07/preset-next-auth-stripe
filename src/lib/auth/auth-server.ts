@@ -31,13 +31,3 @@ export const verifyEmail = async (token: string) => {
     return { success: false, error };
   }
 };
-
-export const getActiveSubscriptions = async () => {
-  try {
-    const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() });
-    return { success: true, data: subscriptions };
-  } catch (error) {
-    console.error("Error fetching active subscriptions:", error);
-    return { success: false, error };
-  }
-};
