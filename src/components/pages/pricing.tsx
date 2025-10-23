@@ -2,7 +2,7 @@
 "use client";
 import { useState } from "react";
 import { authClient } from "@/lib/auth/auth-client";
-import { usePricing } from "@/hooks/use-pricing";
+import { EnrichedPlan, usePricing } from "@/hooks/use-pricing";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -108,7 +108,7 @@ export default function PricingPage() {
 
         {/* Grille de prix */}
         <div className="grid gap-8 lg:grid-cols-2">
-          {plans.map((plan) => {
+          {plans.map((plan: EnrichedPlan) => {
             const isLoading = loading === plan.name;
             const displayPrice = getPrice(plan, billingInterval);
             const totalAnnualPrice = getAnnualPrice(plan);
