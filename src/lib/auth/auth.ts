@@ -3,10 +3,18 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 // If your Prisma file is located elsewhere, you can change the path
 import { prisma } from "@/lib/database/prisma.client";
 import { sendEmail } from "@/lib/mail/mail.service";
-import { stripe } from "@better-auth/stripe"
+import { stripe, Subscription } from "@better-auth/stripe"
 import { stripeClient } from "../stripe/stripe";
 import { getStripePlans } from "../stripe/stripe-server";
 import Stripe from "stripe";
+
+// 🔍 DEBUG: Vérifier si le webhook secret est chargé
+console.log("🔑 STRIPE_WEBHOOK_SECRET chargé:", !!process.env.STRIPE_WEBHOOK_SECRET);
+if (process.env.STRIPE_WEBHOOK_SECRET) {
+  console.log("   → Préfixe:", process.env.STRIPE_WEBHOOK_SECRET.substring(0, 15) + "...");
+} else {
+  console.error("   ❌ STRIPE_WEBHOOK_SECRET manquant ! Les webhooks ne fonctionneront pas.");
+}
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -53,6 +61,12 @@ export const auth = betterAuth({
 
     // Règles personnalisées par endpoint Better Auth
     customRules: {
+      // Webhooks Stripe - PAS de rate limiting (Stripe envoie beaucoup d'événements rapidement)
+      "/stripe/webhook": {
+        window: 60,
+        max: 1000, // Très permissif pour les webhooks
+      },
+
       // Inscription - très restrictif
       "/sign-up/email": {
         window: 3600, // 1 heure
@@ -173,81 +187,28 @@ export const auth = betterAuth({
             freeTrial: p.freeTrial || undefined,
           }));
         },
-onSubscriptionComplete: async ({ subscription, stripeSubscription, plan }) => {
-    const sub = stripeSubscription as Stripe.Subscription;
 
-    // (Optionnel) bornes de période via la facture
-    let periodStart: Date | null = null;
-    let periodEnd: Date | null = null;
-    try {
-      if (sub.latest_invoice) {
-        const invId = typeof sub.latest_invoice === "string" ? sub.latest_invoice : sub.latest_invoice.id;
-        if (invId) {
-          const inv = await stripeClient.invoices.retrieve(invId, { expand: ["lines.data"] });
-          const line = inv.lines?.data?.[0];
-          if (line?.period) {
-            periodStart = line.period.start ? new Date(line.period.start * 1000) : null;
-            periodEnd   = line.period.end   ? new Date(line.period.end   * 1000) : null;
-          }
-        }
-      }
-    } catch (e) {
-      console.warn("Invoice lookup failed:", e);
-    }
+        onSubscriptionComplete: async ({ event, subscription, stripeSubscription, plan }) => {
+          console.log("🎯 onSubscriptionComplete DÉCLENCHÉ !");
+          
+          const e = event as Stripe.Event;
+          const sub = subscription as Subscription;
+          const stripeSub = stripeSubscription as Stripe.Subscription;
+          const p = plan;
 
-    // Find existing subscription or create new one
-    const existingSubscription = await prisma.subscription.findFirst({
-      where: { referenceId: subscription.referenceId },
-    });
+          console.log("✅ Nouvelle souscription créée via webhook Stripe:", {
+            eventType: e.type,
+            eventId: e.id,
+            userId: sub.referenceId,
+            stripeSub: stripeSub.id,
+            statusStripe: stripeSub.status,
+            planName: p?.name || 'unknown',
+          });
 
-    if (existingSubscription) {
-      await prisma.subscription.update({
-        where: { id: existingSubscription.id },
-        data: {
-          stripeCustomerId: subscription.stripeCustomerId ?? null,
-          stripeSubscriptionId: sub.id,
-          status: sub.status,                                  // ← source Stripe
-          periodStart,
-          periodEnd,
-          cancelAtPeriodEnd: !!sub.cancel_at_period_end,
-          plan: plan?.name ?? undefined,                       // si tu stockes le plan ici
         },
-      });
-    } else {
-      await prisma.subscription.create({
-        data: {
-          id: crypto.randomUUID(),
-          referenceId: subscription.referenceId,
-          stripeCustomerId: subscription.stripeCustomerId ?? null,
-          stripeSubscriptionId: sub.id,
-          status: sub.status,
-          periodStart,
-          periodEnd,
-          cancelAtPeriodEnd: !!sub.cancel_at_period_end,
-          plan: plan?.name ?? undefined,
-        },
-      });
-    }
-
-    await prisma.user.update({
-      where: { id: subscription.referenceId },
-      data: {
-        stripeCustomerId: subscription.stripeCustomerId ?? null,
-        stripeSubscriptionId: sub.id,
-      },
-    });
-
-    // Debug utile
-    console.log("✅ Sync sub:", {
-      userId: subscription.referenceId,
-      stripeSub: sub.id,
-      statusStripe: sub.status, // expected: "trialing"
-      periodStart,
-      periodEnd,
-    });
-  },
-
         onSubscriptionUpdate: async ({ subscription }) => {
+          console.log("🔄 onSubscriptionUpdate DÉCLENCHÉ !");
+          
           await prisma.subscription.updateMany({
             where: { referenceId: subscription.referenceId },
             data: {
@@ -255,9 +216,13 @@ onSubscriptionComplete: async ({ subscription, stripeSubscription, plan }) => {
               cancelAtPeriodEnd: !!subscription.cancelAtPeriodEnd,
             },
           });
+          
+          console.log("✅ Subscription updated:", subscription.referenceId);
         },
 
         onSubscriptionCancel: async ({ subscription }) => {
+          console.log("❌ onSubscriptionCancel DÉCLENCHÉ !");
+          
           await prisma.subscription.updateMany({
             where: { referenceId: subscription.referenceId },
             data: { status: "canceled" },
@@ -267,6 +232,8 @@ onSubscriptionComplete: async ({ subscription, stripeSubscription, plan }) => {
             where: { id: subscription.referenceId },
             data: { stripeSubscriptionId: null },
           });
+          
+          console.log("✅ Subscription cancelled:", subscription.referenceId);
         },
       },
     }),
