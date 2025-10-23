@@ -8,14 +8,6 @@ import { stripeClient } from "../stripe/stripe";
 import { getStripePlans } from "../stripe/stripe-server";
 import Stripe from "stripe";
 
-// 🔍 DEBUG: Vérifier si le webhook secret est chargé
-console.log("🔑 STRIPE_WEBHOOK_SECRET chargé:", !!process.env.STRIPE_WEBHOOK_SECRET);
-if (process.env.STRIPE_WEBHOOK_SECRET) {
-  console.log("   → Préfixe:", process.env.STRIPE_WEBHOOK_SECRET.substring(0, 15) + "...");
-} else {
-  console.error("   ❌ STRIPE_WEBHOOK_SECRET manquant ! Les webhooks ne fonctionneront pas.");
-}
-
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql", // or "mysql", "sqlite", ...etc
