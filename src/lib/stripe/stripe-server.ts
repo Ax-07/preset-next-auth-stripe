@@ -142,7 +142,6 @@ export const cancelSubscription = async () => {
   }
   const data = await auth.api.cancelSubscription({
     body: {
-      referenceId,
       subscriptionId,
       returnUrl: '/account', // required
     },
