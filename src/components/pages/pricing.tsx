@@ -1,21 +1,18 @@
 // components/pages/pricing.tsx
 "use client";
 import { useState } from "react";
-import { authClient } from "@/lib/auth/auth-client";
 import { EnrichedPlan, usePricing } from "@/hooks/use-pricing";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Check, Sparkles, Loader2 } from "lucide-react";
-import toast from "react-hot-toast";
 import { SubscriptionBtn } from "@/lib/stripe/components/subscription-btn";
 
 // Composants optionnels - Décommentez pour les utiliser
 // import { PricingFAQ, PricingComparison, PricingTestimonials } from "./pricing-features";
 
 export default function PricingPage() {
-  const [loading, setLoading] = useState<string | null>(null);
   const [billingInterval, setBillingInterval] = useState<"monthly" | "annual">("monthly");
 
   // Utiliser le hook pour récupérer les prix depuis Stripe
@@ -41,9 +38,9 @@ export default function PricingPage() {
     );
   }
 
-  // Erreur lors du chargement
+  // Afficher un message d'erreur si échec du chargement (mais continuer avec les prix par défaut)
   if (pricesError) {
-    toast.error("Erreur lors du chargement des prix. Utilisation des prix par défaut.");
+    console.error("Erreur lors du chargement des prix:", pricesError);
   }
 
   return (
@@ -84,7 +81,6 @@ export default function PricingPage() {
         {/* Grille de prix */}
         <div className="grid gap-8 lg:grid-cols-2">
           {plans.map((plan: EnrichedPlan) => {
-            const isLoading = loading === plan.name;
             const displayPrice = getPrice(plan, billingInterval);
             const totalAnnualPrice = getAnnualPrice(plan);
             const savings = calculateAnnualSavings(plan);
