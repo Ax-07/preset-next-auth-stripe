@@ -11,7 +11,7 @@ interface StripePriceData {
   intervalCount?: number;
 }
 
-interface EnrichedPlan {
+export interface EnrichedPlan {
   name: string;
   displayName: string;
   description: string;
