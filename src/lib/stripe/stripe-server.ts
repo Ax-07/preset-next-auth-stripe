@@ -6,20 +6,59 @@ import { PLANS } from "./stripe-plan";
 import { stripeClient } from "./stripe";
 import type Stripe from "stripe";
 
-export const subscribe = async (plan: string, successUrl: string, cancelUrl: string) => {
-  const result = await auth.api.upgradeSubscription({
-    headers: await headers(),
-    body: {
+/**
+ * Souscrit un utilisateur à un plan donné.
+ * @param plan (nom du plan)
+ * @returns Object contenant l'URL de checkout Stripe ou les données de l'abonnement
+ */
+export const subscribe = async (plan: string) => {
+  try {
+    console.log("🔄 Début de la souscription au plan:", plan);
+    
+    // Récupérer les abonnements actifs de l'utilisateur
+    const subscriptions = await auth.api.listActiveSubscriptions({ 
+      headers: await headers() 
+    });
+    
+    console.log("📋 Abonnements existants:", subscriptions);
+    
+    const subscriptionId = subscriptions[0]?.id;
+    
+    // Préparer le payload pour Better Auth
+    const payload: Parameters<typeof auth.api.upgradeSubscription>[0]['body'] = {
       plan,
-      successUrl,
-      cancelUrl,
-      disableRedirect: true,
-    },
-  });
-
-  return result;
+      successUrl: `/dashboard?subscription=success`,
+      cancelUrl: `/pricing`,
+      disableRedirect: true, // Important : ne pas rediriger automatiquement
+    };
+    
+    // Si l'utilisateur a déjà un abonnement, l'inclure pour upgrade/downgrade
+    if (subscriptionId) {
+      console.log("🔄 Mise à jour de l'abonnement existant:", subscriptionId);
+      payload.subscriptionId = subscriptionId;
+    } else {
+      console.log("✨ Création d'un nouvel abonnement");
+    }
+    
+    // Appeler l'API Better Auth pour créer la session de checkout
+    const result = await auth.api.upgradeSubscription({
+      headers: await headers(),
+      body: payload,
+    });
+    
+    console.log("✅ Résultat de l'API:", result);
+    
+    return result;
+  } catch (error) {
+    console.error("❌ Erreur dans subscribe():", error);
+    throw error;
+  }
 };
 
+/**
+ * Récupère les plans Stripe avec leurs prix et informations à jour.
+ * @returns Liste des plans enrichis avec les données Stripe
+ */
 export const getStripePlans = async () => {
   try {
     // Préparer liste des identifiants à récupérer (lookup_key prioritaire)
@@ -130,15 +169,18 @@ export const getStripePlans = async () => {
   }
 };
 
+/**
+ * Annule l'abonnement actif de l'utilisateur.
+ * @returns Données de l'annulation
+ */
 export const cancelSubscription = async () => {
   const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() }); console.log("subscriptions:", subscriptions);
   if (!subscriptions || subscriptions.length === 0) {
     console.log("Aucun abonnement actif trouvé pour l'utilisateur.");
   }
-  const referenceId = subscriptions[0].referenceId; console.log("referenceId:", referenceId);
   const subscriptionId = subscriptions[0].id; console.log("subscriptionId:", subscriptionId);
-  if (!referenceId) {
-    console.error("Aucun referenceId trouvé pour l'abonnement.");
+  if (!subscriptionId) {
+    console.error("Aucun subscriptionId trouvé pour l'abonnement.");
   }
   const data = await auth.api.cancelSubscription({
     body: {
@@ -151,6 +193,10 @@ export const cancelSubscription = async () => {
   return data;
 };
 
+/**
+ * Récupère l'abonnement actif de l'utilisateur.
+ * @returns Données de l'abonnement actif
+ */
 export const getActiveSubscription = async () => {
   try {
     const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() }); console.log("Active subscriptions:", subscriptions);
@@ -160,3 +206,77 @@ export const getActiveSubscription = async () => {
     return { success: false, error };
   }
 };
+
+/**
+ * Récupère les factures (invoices) de l'utilisateur.
+ * @param limit - Nombre maximum de factures à récupérer (par défaut: 10)
+ * @returns Liste des factures Stripe
+ */
+export const getUserInvoices = async (limit: number = 10) => {
+  try {
+    // Récupérer la session utilisateur
+    const session = await auth.api.getSession({ headers: await headers() });
+    
+    if (!session?.user) {
+      return { success: false, error: "Utilisateur non connecté" };
+    }
+
+    // Récupérer le customer ID Stripe depuis Better Auth
+    const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() });
+    
+    // Si l'utilisateur a des abonnements, récupérer le customer ID
+    let customerId: string | null = null;
+    
+    if (subscriptions && subscriptions.length > 0 && subscriptions[0].stripeCustomerId) {
+      customerId = subscriptions[0].stripeCustomerId;
+    } else {
+      // Sinon, chercher via l'email
+      const customers = await stripeClient.customers.list({
+        email: session.user.email,
+        limit: 1,
+      });
+      customerId = customers.data[0]?.id || null;
+    }
+
+    if (!customerId) {
+      console.log("ℹ️ Aucun customer Stripe trouvé pour cet utilisateur");
+      return { success: true, data: [] };
+    }
+
+    // Récupérer les factures du customer
+    const invoices = await stripeClient.invoices.list({
+      customer: customerId,
+      limit,
+    });
+
+    console.log(`📄 ${invoices.data.length} facture(s) récupérée(s) pour le customer ${customerId}`);
+
+    // Formater les données pour faciliter l'utilisation
+    const formattedInvoices = invoices.data.map(invoice => ({
+      id: invoice.id, // ID de la facture
+      number: invoice.number, // Numéro de la facture
+      status: invoice.status, // Statut (draft, open, paid, uncollectible, void)
+      total: invoice.total / 100, // Montant total (en €/$ pas en centimes)
+      currency: invoice.currency, // Devise
+      created: new Date(invoice.created * 1000), // Date de création
+      dueDate: invoice.due_date ? new Date(invoice.due_date * 1000) : null, // Date d'échéance
+      hostedInvoiceUrl: invoice.hosted_invoice_url, // URL pour voir la facture
+      invoicePdf: invoice.invoice_pdf, // URL pour télécharger le PDF
+      periodStart: invoice.period_start ? new Date(invoice.period_start * 1000) : null, // Début de la période facturée
+      periodEnd: invoice.period_end ? new Date(invoice.period_end * 1000) : null, // Fin de la période facturée
+      description: invoice.description, // Description de la facture
+      amountDue: invoice.amount_due / 100, // Montant dû
+      amountPaid: invoice.amount_paid / 100, // Montant payé
+    }));
+
+    return { 
+      success: true, 
+      data: formattedInvoices,
+      hasMore: invoices.has_more,
+    };
+  } catch (error) {
+    console.error("❌ Erreur lors de la récupération des factures:", error);
+    return { success: false, error };
+  }
+};
+
