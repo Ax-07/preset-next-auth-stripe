@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { PLANS } from "./stripe-plan";
 import { stripeClient } from "./stripe";
 import type Stripe from "stripe";
+import type { StripePlan, Invoice, Subscription } from "@/types/stripe";
 
 /**
  * Souscrit un utilisateur à un plan donné.
@@ -59,7 +60,11 @@ export const subscribe = async (plan: string) => {
  * Récupère les plans Stripe avec leurs prix et informations à jour.
  * @returns Liste des plans enrichis avec les données Stripe
  */
-export const getStripePlans = async () => {
+export const getStripePlans = async (): Promise<{
+  plans: StripePlan[];
+  timestamp?: string;
+  error?: string;
+}> => {
   try {
     // Préparer liste des identifiants à récupérer (lookup_key prioritaire)
     type PriceRef = { key: string; type: "lookup" | "id" };
@@ -73,7 +78,7 @@ export const getStripePlans = async () => {
     });
 
     if (refs.length === 0) {
-      return { plans: PLANS };
+      return { plans: PLANS as StripePlan[] };
     }
 
     // Résoudre chaque référence en Price Stripe
@@ -156,7 +161,7 @@ export const getStripePlans = async () => {
     });
 
     return {
-      plans: enrichedPlans,
+      plans: enrichedPlans as StripePlan[],
       timestamp: new Date().toISOString(),
     };
 
@@ -164,7 +169,7 @@ export const getStripePlans = async () => {
     console.error("Erreur lors de la récupération des prix:", error);
     return {
       error: "Impossible de récupérer les prix",
-      plans: PLANS // Fallback sur les prix statiques
+      plans: PLANS as StripePlan[] // Fallback sur les prix statiques
     };
   }
 };
