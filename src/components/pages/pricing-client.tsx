@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Check, Sparkles } from "lucide-react";
 import { SubscriptionBtn } from "@/lib/stripe/components/subscription-btn";
-import type { StripePlan } from "@/types/stripe";
+import type { StripePlan } from "@/lib/stripe/types/stripe";
 
 interface PricingClientProps {
   plans: StripePlan[];
