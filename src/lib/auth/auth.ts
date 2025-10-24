@@ -204,12 +204,13 @@ export const auth = betterAuth({
           // Logs détaillés pour debug
           console.log("📊 Détails de la mise à jour:", {
             referenceId: subscription.referenceId,
+            stripeSubscriptionId: subscription.id,
             status: subscription.status,
             cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
           });
           
           await prisma.subscription.updateMany({
-            where: { referenceId: subscription.referenceId },
+            where: { stripeSubscriptionId: subscription.id },
             data: {
               status: subscription.status,
               cancelAtPeriodEnd: !!subscription.cancelAtPeriodEnd,
@@ -221,7 +222,7 @@ export const auth = betterAuth({
             console.log("⚠️ Abonnement programmé pour annulation à la fin de la période");
           }
           
-          console.log("✅ Subscription updated:", subscription.referenceId);
+          console.log("✅ Subscription updated:", subscription.id);
         },
 
         onSubscriptionCancel: async ({ subscription }) => {
