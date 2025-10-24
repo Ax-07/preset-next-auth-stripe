@@ -16,18 +16,35 @@ export const CancelSubscriptionBtn = () => {
     try {
       const result = await cancelSubscription();
       
-      console.log("📋 Résultat de l'annulation:", result);
+      console.log("📋 Résultat brut de cancelSubscription:", result);
+      console.log("📋 Type de résultat:", typeof result);
+      console.log("📋 Clés disponibles:", result ? Object.keys(result) : 'null');
       
       // Better Auth retourne une URL vers le Customer Portal Stripe
       if (result && typeof result === 'object' && 'url' in result) {
-        console.log("🔗 Redirection vers le Customer Portal:", result.url);
-        window.location.href = result.url as string;
+        const url = result.url as string;
+        console.log("✅ URL trouvée, redirection vers:", url);
+        
+        // Vérifier que l'URL est valide
+        if (url && url.startsWith('http')) {
+          console.log("🚀 Redirection immédiate vers le Customer Portal");
+          window.location.href = url;
+        } else {
+          console.error("❌ URL invalide:", url);
+          alert("Erreur : URL de redirection invalide");
+          setLoading(false);
+        }
       } else {
-        console.log("⚠️ Aucune URL retournée - l'abonnement a peut-être déjà été annulé");
-        window.location.reload(); // Recharger pour voir les changements
+        console.warn("⚠️ Aucune URL retournée dans la réponse");
+        console.warn("📦 Contenu de la réponse:", JSON.stringify(result, null, 2));
+        
+        // Peut-être que l'annulation a été faite directement sans redirection
+        alert("L'abonnement a été annulé. Actualisation de la page...");
+        window.location.reload();
       }
     } catch (error) {
       console.error("❌ Erreur lors de l'annulation:", error);
+      console.error("📦 Détails de l'erreur:", JSON.stringify(error, null, 2));
       alert("Erreur lors de l'annulation de l'abonnement. Veuillez réessayer.");
       setLoading(false);
     }
