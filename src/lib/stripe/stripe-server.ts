@@ -186,6 +186,11 @@ export const getStripePlans = async (): Promise<{
  * Annule l'abonnement actif de l'utilisateur.
  * @returns Données de l'annulation
  */
+/**
+ * Annule l'abonnement actif de l'utilisateur.
+ * Crée une session du Customer Portal Stripe pour permettre l'annulation.
+ * @returns URL vers le Customer Portal Stripe
+ */
 export const cancelSubscription = async () => {
   const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() }); 
   console.log("📋 Abonnements actifs:", subscriptions);
@@ -196,24 +201,55 @@ export const cancelSubscription = async () => {
   }
   
   const subscriptionId = subscriptions[0].id; 
-  console.log("🎯 ID de l'abonnement à annuler:", subscriptionId);
+  const stripeCustomerId = subscriptions[0].stripeCustomerId;
   
-  if (!subscriptionId) {
-    console.error("❌ Aucun subscriptionId trouvé pour l'abonnement.");
-    throw new Error("ID d'abonnement invalide");
+  console.log("🎯 ID de l'abonnement à annuler:", subscriptionId);
+  console.log("👤 Stripe Customer ID:", stripeCustomerId);
+  
+  if (!subscriptionId || !stripeCustomerId) {
+    console.error("❌ Données d'abonnement manquantes");
+    throw new Error("Données d'abonnement invalides");
   }
   
-  const data = await auth.api.cancelSubscription({
-    body: {
-      subscriptionId,
-      returnUrl: `${baseUrl}/dashboard?subscription=canceled`, // Redirection vers dashboard après annulation
-    },
-    // This endpoint requires session cookies.
-    headers: await headers(),
-  });
+  // MÉTHODE 1 : Via Better Auth (essayer d'abord)
+  console.log("🔄 Tentative via Better Auth API...");
+  console.log("🌐 URL de retour:", `${baseUrl}/dashboard?subscription=canceled`);
   
-  console.log("✅ Résultat de l'annulation:", data);
-  return data;
+  try {
+    const data = await auth.api.cancelSubscription({
+      body: {
+        subscriptionId,
+        returnUrl: `${baseUrl}/dashboard?subscription=canceled`,
+      },
+      headers: await headers(),
+    });
+    
+    console.log("✅ Résultat de l'API cancelSubscription:", JSON.stringify(data, null, 2));
+    
+    // Vérifier si une URL est retournée
+    if (data && typeof data === 'object' && 'url' in data) {
+      console.log("🔗 URL du Customer Portal (via Better Auth):", data.url);
+      return data;
+    } else {
+      console.warn("⚠️ Better Auth n'a pas retourné d'URL. Passage à la méthode alternative...");
+      throw new Error("No URL returned from Better Auth");
+    }
+  } catch (betterAuthError) {
+    console.warn("⚠️ Erreur avec Better Auth, utilisation de l'API Stripe directement:", betterAuthError);
+    
+    // MÉTHODE 2 : Créer directement une session du Customer Portal via Stripe
+    console.log("🔄 Création directe d'une session Customer Portal via Stripe...");
+    
+    const portalSession = await stripeClient.billingPortal.sessions.create({
+      customer: stripeCustomerId,
+      return_url: `${baseUrl}/dashboard?subscription=canceled`,
+    });
+    
+    console.log("✅ Session Customer Portal créée:", portalSession.id);
+    console.log("🔗 URL du Customer Portal (via Stripe directement):", portalSession.url);
+    
+    return { url: portalSession.url };
+  }
 };
 
 /**
