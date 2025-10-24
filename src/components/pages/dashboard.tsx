@@ -105,6 +105,14 @@ export default function DashboardPage() {
       router.replace("/dashboard?tab=subscription");
     }
 
+    if (subscriptionStatus === "canceled") {
+      toast("Votre abonnement sera annulé à la fin de la période en cours.", {
+        icon: "⚠️",
+      });
+      setActiveTab("subscription");
+      router.replace("/dashboard?tab=subscription");
+    }
+
     if (changedStatus === "success") {
       toast.success("Plan changé avec succès !");
       router.replace("/dashboard?tab=subscription");
