@@ -16,6 +16,13 @@ export const subscribe = async (plan: string) => {
   try {
     console.log("🔄 Début de la souscription au plan:", plan);
     
+    // Déterminer l'URL de base en fonction de l'environnement
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL 
+      || process.env.BETTER_AUTH_URL 
+      || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+    
+    console.log("🌐 Base URL utilisée:", baseUrl);
+    
     // Récupérer les abonnements actifs de l'utilisateur
     const subscriptions = await auth.api.listActiveSubscriptions({ 
       headers: await headers() 
@@ -28,8 +35,8 @@ export const subscribe = async (plan: string) => {
     // Préparer le payload pour Better Auth
     const payload: Parameters<typeof auth.api.upgradeSubscription>[0]['body'] = {
       plan,
-      successUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?subscription=success`,
-      cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
+      successUrl: `${baseUrl}/dashboard?subscription=success`,
+      cancelUrl: `${baseUrl}/pricing`,
       disableRedirect: true, // Important : ne pas rediriger automatiquement
     };
     
