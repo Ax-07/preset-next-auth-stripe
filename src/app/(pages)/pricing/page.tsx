@@ -27,6 +27,5 @@ export default async function PricingPage() {
   }
 
   // Passer les données au composant client pour l'interactivité
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return <PricingClient plans={plans as any} />;
+  return <PricingClient plans={plans} />;
 }
