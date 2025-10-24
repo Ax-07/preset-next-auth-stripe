@@ -201,6 +201,13 @@ export const auth = betterAuth({
         onSubscriptionUpdate: async ({ subscription }) => {
           console.log("🔄 onSubscriptionUpdate DÉCLENCHÉ !");
           
+          // Logs détaillés pour debug
+          console.log("📊 Détails de la mise à jour:", {
+            referenceId: subscription.referenceId,
+            status: subscription.status,
+            cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
+          });
+          
           await prisma.subscription.updateMany({
             where: { referenceId: subscription.referenceId },
             data: {
@@ -208,6 +215,11 @@ export const auth = betterAuth({
               cancelAtPeriodEnd: !!subscription.cancelAtPeriodEnd,
             },
           });
+          
+          // Si l'abonnement est marqué pour annulation, le signaler
+          if (subscription.cancelAtPeriodEnd) {
+            console.log("⚠️ Abonnement programmé pour annulation à la fin de la période");
+          }
           
           console.log("✅ Subscription updated:", subscription.referenceId);
         },
