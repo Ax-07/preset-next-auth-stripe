@@ -7,25 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Check, Sparkles } from "lucide-react";
 import { SubscriptionBtn } from "@/lib/stripe/components/subscription-btn";
-
-// Type pour les plans (correspond au retour de getStripePlans)
-interface Plan {
-  name: string;
-  displayName: string;
-  description: string;
-  priceId: string | null;
-  price: number;
-  currency: string;
-  interval: string;
-  annualDiscountPriceId?: string | null;
-  annualPrice?: number;
-  freeTrial?: { days: number } | null;
-  features: readonly string[];
-  highlighted: boolean;
-}
+import type { StripePlan } from "@/types/stripe";
 
 interface PricingClientProps {
-  plans: Plan[];
+  plans: StripePlan[];
 }
 
 export default function PricingClient({ plans }: PricingClientProps) {
@@ -34,7 +19,7 @@ export default function PricingClient({ plans }: PricingClientProps) {
   /**
    * Obtient le prix en fonction de l'intervalle
    */
-  const getPrice = (plan: Plan, interval: "monthly" | "annual" = "monthly") => {
+  const getPrice = (plan: StripePlan, interval: "monthly" | "annual" = "monthly") => {
     return interval === "annual" && plan.annualPrice 
       ? plan.annualPrice / 12 
       : plan.price;
@@ -43,7 +28,7 @@ export default function PricingClient({ plans }: PricingClientProps) {
   /**
    * Obtient le prix annuel total
    */
-  const getAnnualPrice = (plan: Plan) => {
+  const getAnnualPrice = (plan: StripePlan) => {
     return plan.annualPrice;
   };
 
@@ -62,7 +47,7 @@ export default function PricingClient({ plans }: PricingClientProps) {
   /**
    * Calcule l'économie réalisée avec le plan annuel
    */
-  const calculateAnnualSavings = (plan: Plan) => {
+  const calculateAnnualSavings = (plan: StripePlan) => {
     const monthlyTotal = plan.price * 12;
     const annualPrice = getAnnualPrice(plan);
     
