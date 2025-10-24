@@ -202,6 +202,7 @@ export const cancelSubscription = async () => {
     // This endpoint requires session cookies.
     headers: await headers(),
   });
+  console.log("cancelSubscription data:", data);
   return data;
 };
 
