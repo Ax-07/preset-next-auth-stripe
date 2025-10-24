@@ -28,36 +28,7 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import { CancelSubscriptionBtn } from "@/lib/stripe/components/cancel-subscription-btn";
 import { getActiveSubscription, getUserInvoices } from "@/lib/stripe/stripe-server";
-
-// Types pour les données
-interface Subscription {
-  id: string;
-  plan: string;
-  status: string;
-  periodStart?: Date | string;
-  periodEnd?: Date | string;
-  trialEnd?: Date | string;
-  cancelAtPeriodEnd?: boolean;
-  seats?: number;
-  stripeSubscriptionId?: string;
-}
-
-interface Invoice {
-  id: string;
-  number: string | null;
-  status: string | null;
-  total: number;
-  currency: string;
-  created: Date;
-  dueDate: Date | null;
-  hostedInvoiceUrl?: string | null;
-  invoicePdf?: string | null;
-  periodStart: Date | null;
-  periodEnd: Date | null;
-  description?: string | null;
-  amountDue: number;
-  amountPaid: number;
-}
+import type { Subscription, Invoice } from "@/types/stripe";
 
 export default function DashboardPage() {
   const { data: session, isPending } = useSession();
