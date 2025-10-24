@@ -187,24 +187,32 @@ export const getStripePlans = async (): Promise<{
  * @returns Données de l'annulation
  */
 export const cancelSubscription = async () => {
-  const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() }); console.log("subscriptions:", subscriptions);
+  const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() }); 
+  console.log("📋 Abonnements actifs:", subscriptions);
+  
   if (!subscriptions || subscriptions.length === 0) {
-    console.log("Aucun abonnement actif trouvé pour l'utilisateur.");
+    console.log("⚠️ Aucun abonnement actif trouvé pour l'utilisateur.");
+    throw new Error("Aucun abonnement actif à annuler");
   }
-  const subscriptionId = subscriptions[0].id; console.log("subscriptionId:", subscriptionId);
+  
+  const subscriptionId = subscriptions[0].id; 
+  console.log("🎯 ID de l'abonnement à annuler:", subscriptionId);
+  
   if (!subscriptionId) {
-    console.error("Aucun subscriptionId trouvé pour l'abonnement.");
+    console.error("❌ Aucun subscriptionId trouvé pour l'abonnement.");
+    throw new Error("ID d'abonnement invalide");
   }
-  console.log("ID de l'abonnement à annuler:", subscriptionId);
+  
   const data = await auth.api.cancelSubscription({
     body: {
       subscriptionId,
-      returnUrl: `${baseUrl}/account`, // required
+      returnUrl: `${baseUrl}/dashboard?subscription=canceled`, // Redirection vers dashboard après annulation
     },
     // This endpoint requires session cookies.
     headers: await headers(),
   });
-  console.log("cancelSubscription data:", data);
+  
+  console.log("✅ Résultat de l'annulation:", data);
   return data;
 };
 
