@@ -7,6 +7,11 @@ import { stripeClient } from "./stripe";
 import type Stripe from "stripe";
 import type { StripePlan, Invoice, Subscription } from "@/types/stripe";
 
+// Déterminer l'URL de base en fonction de l'environnement
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL 
+  || process.env.BETTER_AUTH_URL 
+  || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+
 /**
  * Souscrit un utilisateur à un plan donné.
  * @param plan (nom du plan)
@@ -16,10 +21,6 @@ export const subscribe = async (plan: string) => {
   try {
     console.log("🔄 Début de la souscription au plan:", plan);
     
-    // Déterminer l'URL de base en fonction de l'environnement
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL 
-      || process.env.BETTER_AUTH_URL 
-      || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
     
     console.log("🌐 Base URL utilisée:", baseUrl);
     
@@ -194,10 +195,11 @@ export const cancelSubscription = async () => {
   if (!subscriptionId) {
     console.error("Aucun subscriptionId trouvé pour l'abonnement.");
   }
+  console.log("ID de l'abonnement à annuler:", subscriptionId);
   const data = await auth.api.cancelSubscription({
     body: {
       subscriptionId,
-      returnUrl: '/account', // required
+      returnUrl: `${baseUrl}/account`, // required
     },
     // This endpoint requires session cookies.
     headers: await headers(),
