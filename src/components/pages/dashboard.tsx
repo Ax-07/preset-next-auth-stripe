@@ -28,7 +28,7 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import { CancelSubscriptionBtn } from "@/lib/stripe/components/cancel-subscription-btn";
 import { getActiveSubscription, getUserInvoices } from "@/lib/stripe/stripe-server";
-import type { Subscription, Invoice } from "@/types/stripe";
+import type { Subscription, Invoice } from "@/lib/stripe/types/stripe";
 
 export default function DashboardPage() {
   const { data: session, isPending } = useSession();
