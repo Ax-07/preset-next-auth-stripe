@@ -20,17 +20,17 @@ export default async function AccountPage() {
     <div className="w-full space-y-6 px-6">
       {/* En-tête */}
       <div>
-        <h1 className="text-3xl font-bold">Mon Compte</h1>
+        <h1 className="text-3xl font-bold">{"Mon Compte"}</h1>
         <p className="text-muted-foreground mt-2">
-          Gérez vos informations personnelles et vos préférences
+          {"Gérez vos informations personnelles et vos préférences"}
         </p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="profile">Profil</TabsTrigger>
-          <TabsTrigger value="security">Sécurité</TabsTrigger>
-          <TabsTrigger value="preferences">Préférences</TabsTrigger>
+          <TabsTrigger value="profile">{"Profil"}</TabsTrigger>
+          <TabsTrigger value="security">{"Sécurité"}</TabsTrigger>
+          <TabsTrigger value="preferences">{"Préférences"}</TabsTrigger>
         </TabsList>
 
         {/* Onglet Profil */}
@@ -40,10 +40,10 @@ export default async function AccountPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <User className="h-5 w-5" />
-                Informations personnelles
+                {"Informations personnelles"}
               </CardTitle>
               <CardDescription>
-                Vos informations de profil et votre photo
+                {"Vos informations de profil et votre photo"}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -56,19 +56,19 @@ export default async function AccountPage() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                  <p className="text-sm font-medium">Photo de profil</p>
+                  <p className="text-sm font-medium">{"Photo de profil"}</p>
                   <p className="text-sm text-muted-foreground">
-                    JPG, PNG ou GIF. 1 Mo maximum.
+                    {"JPG, PNG ou GIF. 1 Mo maximum."}
                   </p>
                 </div>
                 <Button variant="outline" disabled>
-                  Changer
+                  {"Changer"}
                 </Button>
               </div>
 
               {/* Nom */}
               <div className="grid gap-2">
-                <label className="text-sm font-medium">Nom complet</label>
+                <label className="text-sm font-medium">{"Nom complet"}</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
@@ -77,7 +77,7 @@ export default async function AccountPage() {
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                   <Button variant="outline" asChild>
-                    <Link href="/dashboard/account/edit">Modifier</Link>
+                    <Link href="/dashboard/account/edit">{"Modifier"}</Link>
                   </Button>
                 </div>
               </div>
@@ -86,7 +86,7 @@ export default async function AccountPage() {
               <div className="grid gap-2">
                 <label className="text-sm font-medium flex items-center gap-2">
                   <Mail className="h-4 w-4" />
-                  Adresse email
+                  {"Adresse email"}
                 </label>
                 <div className="flex items-center gap-2">
                   <input
@@ -98,21 +98,21 @@ export default async function AccountPage() {
                   {user.emailVerified ? (
                     <Badge variant="default" className="flex items-center gap-1">
                       <CheckCircle className="h-3 w-3" />
-                      Vérifié
+                      {"Vérifié"}
                     </Badge>
                   ) : (
                     <Badge variant="destructive" className="flex items-center gap-1">
                       <XCircle className="h-3 w-3" />
-                      Non vérifié
+                      {"Non vérifié"}
                     </Badge>
                   )}
                   <Button variant="outline" size="sm" asChild>
-                    <Link href="/dashboard/account/change-email">Modifier</Link>
+                    <Link href="/dashboard/account/change-email">{"Modifier"}</Link>
                   </Button>
                 </div>
                 {!user.emailVerified && (
                   <p className="text-sm text-yellow-600 dark:text-yellow-400">
-                    ⚠️ Veuillez vérifier votre adresse email. Consultez votre boîte de réception.
+                    {"⚠️ Veuillez vérifier votre adresse email. Consultez votre boîte de réception."}
                   </p>
                 )}
               </div>
@@ -120,7 +120,7 @@ export default async function AccountPage() {
               {/* Informations de compte */}
               <div className="pt-4 border-t space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Compte créé le</span>
+                  <span className="text-muted-foreground">{"Compte créé le"}</span>
                   <span className="font-medium">
                     {new Date(user.createdAt).toLocaleDateString("fr-FR", {
                       day: "numeric",
@@ -130,7 +130,7 @@ export default async function AccountPage() {
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Dernière modification</span>
+                  <span className="text-muted-foreground">{"Dernière modification"}</span>
                   <span className="font-medium">
                     {new Date(user.updatedAt).toLocaleDateString("fr-FR", {
                       day: "numeric",
@@ -150,46 +150,46 @@ export default async function AccountPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
-                Sécurité du compte
+                {"Sécurité du compte"}
               </CardTitle>
               <CardDescription>
-                Gérez la sécurité de votre compte
+                {"Gérez la sécurité de votre compte"}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">Mot de passe</p>
+                  <p className="font-medium">{"Mot de passe"}</p>
                   <p className="text-sm text-muted-foreground">
-                    Modifiez votre mot de passe pour sécuriser votre compte
+                    {"Modifiez votre mot de passe pour sécuriser votre compte"}
                   </p>
                 </div>
                 <Button variant="outline" asChild>
-                  <Link href="/dashboard/account/change-password">Changer</Link>
+                  <Link href="/dashboard/account/change-password">{"Changer"}</Link>
                 </Button>
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t">
                 <div>
-                  <p className="font-medium">Authentification à deux facteurs</p>
+                  <p className="font-medium">{"Authentification à deux facteurs"}</p>
                   <p className="text-sm text-muted-foreground">
-                    Ajoutez une couche de sécurité supplémentaire
+                    {"Ajoutez une couche de sécurité supplémentaire"}
                   </p>
                 </div>
                 <Button variant="outline" disabled>
-                  Activer
+                  {"Activer"}
                 </Button>
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t">
                 <div>
-                  <p className="font-medium">Sessions actives</p>
+                  <p className="font-medium">{"Sessions actives"}</p>
                   <p className="text-sm text-muted-foreground">
-                    Gérez les appareils connectés à votre compte
+                    {"Gérez les appareils connectés à votre compte"}
                   </p>
                 </div>
                 <Button variant="outline" disabled>
-                  Voir
+                  {"Voir"}
                 </Button>
               </div>
             </CardContent>
@@ -200,22 +200,22 @@ export default async function AccountPage() {
             <CardHeader>
               <CardTitle className="text-destructive flex items-center gap-2">
                 <Trash2 className="h-5 w-5" />
-                Zone dangereuse
+                {"Zone dangereuse"}
               </CardTitle>
               <CardDescription>
-                Actions irréversibles sur votre compte
+                {"Actions irréversibles sur votre compte"}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">Supprimer mon compte</p>
+                  <p className="font-medium">{"Supprimer mon compte"}</p>
                   <p className="text-sm text-muted-foreground">
-                    Cette action est définitive et supprimera toutes vos données
+                    {"Cette action est définitive et supprimera toutes vos données"}
                   </p>
                 </div>
                 <Button variant="destructive" asChild>
-                  <Link href="/dashboard/account/delete">Supprimer</Link>
+                  <Link href="/dashboard/account/delete">{"Supprimer"}</Link>
                 </Button>
               </div>
             </CardContent>
@@ -229,34 +229,34 @@ export default async function AccountPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Bell className="h-5 w-5" />
-                Notifications
+                {"Notifications"}
               </CardTitle>
               <CardDescription>
-                Choisissez comment vous souhaitez être notifié
+                {"Choisissez comment vous souhaitez être notifié"}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">Notifications par email</p>
+                  <p className="font-medium">{"Notifications par email"}</p>
                   <p className="text-sm text-muted-foreground">
-                    Recevoir des emails pour les mises à jour importantes
+                    {"Recevoir des emails pour les mises à jour importantes"}
                   </p>
                 </div>
                 <Button variant="outline" disabled>
-                  Configurer
+                  {"Configurer"}
                 </Button>
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t">
                 <div>
-                  <p className="font-medium">Newsletter</p>
+                  <p className="font-medium">{"Newsletter"}</p>
                   <p className="text-sm text-muted-foreground">
-                    Recevoir les actualités et nouveautés
+                    {"Recevoir les actualités et nouveautés"}
                   </p>
                 </div>
                 <Button variant="outline" disabled>
-                  Configurer
+                  {"Configurer"}
                 </Button>
               </div>
             </CardContent>
@@ -267,34 +267,34 @@ export default async function AccountPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Palette className="h-5 w-5" />
-                Apparence
+                {"Apparence"}
               </CardTitle>
               <CardDescription>
-                Personnalisez l'apparence de l'application
+                {"Personnalisez l'apparence de l'application"}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">Thème</p>
+                  <p className="font-medium">{"Thème"}</p>
                   <p className="text-sm text-muted-foreground">
-                    Choisissez entre le mode clair et sombre
+                    {"Choisissez entre le mode clair et sombre"}
                   </p>
                 </div>
                 <Button variant="outline" disabled>
-                  Système
+                  {"Système"}
                 </Button>
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t">
                 <div>
-                  <p className="font-medium">Langue</p>
+                  <p className="font-medium">{"Langue"}</p>
                   <p className="text-sm text-muted-foreground">
-                    Langue d'affichage de l'interface
+                    {"Langue d'affichage de l'interface"}
                   </p>
                 </div>
                 <Button variant="outline" disabled>
-                  Français
+                  {"Français"}
                 </Button>
               </div>
             </CardContent>
