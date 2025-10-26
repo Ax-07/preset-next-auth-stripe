@@ -147,20 +147,14 @@ export const getStripePlans = async (): Promise<{
       return {
         ...plan,
         name: productName || plan.name,
-        displayName: productName
-          ? productName.charAt(0).toUpperCase() + productName.slice(1)
-          : plan.displayName,
+        displayName: productName ? productName.charAt(0).toUpperCase() + productName.slice(1) : plan.displayName,
         description: productDescription || plan.description,
         // Mettre à jour les IDs Stripe
         priceId: monthlyPrice?.id || plan.priceId || null,
         annualDiscountPriceId: annualPrice?.id || plan.annualDiscountPriceId || null,
         // Mettre à jour les prix
-        price: monthlyPrice?.unit_amount
-          ? monthlyPrice.unit_amount / 100
-          : plan.price,
-        annualPrice: annualPrice?.unit_amount
-          ? annualPrice.unit_amount / 100
-          : plan.annualPrice,
+        price: monthlyPrice?.unit_amount ? monthlyPrice.unit_amount / 100 : plan.price,
+        annualPrice: annualPrice?.unit_amount ? annualPrice.unit_amount / 100 : plan.annualPrice,
         // Mettre à jour la devise si disponible
         currency: monthlyPrice?.currency || plan.currency,
         // Mettre à jour l'intervalle si disponible
