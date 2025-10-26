@@ -13,17 +13,17 @@ export default async function ChangeEmailPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Changer l'adresse email</h1>
+        <h1 className="text-3xl font-bold">{"Changer l'adresse email"}</h1>
         <p className="text-muted-foreground mt-2">
-          Modifiez votre adresse email. Un email de vérification sera envoyé.
+          {"Modifiez votre adresse email. Un email de vérification sera envoyé."}
         </p>
       </div>
 
       <Card className="max-w-2xl">
         <CardHeader>
-          <CardTitle>Nouvelle adresse email</CardTitle>
+          <CardTitle>{"Nouvelle adresse email"}</CardTitle>
           <CardDescription>
-            Vous recevrez un email de vérification à votre nouvelle adresse
+            {"Vous recevrez un email de vérification à votre nouvelle adresse"}
           </CardDescription>
         </CardHeader>
         <CardContent>
