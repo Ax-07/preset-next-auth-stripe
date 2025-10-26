@@ -43,15 +43,15 @@ export default async function DashboardPage() {
       {/* En-tête */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <h1 className="text-3xl font-bold">{"Dashboard"}</h1>
           <p className="text-muted-foreground mt-2">
-            Bienvenue, {user.name} 👋
+            {`Bienvenue, ${user.name} 👋`}
           </p>
         </div>
         <Button asChild>
           <Link href="/dashboard/account">
             <MoreHorizontal className="mr-2 h-4 w-4" />
-            Mon Compte
+            {"Mon Compte"}
           </Link>
         </Button>
       </div>
@@ -62,7 +62,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Revenus Totaux
+              {"Revenus Totaux"}
             </CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -82,7 +82,7 @@ export default async function DashboardPage() {
                   <span className="text-red-500">{metrics.revenueChange}%</span>
                 </>
               )}
-              <span className="ml-1">vs mois dernier</span>
+              <span className="ml-1">{"vs mois dernier"}</span>
             </p>
           </CardContent>
         </Card>
@@ -91,7 +91,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Utilisateurs Actifs
+              {"Utilisateurs Actifs"}
             </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -102,7 +102,7 @@ export default async function DashboardPage() {
             <p className="text-xs text-muted-foreground flex items-center mt-1">
               <ArrowUpRight className="h-3 w-3 text-green-500 mr-1" />
               <span className="text-green-500">+{metrics.usersChange}%</span>
-              <span className="ml-1">vs mois dernier</span>
+              <span className="ml-1">{"vs mois dernier"}</span>
             </p>
           </CardContent>
         </Card>
@@ -111,7 +111,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Projets Actifs
+              {"Projets Actifs"}
             </CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -122,7 +122,7 @@ export default async function DashboardPage() {
             <p className="text-xs text-muted-foreground flex items-center mt-1">
               <ArrowUpRight className="h-3 w-3 text-green-500 mr-1" />
               <span className="text-green-500">+{metrics.projectsChange}</span>
-              <span className="ml-1">ce mois-ci</span>
+              <span className="ml-1">{"ce mois-ci"}</span>
             </p>
           </CardContent>
         </Card>
@@ -131,7 +131,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Taux d'Engagement
+              {"Taux d'Engagement"}
             </CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -142,7 +142,7 @@ export default async function DashboardPage() {
             <p className="text-xs text-muted-foreground flex items-center mt-1">
               <ArrowUpRight className="h-3 w-3 text-green-500 mr-1" />
               <span className="text-green-500">+{metrics.engagementChange}%</span>
-              <span className="ml-1">vs mois dernier</span>
+              <span className="ml-1">{"vs mois dernier"}</span>
             </p>
           </CardContent>
         </Card>
@@ -153,9 +153,9 @@ export default async function DashboardPage() {
         {/* Graphique/Tableau principal */}
         <Card className="col-span-4">
           <CardHeader>
-            <CardTitle>Vue d'ensemble de l'activité</CardTitle>
+            <CardTitle>{"Vue d'ensemble de l'activité"}</CardTitle>
             <CardDescription>
-              Évolution de vos métriques sur les 30 derniers jours
+              {"Évolution de vos métriques sur les 30 derniers jours"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -163,12 +163,12 @@ export default async function DashboardPage() {
             <div className="flex items-center justify-center h-[350px] border-2 border-dashed rounded-lg">
               <div className="text-center text-muted-foreground">
                 <TrendingUp className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p className="text-sm font-medium">Graphique d'activité</p>
+                <p className="text-sm font-medium">{"Graphique d'activité"}</p>
                 <p className="text-xs mt-1">
-                  Intégrez ici votre graphique de données métier
+                  {"Intégrez ici votre graphique de données métier"}
                 </p>
                 <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
-                  (Recharts, Chart.js, Victory, etc.)
+                  {"(Recharts, Chart.js, Victory, etc.)"}
                 </p>
               </div>
             </div>
@@ -178,9 +178,9 @@ export default async function DashboardPage() {
         {/* Activité récente / Liste des éléments */}
         <Card className="col-span-3">
           <CardHeader>
-            <CardTitle>Activité Récente</CardTitle>
+            <CardTitle>{"Activité Récente"}</CardTitle>
             <CardDescription>
-              Vos dernières actions et événements
+              {"Vos dernières actions et événements"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -194,14 +194,14 @@ export default async function DashboardPage() {
                   </div>
                   <div className="flex-1 space-y-1">
                     <p className="text-sm font-medium leading-none">
-                      Élément métier #{item}
+                      {"Élément métier #" + item}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Action effectuée il y a {item}h
+                      {"Action effectuée il y a " + item + "h"}
                     </p>
                   </div>
                   <Button variant="ghost" size="sm">
-                    Voir
+                    {"Voir"}
                   </Button>
                 </div>
               ))}
@@ -214,51 +214,51 @@ export default async function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Tâches à faire</CardTitle>
+            <CardTitle>{"Tâches à faire"}</CardTitle>
             <CardDescription>
-              Actions recommandées pour optimiser votre utilisation
+              {"Actions recommandées pour optimiser votre utilisation"}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex items-center justify-between p-3 border rounded-lg">
-              <span className="text-sm">Compléter votre profil</span>
-              <Button size="sm" variant="outline">Faire</Button>
+              <span className="text-sm">{"Compléter votre profil"}</span>
+              <Button size="sm" variant="outline">{"Faire"}</Button>
             </div>
             <div className="flex items-center justify-between p-3 border rounded-lg">
-              <span className="text-sm">Inviter des membres</span>
-              <Button size="sm" variant="outline">Faire</Button>
+              <span className="text-sm">{"Inviter des membres"}</span>
+              <Button size="sm" variant="outline">{"Faire"}</Button>
             </div>
             <div className="flex items-center justify-between p-3 border rounded-lg">
-              <span className="text-sm">Configurer les intégrations</span>
-              <Button size="sm" variant="outline">Faire</Button>
+              <span className="text-sm">{"Configurer les intégrations"}</span>
+              <Button size="sm" variant="outline">{"Faire"}</Button>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Raccourcis</CardTitle>
+            <CardTitle>{"Raccourcis"}</CardTitle>
             <CardDescription>
-              Accédez rapidement à vos outils
+              {"Accédez rapidement à vos outils"}
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-2">
             <Button variant="outline" className="justify-start" asChild>
               <Link href="#">
                 <Activity className="mr-2 h-4 w-4" />
-                Créer un nouveau projet
+                {"Créer un nouveau projet"}
               </Link>
             </Button>
             <Button variant="outline" className="justify-start" asChild>
               <Link href="#">
                 <Users className="mr-2 h-4 w-4" />
-                Gérer l'équipe
+                {"Gérer l'équipe"}
               </Link>
             </Button>
             <Button variant="outline" className="justify-start" asChild>
               <Link href="/dashboard/subscription">
                 <TrendingUp className="mr-2 h-4 w-4" />
-                Améliorer mon plan
+                {"Améliorer mon plan"}
               </Link>
             </Button>
           </CardContent>
