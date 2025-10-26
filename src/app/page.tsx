@@ -1,9 +1,22 @@
+import { Header } from "@/components/layout/header";
 import { MainLayout } from "@/components/layout/main";
+import { Hero } from "@/components/sections/hero";
+import { getStripePlans } from "@/lib/stripe/stripe-server";
 
-export default function Home() {
+export default async function Home() {
+  const result = await getStripePlans();
+  const plans = result.plans || [];
+  const error = result.error;
+
+  if (error) {
+    console.error("Erreur lors du chargement des prix:", error);
+  }
   return (
-    <MainLayout>
-      <h1>Welcome to MyApp</h1>
-    </MainLayout>
+    <>
+      <Header />
+      <MainLayout>
+        <Hero />
+      </MainLayout>
+    </>
   );
 }
