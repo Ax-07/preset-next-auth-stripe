@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ResetPasswordForm } from "@/lib/auth/components/reset-password-form";
+import { ResetPasswordForm } from "@/lib/auth/components/forms/reset-password-form";
 
 export default async function ResetPasswordPage(props: { searchParams: Promise<Record<string, string>> }) {
   const searchParams = await props.searchParams;
