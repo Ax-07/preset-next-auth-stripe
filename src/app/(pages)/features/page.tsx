@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const FeaturesPage = () => {
+export default async function FeaturesPage() {
     return (
         <div>
             <h1>Fonctionnalités</h1>
