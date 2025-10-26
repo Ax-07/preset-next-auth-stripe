@@ -34,9 +34,7 @@ export const PLANS = [
         annualDiscountPriceId: "",
         annualLookupKey: "basic_yearly", // définir ce lookup_key annuel dans Stripe (optionnel)
         annualPrice: "", // Le montant sera récupéré dynamiquement depuis Stripe
-        freeTrial: {
-            days: 7,
-        },
+        freeTrial: { days: 7 },
         features: [
             "Tout du plan Gratuit",
             "10 projets",
@@ -45,7 +43,7 @@ export const PLANS = [
             "Analyses avancées",
             "API accès",
         ],
-        highlighted: false,
+        highlighted: true,
     }
 ];
 
