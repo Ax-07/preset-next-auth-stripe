@@ -54,7 +54,7 @@ export const useAuthentification = () => {
           console.log("Utilisateur connecté avec succès:", user);
           toast.success(AUTH_MESSAGES.success.signIn);
           router.refresh(); // Rafraîchit les Server Components
-          router.push("/profile");
+          router.push("/dashboard");
         },
         onError: (error) => {
           console.error("Erreur lors de la connexion:", error);
@@ -67,7 +67,7 @@ export const useAuthentification = () => {
 
   const signInWithProvider = async (provider: ProviderEnum) => {
     await signIn.social(
-      { provider, callbackURL: "/profile" },
+      { provider, callbackURL: "/dashboard" },
       {
         onSuccess: () => {
           toast.success(AUTH_MESSAGES.success.signIn);
@@ -101,7 +101,7 @@ export const useAuthentification = () => {
 }
 
 export const useProfile = () => {
-  const { updateUser, deleteUser, forgetPassword, resetPassword } = authClient;
+  const { updateUser, deleteUser, forgetPassword, resetPassword, changePassword: changePasswordClient, changeEmail: changeEmailClient } = authClient;
   const router = useRouter();
   const user = useSession().data?.user;
 
@@ -154,6 +154,41 @@ export const useProfile = () => {
     });
   };
 
+  const changePassword = async (data: { currentPassword: string; newPassword: string; }) => {
+    return await changePasswordClient({
+      currentPassword: data.currentPassword,
+      newPassword: data.newPassword,
+      revokeOtherSessions: false,
+    }, {
+      onSuccess: () => {
+        console.log("Mot de passe changé avec succès");
+        toast.success(AUTH_MESSAGES.success.passwordChanged);
+      },
+      onError: (error) => {
+        console.error("Erreur lors du changement de mot de passe:", error);
+        const errorMessage = getErrorMessage(error.error.code, AUTH_MESSAGES.error.passwordChange);
+        toast.error(formatErrorMessage(errorMessage, error.error.message));
+      },
+    });
+  };
+
+  const changeEmail = async (data: { newEmail: string; password: string; }) => {
+    return await changeEmailClient({
+      newEmail: data.newEmail,
+      callbackURL: "/auth/verify-email",
+    }, {
+      onSuccess: () => {
+        console.log("Email changé avec succès");
+        toast.success(AUTH_MESSAGES.success.emailChanged);
+      },
+      onError: (error) => {
+        console.error("Erreur lors du changement d'email:", error);
+        const errorMessage = getErrorMessage(error.error.code, AUTH_MESSAGES.error.emailChange);
+        toast.error(formatErrorMessage(errorMessage, error.error.message));
+      },
+    });
+  };
+
   const removeProfile = async () => {
     if (!confirm(AUTH_MESSAGES.confirm.deleteAccount)) {
       return;
@@ -174,5 +209,5 @@ export const useProfile = () => {
     }
   };
 
-  return { user, updateProfile, forgetUserPassword, resetUserPassword, removeProfile };
+  return { user, updateProfile, forgetUserPassword, resetUserPassword, changePassword, changeEmail, removeProfile };
 };
