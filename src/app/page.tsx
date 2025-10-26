@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/header";
 import { MainLayout } from "@/components/layout/main";
 import { Hero } from "@/components/sections/hero";
+import PricingClient from "@/lib/stripe/components/pricing";
 import { getStripePlans } from "@/lib/stripe/stripe-server";
 
 export default async function Home() {
@@ -16,6 +17,7 @@ export default async function Home() {
       <Header />
       <MainLayout>
         <Hero />
+        <PricingClient plans={plans} />
       </MainLayout>
     </>
   );
