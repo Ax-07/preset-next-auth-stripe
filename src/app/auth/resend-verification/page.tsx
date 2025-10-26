@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ResendVerificationForm } from "@/lib/auth/components/resend-verification-form";
+import { ResendVerificationForm } from "@/lib/auth/components/forms/resend-verification-form";
 
 export default function ResendVerificationPage() {
   return (
