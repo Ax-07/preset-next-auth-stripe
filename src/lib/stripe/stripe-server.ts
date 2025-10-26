@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import { PLANS } from "./stripe-plan";
 import { stripeClient } from "./stripe";
 import type Stripe from "stripe";
-import type { StripePlan, Invoice, Subscription } from "@/lib/stripe/types/stripe";
+import type { StripePlan } from "@/lib/stripe/types/stripe";
 
 // Déterminer l'URL de base en fonction de l'environnement
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL 
