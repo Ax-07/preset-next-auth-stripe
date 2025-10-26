@@ -6,8 +6,6 @@ import {
   Home,
   Sparkles,
   HelpCircle,
-  FileText,
-  Settings,
   GalleryVerticalEnd
 } from "lucide-react";
 
