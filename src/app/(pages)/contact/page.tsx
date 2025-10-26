@@ -2,6 +2,6 @@
 
 import ContactPage from "@/components/pages/contact";
 
-export default function Page() {
+export default async function Page() {
   return <ContactPage />;
 }
