@@ -63,8 +63,7 @@ export default function NotFound() {
             Page introuvable
           </h1>
           <p className="text-xl text-muted-foreground max-w-md mx-auto">
-            Désolé, nous n'avons pas pu trouver la page que vous recherchez. 
-            Elle a peut-être été déplacée ou supprimée.
+            {`Désolé, nous n'avons pas pu trouver la page que vous recherchez. Elle a peut-être été déplacée ou supprimée.`}
           </p>
         </div>
 
@@ -80,7 +79,7 @@ export default function NotFound() {
           <Button size="lg" asChild>
             <Link href="/">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Retour à l'accueil
+              {`Retour à l'accueil`}
             </Link>
           </Button>
           
@@ -152,7 +151,7 @@ export default function NotFound() {
         {/* Footer */}
         <div className="pt-8 text-xs text-muted-foreground">
           <p>
-            Code d'erreur: 404 - Page non trouvée
+            {`Code d'erreur: 404 - Page non trouvée`}
           </p>
         </div>
 
