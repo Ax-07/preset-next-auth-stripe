@@ -98,7 +98,7 @@ export default function Error({ error, reset }: ErrorProps) {
           </div>
           
           <h1 className="text-3xl font-bold text-foreground">
-            Oups ! Une erreur s'est produite
+            {`Oups ! Une erreur s'est produite`}
           </h1>
           
           <p className="text-lg text-muted-foreground max-w-md mx-auto">
@@ -112,7 +112,7 @@ export default function Error({ error, reset }: ErrorProps) {
             <CardHeader>
               <CardTitle className="text-red-700 flex items-center gap-2">
                 <Bug className="h-5 w-5" />
-                Détails de l'erreur (Mode développement)
+                {`Détails de l'erreur (Mode développement)`}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -174,18 +174,18 @@ export default function Error({ error, reset }: ErrorProps) {
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
                 <Info className="h-4 w-4" />
-                Que s'est-il passé ?
+                {`Que s'est-il passé ?`}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-sm space-y-2">
               <p>
-                Une erreur inattendue s'est produite lors du traitement de votre demande.
+                {`Une erreur inattendue s'est produite lors du traitement de votre demande.`}
               </p>
               <p>
                 Notre équipe technique a été automatiquement notifiée et travaille à résoudre le problème.
               </p>
               <div className="pt-2 text-xs text-muted-foreground">
-                Code d'erreur: {errorCode}
+                {`Code d'erreur: ${errorCode}`}
               </div>
             </CardContent>
           </Card>
@@ -218,7 +218,7 @@ export default function Error({ error, reset }: ErrorProps) {
         {/* Support Contact */}
         <Card className="bg-muted/30">
           <CardHeader>
-            <CardTitle className="text-base">Besoin d'aide supplémentaire ?</CardTitle>
+            <CardTitle className="text-base">{`Besoin d'aide supplémentaire ?`}</CardTitle>
             <CardDescription>
               Notre équipe support est là pour vous aider
             </CardDescription>
@@ -263,7 +263,7 @@ export default function Error({ error, reset }: ErrorProps) {
         {/* Additional Information */}
         <div className="text-center text-sm text-muted-foreground space-y-1">
           <p>
-            Si le problème persiste, veuillez inclure le code d'erreur <code className="bg-muted px-1 rounded">{errorCode}</code> dans votre message.
+            {`Si le problème persiste, veuillez inclure le code d'erreur`} <code className="bg-muted px-1 rounded">{errorCode}</code> {`dans votre message.`}
           </p>
           <p>
             Horodatage: {new Date().toLocaleString('fr-FR')}
