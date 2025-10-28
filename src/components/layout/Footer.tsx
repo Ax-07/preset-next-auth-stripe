@@ -1,5 +1,6 @@
 // Footer.tsx
 import React from "react";
+import Image from "next/image";
 import { FaXTwitter, FaLinkedin, FaInstagram } from "react-icons/fa6";
 import Link from "next/link";
 import { navigationConfig } from "@/configs/navigation.config";
@@ -28,10 +29,12 @@ const Footer = () => {
             <div className="col-span-2 mb-8 lg:mb-0 ">
               <div className="flex flex-col items-center justify-center gap-2 lg:items-start lg:justify-start">
               <Link href="/" className="flex items-center gap-2" aria-label="Home">
-                <img
+                <Image
                   src={globalconfig.logo.src}
                   className="w-8 bg-white"
                   alt={globalconfig.logo.alt}
+                  width={32}
+                  height={32}
                 />
                 <span className="text-lg font-semibold">{globalconfig.siteName}</span>
               </Link>
