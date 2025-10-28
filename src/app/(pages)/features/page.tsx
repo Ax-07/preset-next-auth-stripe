@@ -1,7 +1,5 @@
 import React from 'react';
-import { Header } from "@/components/layout/header";
-import { MainLayout } from "@/components/layout/main";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
@@ -176,8 +174,8 @@ export default async function FeaturesPage() {
                         <div className="mb-2 mx-auto w-16 h-16 bg-muted rounded-lg flex items-center justify-center">
                           {feature.icon}
                         </div>
-                        <p className="text-sm">Image de {feature.title}</p>
-                        <p className="text-xs">Remplacez par une capture d'écran</p>
+                        <p className="text-sm">{`Image de ${feature.title}`}</p>
+                        <p className="text-xs">{`Remplacez par une capture d'écran`}</p>
                       </div>
                     </Card>
                   </div>
