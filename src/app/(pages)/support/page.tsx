@@ -1,7 +1,5 @@
 import React from 'react';
-import { Header } from "@/components/layout/header";
-import { MainLayout } from "@/components/layout/main";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -146,7 +144,7 @@ export default async function SupportPage() {
         <section className="py-20 text-center">
           <div className="container max-w-4xl mx-auto">
             <Badge variant="outline" className="mb-4">
-              Centre d'aide
+              {`Centre d'aide`}
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-6xl mb-6">
               Comment pouvons-nous{" "}
@@ -180,7 +178,7 @@ export default async function SupportPage() {
                 Contactez notre équipe
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Choisissez le canal qui vous convient le mieux pour obtenir de l'aide rapidement.
+                {`Choisissez le canal qui vous convient le mieux pour obtenir de l'aide rapidement.`}
               </p>
             </div>
 
@@ -228,7 +226,7 @@ export default async function SupportPage() {
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold mb-4">
-                Ressources d'aide
+                {`Ressources d'aide`}
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                 Explorez nos ressources pour trouver des réponses immédiates à vos questions.
@@ -269,7 +267,7 @@ export default async function SupportPage() {
                 Articles populaires
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Les guides les plus consultés par notre communauté d'utilisateurs.
+                {`Les guides les plus consultés par notre communauté d'utilisateurs.`}
               </p>
             </div>
 
@@ -293,7 +291,7 @@ export default async function SupportPage() {
                   </p>
                   
                   <div className="flex items-center text-primary text-sm font-medium">
-                    Lire l'article
+                    {`Lire l'article`}
                     <ArrowRight className="ml-1 h-3 w-3 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </Card>
