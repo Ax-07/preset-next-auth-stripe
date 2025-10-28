@@ -1,7 +1,7 @@
 import React from 'react';
 import { Header } from "@/components/layout/header";
 import { MainLayout } from "@/components/layout/main";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
@@ -472,7 +472,7 @@ export default function SecurityPage() {
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link href="/support">
-                  Centre d'aide
+                  {`Centre d'aide`}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
