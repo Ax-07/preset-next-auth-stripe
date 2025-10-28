@@ -1,7 +1,7 @@
 import React from 'react';
 import { Header } from "@/components/layout/header";
 import { MainLayout } from "@/components/layout/main";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
@@ -9,8 +9,6 @@ import {
   Shield,
   FileText,
   Mail,
-  MapPin,
-  Phone,
   Globe,
   Calendar,
   Building,
@@ -206,8 +204,7 @@ export default function MentionsLegalesPage() {
               <span className="text-primary">légales</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Informations légales, conditions d'utilisation et politique de confidentialité 
-              de notre plateforme SaaS.
+              {`Informations légales, conditions d'utilisation et politique de confidentialité de notre plateforme SaaS.`}
             </p>
             <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
@@ -295,10 +292,10 @@ export default function MentionsLegalesPage() {
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4 flex items-center justify-center gap-3">
                 <Scale className="h-8 w-8" />
-                Conditions d'utilisation
+                {`Conditions d'utilisation`}
               </h2>
               <p className="text-xl text-muted-foreground">
-                Règles et conditions régissant l'utilisation de notre service
+                {`Règles et conditions régissant l'utilisation de notre service`}
               </p>
             </div>
 
@@ -377,19 +374,18 @@ export default function MentionsLegalesPage() {
                 Politique des cookies
               </h2>
               <p className="text-xl text-muted-foreground">
-                Information sur l'utilisation des cookies sur notre site
+                {`Information sur l'utilisation des cookies sur notre site`}
               </p>
             </div>
 
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Qu'est-ce qu'un cookie ?</CardTitle>
+                  <CardTitle>{`Qu'est-ce qu'un cookie ?`}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground leading-relaxed">
-                    Un cookie est un petit fichier texte stocké sur votre appareil lorsque vous visitez notre site. 
-                    Il nous permet d'améliorer votre expérience utilisateur et d'analyser l'utilisation du site.
+                    {`Un cookie est un petit fichier texte stocké sur votre appareil lorsque vous visitez notre site. Il nous permet d'améliorer votre expérience utilisateur et d'analyser l'utilisation du site.`}
                   </p>
                 </CardContent>
               </Card>
@@ -407,9 +403,9 @@ export default function MentionsLegalesPage() {
                       </p>
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-2">Cookies d'analyse</h4>
+                      <h4 className="font-semibold mb-2">{`Cookies d'analyse`}</h4>
                       <p className="text-muted-foreground text-sm">
-                        Nous aident à comprendre comment vous utilisez le site (Google Analytics)
+                        {`Nous aident à comprendre comment vous utilisez le site (Google Analytics)`}
                       </p>
                     </div>
                     <div>
