@@ -3,23 +3,16 @@
 
 import React from "react";
 import {
-  Home,
   Zap,
-  Users,
-  BarChart3,
-  Settings,
   Info,
   Headphones,
   HelpCircle,
   Mail,
-  CreditCard,
   FileText,
   Shield,
-  Sparkles,
   PlayCircle,
   BookOpen,
   Award,
-  TrendingUp,
 } from "lucide-react";
 
 export const navigationConfig = {
