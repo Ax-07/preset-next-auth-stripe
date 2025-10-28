@@ -1,5 +1,4 @@
 // src/components/pages/LegalRenderer.tsx
-"use client";
 import React from "react";
 import { legalContent, Section, Link } from "@/data/legal-content";
 
