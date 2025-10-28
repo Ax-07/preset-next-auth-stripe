@@ -1,9 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Header } from "@/components/layout/header";
-import { MainLayout } from "@/components/layout/main";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,15 +13,12 @@ import {
   ArrowRight,
   TrendingUp,
   Lightbulb,
-  Code,
   Users,
-  Shield,
   Zap,
   BookOpen,
   Filter,
   Tag
 } from "lucide-react";
-import Link from "next/link";
 
 // 🎯 PERSONNALISEZ VOS CATÉGORIES DE BLOG ICI
 const blogCategories = [
