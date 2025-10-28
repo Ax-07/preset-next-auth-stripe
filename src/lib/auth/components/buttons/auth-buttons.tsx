@@ -1,4 +1,3 @@
-import { getUser, signOut } from "@/lib/auth/auth-server";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -9,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { LogOutIcon, Trash2, User2, CreditCard, Crown } from "lucide-react";
+import { Trash2, User2, CreditCard, Crown } from "lucide-react";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { LogoutButton } from "./logout-btn";
 import { User } from "better-auth";
