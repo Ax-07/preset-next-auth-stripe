@@ -1,7 +1,7 @@
 import React from 'react';
 import { Header } from "@/components/layout/header";
 import { MainLayout } from "@/components/layout/main";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
@@ -16,7 +16,6 @@ import {
   Calendar,
   Target,
   Zap,
-  CheckCircle2,
   BarChart3,
   DollarSign,
   Clock
@@ -239,7 +238,7 @@ export default function CustomersPage() {
                   <Quote className="h-12 w-12 text-primary/20 absolute top-4 left-4" />
                   <div className="relative z-10">
                     <blockquote className="text-xl md:text-2xl font-medium mb-8 leading-relaxed">
-                      "{testimonial.quote}"
+                      {`"${testimonial.quote}"`}
                     </blockquote>
                     
                     <div className="flex items-center justify-center gap-1 mb-6">
@@ -346,7 +345,7 @@ export default function CustomersPage() {
 
                       {/* Testimonial */}
                       <blockquote className="border-l-4 border-primary pl-4 italic text-muted-foreground mb-4">
-                        "{study.testimonial}"
+                        {`"${study.testimonial}"`}
                       </blockquote>
                       <div className="text-sm">
                         <div className="font-medium">{study.author.name}</div>
@@ -389,7 +388,7 @@ export default function CustomersPage() {
                   </div>
                   
                   <blockquote className="text-muted-foreground mb-6 leading-relaxed">
-                    "{testimonial.quote}"
+                    {`"${testimonial.quote}"`}
                   </blockquote>
                   
                   <div className="flex items-center gap-3">
