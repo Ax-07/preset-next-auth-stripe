@@ -357,8 +357,7 @@ export default function MentionsLegalesPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-orange-700">
-                  Pour toute question relative au traitement de vos données personnelles, 
-                  vous pouvez contacter notre DPO à l'adresse : <strong>dpo@votreentreprise.com</strong>
+                  {`Pour toute question relative au traitement de vos données personnelles, vous pouvez contacter notre DPO à l'adresse :`} <strong>dpo@votreentreprise.com</strong>
                 </p>
               </CardContent>
             </Card>
