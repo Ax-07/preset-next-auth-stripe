@@ -1,6 +1,4 @@
 import React from 'react';
-import { Header } from "@/components/layout/header";
-import { MainLayout } from "@/components/layout/main";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -243,8 +241,7 @@ export default function FAQPage() {
             {searchTerm && (
               <div className="mb-8">
                 <p className="text-muted-foreground">
-                  {filteredCategories.reduce((total, cat) => total + cat.questions.length, 0)} résultat(s) 
-                  pour "{searchTerm}"
+                  {`${filteredCategories.reduce((total, cat) => total + cat.questions.length, 0)} résultat(s) pour "${searchTerm}"`}
                 </p>
               </div>
             )}
@@ -282,7 +279,7 @@ export default function FAQPage() {
             {filteredCategories.length === 0 && searchTerm && (
               <div className="text-center py-12">
                 <p className="text-muted-foreground mb-4">
-                  Aucun résultat trouvé pour "{searchTerm}"
+                  {`Aucun résultat trouvé pour "${searchTerm}"`}
                 </p>
                 <Button variant="outline" onClick={() => setSearchTerm('')}>
                   Voir toutes les questions
