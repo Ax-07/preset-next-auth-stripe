@@ -396,7 +396,7 @@ export default function DocumentationPage() {
             {searchTerm && (
               <div className="mb-8">
                 <p className="text-muted-foreground">
-                  {filteredSections.length} section(s) trouvée(s) pour "{searchTerm}"
+                  {`${filteredSections.length} section(s) trouvée(s) pour "${searchTerm}"`}
                 </p>
               </div>
             )}
