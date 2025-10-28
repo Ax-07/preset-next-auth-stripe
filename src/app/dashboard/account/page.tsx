@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { User, Mail, Shield, Bell, Palette, CheckCircle, XCircle, Trash2 } from "lucide-react";
 import { getInitials } from "@/utils/getInitials";
 import Link from "next/link";
+import { ThemeSwitcher } from "@/components/themes/theme-switcher";
 
 export default async function AccountPage() {
   const user = await getUser();
@@ -281,9 +282,10 @@ export default async function AccountPage() {
                     {"Choisissez entre le mode clair et sombre"}
                   </p>
                 </div>
-                <Button variant="outline" disabled>
+                {/* <Button variant="outline" disabled>
                   {"Système"}
-                </Button>
+                </Button> */}
+                <ThemeSwitcher />
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t">
