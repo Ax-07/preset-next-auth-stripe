@@ -1,5 +1,6 @@
 import React, { Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu } from "lucide-react";
 import {
   Sheet,
@@ -32,7 +33,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ className, user }) =
       {/* Logo and Menu Button */}
       <div className="flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2" aria-label="Home">
-          <img src={navigationConfig.logo.src} className="w-8 bg-white" alt={navigationConfig.logo.alt} />
+          <Image src={navigationConfig.logo.src} className="w-8 bg-white" alt={navigationConfig.logo.alt} width={32} height={32} />
           <span className="text-lg font-semibold">{globalconfig.siteName}</span>
         </Link>
         <Sheet aria-describedby="mobile-menu">
@@ -46,7 +47,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ className, user }) =
               <SheetTitle>
                 <SheetClose asChild>
                   <Link href="/" className="flex items-center gap-2" aria-label="Home">
-                    <img src={navigationConfig.logo.src} className="w-8 bg-white" alt={navigationConfig.logo.alt} />
+                    <Image src={navigationConfig.logo.src} className="w-8 bg-white" alt={navigationConfig.logo.alt} width={32} height={32} />
                     <span className="text-lg font-semibold">{navigationConfig.siteName}</span>
                   </Link>
                 </SheetClose>
