@@ -11,9 +11,10 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LogOutIcon, Trash2, User2, CreditCard, Crown } from "lucide-react";
 import { AvatarImage } from "@radix-ui/react-avatar";
+import { LogoutButton } from "./logout-btn";
+import { User } from "better-auth";
 
-export const AuthButtons = async () => {
-  const user = await getUser();
+export const AuthButtons = ({user}: {user: User}) => {
 
   if (!user) {
     return (
@@ -55,18 +56,7 @@ export const AuthButtons = async () => {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <form>
-            <button
-              formAction={async () => {
-                "use server";
-                await signOut();
-              }}
-              className="flex items-center gap-2 w-full"
-            >
-              <LogOutIcon className="size-4" />
-              Se déconnecter
-            </button>
-          </form>
+          <LogoutButton />
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link
