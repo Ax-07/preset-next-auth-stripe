@@ -25,11 +25,9 @@ import {
   Star,
   Video,
   Download,
-  Share,
   BookOpen,
   Award
 } from "lucide-react";
-import Link from "next/link";
 
 // 🎯 PERSONNALISEZ VOS OPTIONS DE DÉMO ICI
 const demoOptions = [
@@ -545,7 +543,7 @@ export default function DemoPage() {
                   </div>
                   
                   <blockquote className="text-muted-foreground mb-4 leading-relaxed">
-                    "{testimonial.quote}"
+                    {`"${testimonial.quote}"`}
                   </blockquote>
                   
                   <div>
