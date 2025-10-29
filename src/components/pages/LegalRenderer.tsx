@@ -13,7 +13,6 @@ import {
   Calendar,
   Building,
   User,
-  Database,
   Cookie,
   AlertTriangle
 } from "lucide-react";
@@ -186,7 +185,7 @@ export function LegalRenderer({ slug }: LegalPageProps) {
                         <CardContent>
                           <p className="text-orange-700">
                             Pour toute question relative au traitement de vos données personnelles, 
-                            vous pouvez contacter notre DPO à l'adresse : <strong>{meta.placeholders.dpoEmail}</strong>
+                            vous pouvez contacter notre DPO à l&apos;adresse : <strong>{meta.placeholders.dpoEmail}</strong>
                           </p>
                         </CardContent>
                       </Card>
