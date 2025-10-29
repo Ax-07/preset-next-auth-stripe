@@ -16,7 +16,7 @@ export const meta = {
   version: "1.0.0",
   locale: "fr-FR",
   jurisdiction: "FR",
-  updatedAt: "2025-10-26", // ISO
+  updatedAt: "2025-10-29", // ISO
   placeholders: {
     company: "[ACME SAS]",
     rcsCity: "[Ville]",
@@ -25,6 +25,24 @@ export const meta = {
     domain: "[domaine.com]",
     cityCourt: "[Ville du siège]",
     domainCookie: ".[votre-domaine].app", // pour lister les cookies côté app
+    // Nouvelles données pour mentions légales
+    companyName: "Votre Entreprise SAS",
+    companyAddress: "123 Rue de la Technologie",
+    companyPostalCode: "75001",
+    companyCity: "Paris",
+    companyCountry: "France",
+    siret: "12345678901234",
+    tva: "FR12345678901",
+    capital: "10 000 €",
+    rcs: "Paris B 123 456 789",
+    contactEmail: "contact@votreentreprise.com",
+    contactPhone: "+33 1 23 45 67 89",
+    website: "https://www.votreentreprise.com",
+    hostingProvider: "Vercel Inc.",
+    hostingAddress: "340 S Lemon Ave #4133, Walnut, CA 91789, USA",
+    directorName: "Prénom NOM",
+    directorRole: "Directeur de la publication",
+    dpoEmail: "dpo@votreentreprise.com",
   },
 };
 
@@ -539,5 +557,184 @@ export const legalContent = {
       "Conservez une preuve du consentement (id visiteur, version CMP, timestamp, préférences).",
       "Affichez la bannière au premier accès puis à chaque changement de finalité/tiers, et redemandez après [6–12] mois.",
     ],
+  },
+
+  mentions: {
+    slug: "mentions",
+    title: "Mentions légales",
+    lastUpdated: meta.updatedAt,
+    intro: [
+      "Informations légales, conditions d'utilisation et politique de confidentialité de notre plateforme SaaS.",
+    ],
+    sections: [
+      {
+        id: "editeur",
+        title: "Informations sur l'éditeur",
+        subSections: [
+          {
+            subtitle: "Dénomination sociale",
+            bullets: [meta.placeholders.companyName]
+          },
+          {
+            subtitle: "Forme juridique",
+            bullets: ["Société par Actions Simplifiée (SAS)"]
+          },
+          {
+            subtitle: "Capital social",
+            bullets: [meta.placeholders.capital]
+          },
+          {
+            subtitle: "Siège social",
+            bullets: [`${meta.placeholders.companyAddress}, ${meta.placeholders.companyPostalCode} ${meta.placeholders.companyCity}, ${meta.placeholders.companyCountry}`]
+          },
+          {
+            subtitle: "SIRET",
+            bullets: [meta.placeholders.siret]
+          },
+          {
+            subtitle: "N° TVA intracommunautaire",
+            bullets: [meta.placeholders.tva]
+          },
+          {
+            subtitle: "RCS",
+            bullets: [meta.placeholders.rcs]
+          }
+        ]
+      },
+      {
+        id: "contact",
+        title: "Contact",
+        subSections: [
+          {
+            subtitle: "Email",
+            bullets: [meta.placeholders.contactEmail]
+          },
+          {
+            subtitle: "Téléphone",
+            bullets: [meta.placeholders.contactPhone]
+          },
+          {
+            subtitle: "Site web",
+            bullets: [meta.placeholders.website]
+          }
+        ]
+      },
+      {
+        id: "directeur",
+        title: "Direction de la publication",
+        subSections: [
+          {
+            subtitle: "Directeur de la publication",
+            bullets: [`${meta.placeholders.directorName}, ${meta.placeholders.directorRole}`]
+          },
+          {
+            subtitle: "Contact",
+            bullets: [meta.placeholders.contactEmail]
+          }
+        ]
+      },
+      {
+        id: "hebergement",
+        title: "Hébergement",
+        subSections: [
+          {
+            subtitle: "Hébergeur",
+            bullets: [meta.placeholders.hostingProvider]
+          },
+          {
+            subtitle: "Adresse de l'hébergeur",
+            bullets: [meta.placeholders.hostingAddress]
+          }
+        ]
+      },
+      {
+        id: "conditions",
+        title: "Conditions d'utilisation",
+        subSections: [
+          {
+            subtitle: "1. Acceptation des conditions",
+            bullets: ["L'utilisation du site web implique l'acceptation pleine et entière des conditions générales d'utilisation décrites ci-après. Ces conditions d'utilisation sont susceptibles d'être modifiées ou complétées à tout moment."]
+          },
+          {
+            subtitle: "2. Description du service",
+            bullets: ["Notre plateforme SaaS fournit des outils et services de gestion d'entreprise. L'accès au service nécessite la création d'un compte utilisateur."]
+          },
+          {
+            subtitle: "3. Responsabilités de l'utilisateur",
+            bullets: ["L'utilisateur s'engage à utiliser le service conformément à sa destination, dans le respect de la législation en vigueur et des droits des tiers."]
+          },
+          {
+            subtitle: "4. Protection des données",
+            bullets: ["Nous collectons et traitons vos données personnelles conformément à notre politique de confidentialité et au Règlement Général sur la Protection des Données (RGPD)."]
+          },
+          {
+            subtitle: "5. Propriété intellectuelle",
+            bullets: ["L'ensemble des contenus présents sur le site (textes, images, codes, etc.) sont protégés par le droit de la propriété intellectuelle."]
+          },
+          {
+            subtitle: "6. Limitation de responsabilité",
+            bullets: ["Nous nous efforçons de maintenir accessible le site 24h/24 et 7j/7, néanmoins nous ne pouvons être tenus responsables d'interruptions du service."]
+          }
+        ]
+      },
+      {
+        id: "donnees",
+        title: "Protection des données (RGPD)",
+        content: [
+          "Notre engagement pour la protection de vos données personnelles"
+        ],
+        subSections: [
+          {
+            subtitle: "Finalités du traitement",
+            bullets: ["Vos données sont collectées pour la fourniture du service, l'amélioration de nos produits, et la communication commerciale (avec votre consentement)."]
+          },
+          {
+            subtitle: "Base légale",
+            bullets: ["Le traitement est basé sur l'exécution du contrat, nos intérêts légitimes, et votre consentement pour les communications marketing."]
+          },
+          {
+            subtitle: "Durée de conservation",
+            bullets: ["Vos données sont conservées pendant la durée de la relation contractuelle et jusqu'à 3 ans après la fin du contrat pour les obligations légales."]
+          },
+          {
+            subtitle: "Vos droits",
+            bullets: ["Vous disposez d'un droit d'accès, de rectification, d'effacement, de portabilité, de limitation du traitement et d'opposition."]
+          },
+          {
+            subtitle: "Exercice de vos droits",
+            bullets: [`Pour exercer vos droits, contactez-nous à l'adresse : ${meta.placeholders.contactEmail}`]
+          },
+          {
+            subtitle: "Délégué à la Protection des Données (DPO)",
+            bullets: [`Pour toute question relative au traitement de vos données personnelles, vous pouvez contacter notre DPO à l'adresse : ${meta.placeholders.dpoEmail}`]
+          }
+        ]
+      },
+      {
+        id: "cookies",
+        title: "Politique des cookies",
+        content: [
+          "Information sur l'utilisation des cookies sur notre site"
+        ],
+        subSections: [
+          {
+            subtitle: "Qu'est-ce qu'un cookie ?",
+            bullets: ["Un cookie est un petit fichier texte stocké sur votre appareil lorsque vous visitez notre site. Il nous permet d'améliorer votre expérience utilisateur et d'analyser l'utilisation du site."]
+          },
+          {
+            subtitle: "Types de cookies utilisés",
+            bullets: [
+              "Cookies essentiels : Nécessaires au fonctionnement du site (authentification, panier, préférences)",
+              "Cookies d'analyse : Nous aident à comprendre comment vous utilisez le site (Google Analytics)",
+              "Cookies marketing : Utilisés pour personnaliser les publicités et mesurer leur efficacité"
+            ]
+          },
+          {
+            subtitle: "Gestion des cookies",
+            bullets: ["Vous pouvez gérer vos préférences de cookies via le bandeau de consentement ou dans les paramètres de votre navigateur."]
+          }
+        ]
+      }
+    ] as Section[],
   },
 };
