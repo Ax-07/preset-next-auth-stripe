@@ -91,6 +91,56 @@ pnpm dev
 
 - 🌐 Internationalisation (i18n)
 
+## 📄 Pages Disponibles
+
+### 🌐 Pages Publiques
+
+- **Accueil** - [http://localhost:3000](http://localhost:3000) - Page d'accueil principale
+- **Tarifs** - [http://localhost:3000/pricing](http://localhost:3000/pricing) - Plans et tarification
+- **Fonctionnalités** - [http://localhost:3000/features](http://localhost:3000/features) - Présentation des fonctionnalités
+- **À propos** - [http://localhost:3000/about](http://localhost:3000/about) - Informations sur l'entreprise
+- **Contact** - [http://localhost:3000/contact](http://localhost:3000/contact) - Formulaire de contact
+- **Support** - [http://localhost:3000/support](http://localhost:3000/support) - Centre d'aide
+- **Sécurité** - [http://localhost:3000/security](http://localhost:3000/security) - Politique de sécurité
+- **FAQ** - [http://localhost:3000/faq](http://localhost:3000/faq) - Questions fréquentes
+- **Blog** - [http://localhost:3000/blog](http://localhost:3000/blog) - Articles et actualités
+- **Clients** - [http://localhost:3000/customers](http://localhost:3000/customers) - Témoignages clients
+- **Démo** - [http://localhost:3000/demo](http://localhost:3000/demo) - Démonstration du produit
+- **Documentation** - [http://localhost:3000/documentation](http://localhost:3000/documentation) - Guide utilisateur
+
+### 🔐 Pages d'Authentification
+
+- **Connexion** - [http://localhost:3000/auth/signin](http://localhost:3000/auth/signin) - Formulaire de connexion
+- **Inscription** - [http://localhost:3000/auth/signup](http://localhost:3000/auth/signup) - Création de compte
+- **Vérification email** - [http://localhost:3000/auth/verify-email](http://localhost:3000/auth/verify-email) - Validation d'email
+- **Vérification confirmée** - [http://localhost:3000/auth/check-email](http://localhost:3000/auth/check-email) - Notification d'envoi
+- **Mot de passe oublié** - [http://localhost:3000/auth/forget-password](http://localhost:3000/auth/forget-password) - Demande de réinitialisation
+- **Réinitialiser mot de passe** - [http://localhost:3000/auth/reset-password](http://localhost:3000/auth/reset-password) - Nouveau mot de passe
+- **Renvoyer vérification** - [http://localhost:3000/auth/resend-verification](http://localhost:3000/auth/resend-verification) - Renvoi d'email
+- **Vérification statut** - [http://localhost:3000/auth/verify](http://localhost:3000/auth/verify) - Page de confirmation
+
+### 🏠 Dashboard (Pages Protégées)
+
+- **Tableau de bord** - [http://localhost:3000/dashboard](http://localhost:3000/dashboard) - Vue d'ensemble
+- **Mon compte** - [http://localhost:3000/dashboard/account](http://localhost:3000/dashboard/account) - Gestion du profil
+- **Éditer profil** - [http://localhost:3000/dashboard/account/edit](http://localhost:3000/dashboard/account/edit) - Modification des infos
+- **Changer email** - [http://localhost:3000/dashboard/account/change-email](http://localhost:3000/dashboard/account/change-email) - Nouveau email
+- **Changer mot de passe** - [http://localhost:3000/dashboard/account/change-password](http://localhost:3000/dashboard/account/change-password) - Sécurité
+- **Supprimer compte** - [http://localhost:3000/dashboard/account/delete](http://localhost:3000/dashboard/account/delete) - Suppression définitive
+
+### 💳 Pages Stripe (Protégées)
+
+- **Abonnements** - [http://localhost:3000/dashboard/subscription](http://localhost:3000/dashboard/subscription) - Gestion des plans
+- **Facturation** - [http://localhost:3000/dashboard/billing](http://localhost:3000/dashboard/billing) - Historique des factures
+- **Plans tarifaires** - [http://localhost:3000/dashboard/pricing](http://localhost:3000/dashboard/pricing) - Upgrade/downgrade
+
+### ⚖️ Pages Légales
+
+- **Politique de confidentialité** - [http://localhost:3000/privacy](http://localhost:3000/privacy) - RGPD et données
+- **Conditions d'utilisation** - [http://localhost:3000/terms](http://localhost:3000/terms) - CGU
+- **Mentions légales** - [http://localhost:3000/mentions-legales](http://localhost:3000/mentions-legales) - Informations légales
+- **Politique des cookies** - [http://localhost:3000/cookies](http://localhost:3000/cookies) - Gestion des cookies
+
 ## 🛠️ Stack Technique
 
 - **Framework:** Next.js 15 (App Router)
