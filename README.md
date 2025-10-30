@@ -40,12 +40,11 @@ pnpm dev
 - ✅ Renvoi d'email de vérification
 - ✅ Protection des routes avec middleware
 - ✅ Gestion des sessions sécurisées
-- ✅ Messages en français
 
 ### 💾 Base de Données
 
 - ✅ PostgreSQL avec Prisma ORM
-- ✅ 5 modèles prêts à l'emploi (User, Session, Account, Verification, RateLimit)
+- ✅ 6 modèles prêts à l'emploi (User, Session, Account, Verification, Subscription, RateLimit)
 - ✅ Migrations versionnées
 - ✅ Type-safety complète avec TypeScript
 - ✅ Client Prisma optimisé
@@ -71,7 +70,7 @@ pnpm dev
 
 ### 🛡️ Sécurité
 
-- ✅ Rate limiting avec Upstash Redis
+- ✅ Rate limiting avec better-auth
   - 5 tentatives de connexion / 15 minutes
   - 3 emails de vérification / heure
   - 10 requêtes API / minute
@@ -80,12 +79,16 @@ pnpm dev
 - ✅ Hashing sécurisé des mots de passe
 - ✅ Headers de sécurité configurés
 
+### 💳 Stripe
+
+- ✅ Intégration complète avec Better-Auth
+- ✅ Récupération des plans et prix depuis Stripe
+- ✅ Gestion des abonnements
+- ✅ Webhooks pour les événements Stripe
+- ✅ Sécurisation des clés API
+
 ### 🚧 À Venir
 
-- 💳 Intégration Stripe (paiements et abonnements)
-- 👤 Page de profil utilisateur avancée
-- 🔐 Authentification à deux facteurs (2FA)
-- 📱 OAuth supplémentaires (GitHub, Discord, etc.)
 - 🌐 Internationalisation (i18n)
 
 ## 🛠️ Stack Technique
@@ -169,7 +172,7 @@ EMAIL_PASSWORD="votre_app_password"
 # Pour d'autres fournisseurs (Outlook, SMTP personnalisé), consultez:
 # docs/guide-nodemailer.md
 
-# Stripe (à venir)
+# Stripe
 STRIPE_SECRET_KEY="sk_test_..."
 STRIPE_PUBLISHABLE_KEY="pk_test_..."
 # Obtenez vos clés sur https://dashboard.stripe.com/apikeys
@@ -177,17 +180,17 @@ STRIPE_PUBLISHABLE_KEY="pk_test_..."
 
 **Variables d'environnement requises:**
 
-| Variable | Description | Obligatoire |
-|----------|-------------|-------------|
-| `DATABASE_URL` | URL de connexion PostgreSQL | ✅ Oui |
-| `BETTER_AUTH_SECRET` | Secret pour signer les tokens | ✅ Oui |
-| `BETTER_AUTH_URL` | URL de base de l'application | ✅ Oui |
-| `EMAIL_USER` | Email pour l'envoi (Nodemailer) | ✅ Oui |
-| `EMAIL_PASSWORD` | Mot de passe d'application email | ✅ Oui |
-| `GOOGLE_CLIENT_ID` | ID client Google OAuth | ⚠️ Si OAuth Google activé |
-| `GOOGLE_CLIENT_SECRET` | Secret client Google OAuth | ⚠️ Si OAuth Google activé |
-| `STRIPE_SECRET_KEY` | Clé secrète Stripe | ❌ Futur |
-| `STRIPE_PUBLISHABLE_KEY` | Clé publique Stripe | ❌ Futur |
+| Variable                 | Description                      | Obligatoire               |
+|--------------------------|----------------------------------|---------------------------|
+| `DATABASE_URL`           | URL de connexion PostgreSQL      | ✅ Oui                    |
+| `BETTER_AUTH_SECRET`     | Secret pour signer les tokens    | ✅ Oui                    |
+| `BETTER_AUTH_URL`        | URL de base de l'application     | ✅ Oui                    |
+| `EMAIL_USER`             | Email pour l'envoi (Nodemailer)  | ✅ Oui                    |
+| `EMAIL_PASSWORD`         | Mot de passe d'application email | ✅ Oui                    |
+| `GOOGLE_CLIENT_ID`       | ID client Google OAuth           | ⚠️ Si OAuth Google activé |
+| `GOOGLE_CLIENT_SECRET`   | Secret client Google OAuth       | ⚠️ Si OAuth Google activé |
+| `STRIPE_SECRET_KEY`      | Clé secrète Stripe               | ✅ Oui                    |
+| `STRIPE_PUBLISHABLE_KEY` | Clé publique Stripe              | ❌ non                    |
 
 4. **Configurer la base de données**
 
@@ -272,6 +275,7 @@ Le projet utilise Better-Auth pour l'authentification. Les utilisateurs peuvent 
 - Se connecter avec Google
 - Gérer leur session
 - Se déconnecter
+- Suppression de compte
 
 ## 🚢 Déploiement
 
@@ -293,10 +297,8 @@ Pour en savoir plus sur les technologies utilisées :
 - [Better-Auth Documentation](https://better-auth.com/docs)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [shadcn/ui Documentation](https://ui.shadcn.com)
-
-## 🤝 Contribution
-
-Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou une pull request.
+- [Nodemailer Documentation](https://nodemailer.com)
+- [Stripe Documentation](https://stripe.com/docs)
 
 ## 📄 Licence
 
