@@ -157,10 +157,12 @@ pnpm dev
 
 ## 📋 Prérequis
 
-- Node.js 18.17 ou supérieur
+- Node.js 22 ou supérieur
 - pnpm 8+ (recommandé) ou npm 9+
 - PostgreSQL (local ou cloud)
 - Git
+- Compte Stripe (pour les paiements)
+- Compte Gmail (pour l'envoi d'emails)
 
 ## 🚀 Installation
 
@@ -263,14 +265,36 @@ pnpm dev
 
 Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
 
-## 📚 Documentation
+## Configuration plan stripe
 
-Pour plus de détails, consultez les guides dans le dossier `docs/` :
+1. Créez un compte Stripe sur [https://stripe.com](https://stripe.com)
+2. Créez des produits et plans d'abonnement
+    - Dans le tableau de bord Stripe, cliquez sur "Catalogue de produits"
+    - puis "Créez un nouveau produit"
+    - Nommez votre produit (ex: "Abonnement Premium")
+    - Choississez "Récurrent" comme type de prix ou "Ponctuel" selon vos besoins
+    - Définissez le montant, la devise et la fréquence de facturation ("mensuel")
+    - Pour ajouter une fréquence annuelle de facturation supplémentaire, cliquez sur "Autres options tarifaires"
+    - Définissez le montant, la devise et la fréquence de facturation ("annuel")
+    - Enregistrez le produit
+    - Cliquez sur le produit créé pour voir les détails
+    - Pour chaque tarif cliquez sur "..." -> "modifier le tarif"
+    - Ajoutez une "Clé de recherche" (ex: "basic_monthly", "pro_annual")
+    - Enregistrez les modifications
+    - Dans le fichier `src/lib/stripe/stripe-plan.ts`, modifier la valeur de `priceLookupKey` et `annualLookupKey` avec les clés de recherche définies dans Stripe
+    - L'application s'occupe de recuperer et de mettre a jour automatiquement les plans.
 
-- [Guide de démarrage rapide Next.js](../docs/guide_quick_start_nextjs.md)
-- [Guide Prisma](../docs/guide_prisma.md)
-- [Guide Better-Auth](../docs/guide_better_auth.md)
-- [Guide de déploiement](../docs/guide_deployment.md)
+3. Configurez les webhooks Stripe pour gérer les événements d'abonnement.
+    - Dans le tableau de bord Stripe, allez dans "Développeurs" -> "Webhooks"
+    - Cliquez sur "Ajouter une destination"
+    - Selectionnez les événements
+      - `checkout.session.completed` (pour les nouveaux abonnements)
+      - `customer.subscription.updated` (pour les mises à jour d'abonnement)
+      - `customer.subscription.deleted` (pour les annulations d'abonnement)
+      - 
+
+4. Testez les paiements avec les cartes de test Stripe.
+5. Passez en mode production en utilisant vos clés API live.
 
 ## 📁 Structure du Projet
 
@@ -316,17 +340,6 @@ pnpm prisma-seed      # Insérer des données initiales
 pnpm lint             # Vérifier le code avec ESLint
 ```
 
-## 🔐 Authentification
-
-Le projet utilise Better-Auth pour l'authentification. Les utilisateurs peuvent :
-
-- S'inscrire avec email/mot de passe
-- Se connecter avec email/mot de passe
-- Se connecter avec Google
-- Gérer leur session
-- Se déconnecter
-- Suppression de compte
-
 ## 🚢 Déploiement
 
 Le projet est optimisé pour le déploiement sur Vercel :
@@ -338,7 +351,7 @@ Le projet est optimisé pour le déploiement sur Vercel :
 
 Voir le [guide de déploiement](../docs/guide_deployment.md) pour plus de détails.
 
-## 📖 Learn More
+## 📖 Documentations
 
 Pour en savoir plus sur les technologies utilisées :
 
