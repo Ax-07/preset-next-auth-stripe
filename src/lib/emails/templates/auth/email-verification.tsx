@@ -19,7 +19,7 @@ export default function EmailVerification({
   verificationUrl,
   expiresInHours = 24,
   companyName = "Votre App",
-  logoUrl,
+  ...props
 }: EmailVerificationProps) {
   const preview = `Vérifiez votre adresse email pour ${companyName}`;
 
@@ -65,7 +65,7 @@ export default function EmailVerification({
       <EmailText size="small" color="light" align="center">
         Ce lien de vérification expirera dans {expiresInHours} heures.
         <br />
-        Si vous n'avez pas créé de compte, vous pouvez ignorer cet email.
+        Si vous n&apos;avez pas créé de compte, vous pouvez ignorer cet email.
       </EmailText>
 
       <EmailSpacer size="small" />

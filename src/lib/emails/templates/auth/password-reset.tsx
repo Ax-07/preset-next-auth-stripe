@@ -21,7 +21,7 @@ export default function PasswordReset({
   expiresInHours = 1,
   requestedAt,
   companyName = "Votre App",
-  logoUrl,
+  ...props
 }: PasswordResetProps) {
   const preview = `Réinitialisez votre mot de passe pour ${companyName}`;
 
@@ -71,9 +71,9 @@ export default function PasswordReset({
           <strong>⚠️ Important</strong>
         </EmailText>
         <EmailText size="small" color="default" margin="none">
-          Ce lien de réinitialisation expirera dans <strong>{expiresInHours} heure{expiresInHours > 1 ? 's' : ''}</strong>.
+          Ce lien de réinitialisation expirera dans <strong>{expiresInHours} heure{expiresInHours > 1 ? "s" : ""}</strong>.
           <br />
-          Si vous n'avez pas demandé cette réinitialisation, ignorez cet email ou contactez notre support.
+          Si vous n&apos;avez pas demandé cette réinitialisation, ignorez cet email ou contactez notre support.
         </EmailText>
       </EmailCard>
 
@@ -94,7 +94,7 @@ export default function PasswordReset({
       <EmailSpacer size="small" />
 
       <EmailText size="small" color="light" align="center">
-        Pour votre sécurité, ce lien ne peut être utilisé qu'une seule fois.
+        Pour votre sécurité, ce lien ne peut être utilisé qu&apos;une seule fois.
       </EmailText>
     </EmailLayout>
   );

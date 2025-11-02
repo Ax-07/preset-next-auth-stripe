@@ -36,7 +36,7 @@ export const AccountDeleted = ({
   hadActiveSubscription = false,
   refundInfo,
   companyName = "Votre App",
-  logoUrl,
+  ...props
 }: AccountDeletedProps) => {
   const preview = `Votre compte ${companyName} a été supprimé définitivement`;
 
@@ -96,16 +96,16 @@ export const AccountDeleted = ({
 
       <EmailCard variant="warning" padding="medium">
         <EmailText size="small" color="default" margin="small">
-          <strong>📋 Que s'est-il passé ?</strong>
+          <strong>📋 Que s&apos;est-il passé ?</strong>
         </EmailText>
         <EmailText size="small" color="default" margin="none">
           • Votre compte utilisateur a été définitivement supprimé
           <br />
           • Toutes vos données personnelles ont été effacées
           <br />
-          • Votre historique d'activité n'est plus accessible
+          • Votre historique d&apos;activité n&apos;est plus accessible
           <br />
-          {hadActiveSubscription && '• Votre abonnement actif a été résilié'}
+          {hadActiveSubscription && "• Votre abonnement actif a été résilié"}
           <br />
           • Cette adresse email ne peut plus être utilisée pour se connecter
         </EmailText>
@@ -165,8 +165,8 @@ export const AccountDeleted = ({
               <strong>🔄 Possibilité de Réactivation</strong>
             </EmailText>
             <EmailText size="small" color="default" margin="none">
-              Vous avez changé d'avis ? Vous pouvez encore réactiver votre compte 
-              jusqu'au <strong>{reactivateDeadline}</strong>. Après cette date, 
+              Vous avez changé d&apos;avis ? Vous pouvez encore réactiver votre compte 
+              jusqu&apos;au <strong>{reactivateDeadline}</strong>. Après cette date, 
               la suppression sera définitive.
             </EmailText>
           </EmailCard>
@@ -181,7 +181,7 @@ export const AccountDeleted = ({
             </EmailButton>
             <EmailSpacer size="small" />
             <EmailText size="small" color="green" align="center">
-              ✅ Réactivation possible jusqu'au {reactivateDeadline}
+              ✅ Réactivation possible jusqu&apos;au {reactivateDeadline}
             </EmailText>
           </div>
           <EmailSpacer size="medium" />
@@ -194,7 +194,7 @@ export const AccountDeleted = ({
         </EmailText>
         <EmailText size="small" color="gray" margin="none">
           Si vous avez des questions sur cette suppression ou si vous pensez 
-          qu'il s'agit d'une erreur :
+          qu&apos;il s&apos;agit d&apos;une erreur :
           <br />
           • Contactez immédiatement notre support
           <br />
@@ -211,7 +211,7 @@ export const AccountDeleted = ({
           <strong>🙏 Merci</strong>
         </EmailText>
         <EmailText size="small" color="gray" margin="none">
-          Merci d'avoir fait partie de la communauté {companyName}. 
+          Merci d&apos;avoir fait partie de la communauté {companyName}. 
           Nous sommes tristes de vous voir partir et nous gardons un excellent 
           souvenir du temps que vous avez passé avec nous.
           <br /><br />
