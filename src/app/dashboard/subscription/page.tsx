@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CancelSubscriptionBtn } from "@/lib/stripe/components/cancel-subscription-btn";
+import { RestoreSubscriptionBtn } from "@/lib/stripe/components/restore-subscription-btn";
 import { getActiveSubscription } from "@/lib/stripe/stripe-server";
 import { formatDate } from "@/utils/formatDate";
 import Link from "next/link";
@@ -112,7 +113,10 @@ export default async function SubscriptionPage() {
               <Button variant="outline" asChild>
                 <Link href="/dashboard/pricing">Changer de plan</Link>
               </Button>
-              {!activeSubscription.cancelAtPeriodEnd && <CancelSubscriptionBtn />}
+              {!activeSubscription.cancelAtPeriodEnd 
+              ? <CancelSubscriptionBtn /> 
+              : <RestoreSubscriptionBtn />
+              }
             </div>
           </div>
         ) : (
