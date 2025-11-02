@@ -64,7 +64,7 @@ pnpm dev
 
 - ✅ Nodemailer configuré avec Gmail
 - ✅ Templates React Email responsives
-- ✅ Emails de vérification automatiques
+- ✅ Emails 
 - ✅ Emails de réinitialisation de mot de passe
 - ✅ Templates personnalisables
 
