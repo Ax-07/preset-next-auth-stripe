@@ -24,7 +24,6 @@ interface TrialExpiredProps extends UserEmailProps {
 
 export const TrialExpired = ({
   userName,
-  userEmail,
   planName,
   expiredDate,
   fullPrice,
@@ -33,15 +32,15 @@ export const TrialExpired = ({
   specialOffer,
   dataRetentionDays = 30,
   companyName = "Votre App",
-  logoUrl,
+  ...props
 }: TrialExpiredProps) => {
-  const preview = `Votre essai ${planName} a expiré - Offre spéciale à l'intérieur`;
+  const preview = `Votre essai ${planName} a expiré - Offre spéciale à l&apos;intérieur`;
   const billingText = billingPeriod === "yearly" ? "annuel" : "mensuel";
 
   return (
     <EmailLayout preview={preview} companyName={companyName}>
       <EmailHeading level={1} align="center" color="default">
-        📋 Votre Période d'Essai a Expiré
+        📋 Votre Période d&apos;Essai a Expiré
       </EmailHeading>
 
       <EmailText size="large" align="center" color="gray">
@@ -49,8 +48,8 @@ export const TrialExpired = ({
       </EmailText>
 
       <EmailText color="default">
-        Votre période d'essai gratuite pour <strong>{planName}</strong> a expiré 
-        le {expiredDate}. Bien que vous n'ayez plus accès aux fonctionnalités premium, 
+        Votre période d&apos;essai gratuite pour <strong>{planName}</strong> a expiré 
+        le {expiredDate}. Bien que vous n&apos;ayez plus accès aux fonctionnalités premium, 
         vos données restent en sécurité et nous espérons vous revoir bientôt !
       </EmailText>
 
@@ -62,10 +61,10 @@ export const TrialExpired = ({
           <strong>Plan :</strong> {planName} (expiré)
         </EmailText>
         <EmailText size="small" color="default" margin="small">
-          <strong>Date d'expiration :</strong> {expiredDate}
+          <strong>Date d&apos;expiration :</strong> {expiredDate}
         </EmailText>
         <EmailText size="small" color="gray" margin="none">
-          <strong>Données conservées jusqu'au :</strong> {dataRetentionDays} jours après expiration
+          <strong>Données conservées jusqu&apos;au :</strong> {dataRetentionDays} jours après expiration
         </EmailText>
       </EmailCard>
 
@@ -118,7 +117,7 @@ export const TrialExpired = ({
               variant="primary" 
               size="large"
             >
-              {specialOffer ? `Réactiver avec ${specialOffer.discount}% de réduction` : 'Réactiver mon compte'}
+              {specialOffer ? `Réactiver avec ${specialOffer.discount}% de réduction` : "Réactiver mon compte"}
             </EmailButton>
             <EmailSpacer size="small" />
             <EmailText size="small" color="gray" align="center">

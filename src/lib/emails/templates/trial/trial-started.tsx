@@ -21,7 +21,6 @@ interface TrialStartedProps extends UserEmailProps {
 
 export default function TrialStarted({
   userName,
-  userEmail,
   planName,
   trialDays,
   trialEndDate,
@@ -31,7 +30,7 @@ export default function TrialStarted({
   trialPrice = "Gratuit",
   fullPrice,
   companyName = "Votre App",
-  logoUrl,
+  ...props
 }: TrialStartedProps) {
   const preview = `Votre essai gratuit de ${trialDays} jours a commencé !`;
 
@@ -46,27 +45,27 @@ export default function TrialStarted({
       </EmailText>
 
       <EmailText color="default">
-        Félicitations ! Votre période d'essai gratuite de <strong>{trialDays} jours</strong> 
+        Félicitations ! Votre période d&apos;essai gratuite de <strong>{trialDays} jours</strong> 
         pour <strong>{planName}</strong> vient de commencer. Profitez de toutes les 
         fonctionnalités premium sans aucun engagement !
       </EmailText>
 
       <EmailCard variant="success" padding="medium">
         <EmailText size="small" color="default" margin="small">
-          <strong>Plan d'essai :</strong> {planName}
+          <strong>Plan d&apos;essai :</strong> {planName}
         </EmailText>
         <EmailText size="small" color="default" margin="small">
           <strong>Durée :</strong> {trialDays} jours
         </EmailText>
         <EmailText size="small" color="default" margin="small">
-          <strong>Prix pendant l'essai :</strong> {trialPrice}
+          <strong>Prix pendant l&apos;essai :</strong> {trialPrice}
         </EmailText>
         <EmailText size="small" color="default" margin="small">
-          <strong>Fin de l'essai :</strong> {trialEndDate}
+          <strong>Fin de l&apos;essai :</strong> {trialEndDate}
         </EmailText>
         {fullPrice && (
           <EmailText size="small" color="gray" margin="none">
-            <strong>Prix après l'essai :</strong> {fullPrice}
+            <strong>Prix après l&apos;essai :</strong> {fullPrice}
           </EmailText>
         )}
       </EmailCard>
@@ -97,7 +96,7 @@ export default function TrialStarted({
               variant="primary" 
               size="large"
             >
-              Commencer l'exploration
+              Commencer l&apos;exploration
             </EmailButton>
             <EmailSpacer size="small" />
           </>
@@ -109,7 +108,7 @@ export default function TrialStarted({
             variant="secondary" 
             size="medium"
           >
-            Voir les options d'abonnement
+            Voir les options d&apos;abonnement
           </EmailButton>
         )}
       </div>
@@ -123,7 +122,7 @@ export default function TrialStarted({
         <EmailText size="small" color="default" margin="none">
           • Votre essai se termine automatiquement le <strong>{trialEndDate}</strong>
           <br />
-          • Aucun paiement ne sera effectué pendant l'essai
+          • Aucun paiement ne sera effectué pendant l&apos;essai
           <br />
           • Vous pouvez annuler à tout moment sans frais
           <br />
