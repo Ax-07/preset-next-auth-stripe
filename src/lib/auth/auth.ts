@@ -2,11 +2,13 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 // If your Prisma file is located elsewhere, you can change the path
 import { prisma } from "@/lib/database/prisma.client";
-import { sendEmail } from "@/lib/mail/mail.service";
 import { stripe, Subscription } from "@better-auth/stripe"
 import { stripeClient } from "../stripe/stripe";
-import { getStripePlans } from "../stripe/stripe-server";
+import { findUserForSubscription, getStripePlans } from "../stripe/stripe-server";
 import Stripe from "stripe";
+import { sendEmail } from "../emails/mail.service";
+import { createAccountDeletedEmail, createPasswordResetEmail, createSubscriptionWelcomeEmail, createTrialEndingEmail, createTrialExpiredEmail, createTrialStartedEmail, createVerificationEmail, createWelcomeEmail } from "../emails/templates/helpers";
+import { formatDate } from "@/utils/formatDate";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -42,6 +44,11 @@ export const auth = betterAuth({
       },
       afterDelete: async (user) => {
         console.log(`Compte supprimé: ${user.email}`);
+        const accountDeletedEmail = await createAccountDeletedEmail({
+          user: { name: user.name, email: user.email },
+          deletedDate: formatDate(new Date()),
+        });
+        await sendEmail(accountDeletedEmail);
       }
     }
   },
@@ -54,7 +61,7 @@ export const auth = betterAuth({
     // Règles personnalisées par endpoint Better Auth
     customRules: {
       // Webhooks Stripe - PAS de rate limiting (Stripe envoie beaucoup d'événements rapidement)
-      "/stripe/webhook": {
+      "/api/auth/stripe/webhook": {
         window: 60,
         max: 1000, // Très permissif pour les webhooks
       },
@@ -125,18 +132,15 @@ export const auth = betterAuth({
     sendResetPassword: async ({ user, url }) => {
       // L'URL générée par better-auth contient déjà le token
       // Elle pointe vers /auth/reset-password?token=xxx grâce au redirectTo
-      await sendEmail({
-        to: user.email,
-        subject: "Réinitialisation de votre mot de passe",
-        text: `Cliquez sur ce lien pour réinitialiser votre mot de passe: ${url}`,
-        html: `<p>Bonjour,</p>
-                       <p>Vous avez demandé à réinitialiser votre mot de passe. Cliquez sur le lien ci-dessous pour créer un nouveau mot de passe :</p>
-                       <p><a href="${url}" target="_blank">${url}</a></p>
-                       <p>Ce lien expirera dans 1 heure.</p>
-                       <p>Si vous n'avez pas demandé cette réinitialisation, ignorez cet email.</p>`,
-        from: process.env.EMAIL_USER || "no-reply@example.com"
+      const resetEmail = await createPasswordResetEmail({
+        user: { name: user.name, email: user.email },
+        url
       });
+      await sendEmail(resetEmail);
     },
+    onPasswordReset: async ({ user }) => {
+      console.log(`Mot de passe réinitialisé pour l'utilisateur: ${user.email}`);
+    }
   },
   socialProviders: {
     google: {
@@ -148,20 +152,65 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignUp: true, // Envoyer automatiquement l'email de vérification lors de l'inscription
     sendVerificationEmail: async ({ user, url }) => {
-      await sendEmail({
-        to: user.email,
-        subject: "Vérification de votre adresse email",
-        text: `Cliquez sur ce lien pour vérifier votre adresse email: ${url}`,
-        html: `<p>Bonjour <strong>${user.name}</strong>,</p>
-                       <p>Merci de vous être inscrit. Cliquez sur le lien ci-dessous pour vérifier votre adresse email :</p>
-                       <p><a href="${url}" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #0070f3; color: white; text-decoration: none; border-radius: 5px;">Vérifier mon email</a></p>
-                       <p>Ou copiez ce lien dans votre navigateur :</p>
-                       <p>${url}</p>
-                       <p>Ce lien expirera dans 24 heures.</p>
-                       <p>Si vous n'avez pas demandé cette vérification, ignorez cet email.</p>`,
-        from: process.env.EMAIL_USER || "no-reply@example.com"
+      const verificationEmail = await createVerificationEmail({
+        user: { name: user.name, email: user.email },
+        url
       });
+      await sendEmail(verificationEmail);
     },
+    afterEmailVerification: async ({ id, email, name, createdAt }) => {
+      console.log(`Utilisateur vérifié: ${email} id: ${id} name: ${name} createdAt: ${createdAt}`);
+      const welcomeEmail = await createWelcomeEmail({
+        user: { name, email },
+        signupMethod: "email",
+        registrationDate: formatDate(createdAt),
+        isEmailVerified: true
+      });
+
+      await sendEmail(welcomeEmail);
+    }
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          // Modify user data before creation
+          return { data: { ...user, customField: "value" } };
+        },
+        after: async (user) => {
+          // Perform actions after user creation
+          // Envoyer un email de bienvenue si l'email est déjà vérifié (cas OAuth)
+          if (user.emailVerified) {
+            const welcomeEmail = await createWelcomeEmail({
+              user: { name: user.name, email: user.email },
+              signupMethod: "google",
+              registrationDate: formatDate(user.createdAt),
+              isEmailVerified: true
+            });
+
+            await sendEmail(welcomeEmail);
+          }
+        }
+      },
+      update: {
+        before: async (userData) => {
+          // Modify user data before update
+          return { data: { ...userData, updatedAt: new Date() } };
+        },
+        after: async (user) => {
+          // Perform actions after user update
+        }
+      }
+    },
+    session: {
+      // Session hooks
+    },
+    account: {
+      // Account hooks
+    },
+    verification: {
+      // Verification hooks
+    }
   },
   plugins: [
     stripe({
@@ -176,17 +225,67 @@ export const auth = betterAuth({
             name: p.name,
             priceId: p.priceId!,
             annualDiscountPriceId: p.annualDiscountPriceId || undefined,
-            freeTrial: p.freeTrial || undefined,
+            // freeTrial: p.freeTrial || undefined,
+            freeTrial: {
+              days: p.freeTrial?.days || 0,
+              onTrialStart: async (subscription) => {
+                // Appelé lorsque la période d'essai commence
+                const user = await findUserForSubscription({ stripeCustomerId: subscription.stripeCustomerId });
+                console.log("user n'a pas été récupérer")
+                if (user) {
+                  const trialStartedEmail = await createTrialStartedEmail({
+                    user: { name: user.name, email: user?.email },
+                    plan: { name: p.name, price: p.price.toString() },
+                    trial: {
+                      duration: p.freeTrial?.days || 0,
+                      startDate: formatDate(subscription.periodStart || new Date()),
+                      endDate: formatDate(subscription.periodEnd || new Date())
+                    }
+                  })
+                  await sendEmail(trialStartedEmail)
+                }
+              },
+              onTrialEnd: async ({ subscription }, request) => {
+                // Appelé lorsque la période d'essai se termine
+                const user = await findUserForSubscription({ stripeCustomerId: subscription.stripeCustomerId });
+                console.log("user n'a pas été récupérer")
+                if (user) {
+                  const trialStartedEmail = await createTrialEndingEmail({
+                    user: { name: user.name, email: user?.email },
+                    plan: { name: p.name, price: p.price.toString() },
+                    trial: {
+                      endDate: formatDate(subscription.periodEnd || new Date())
+                    }
+                  })
+                  await sendEmail(trialStartedEmail)
+                }
+              },
+              onTrialExpired: async (subscription) => {
+                // Appelé lorsque la période d'essai expire sans conversion
+                const user = await findUserForSubscription({ stripeCustomerId: subscription.stripeCustomerId });
+                console.log("user n'a pas été récupérer")
+                if (user) {
+                  const trialStartedEmail = await createTrialExpiredEmail({
+                    user: { name: user.name, email: user?.email },
+                    plan: { name: p.name, price: p.price.toString() },
+                    trial: {
+                      expiredDate: formatDate(subscription.periodEnd || new Date())
+                    }
+                  })
+                  await sendEmail(trialStartedEmail)
+                }
+              }
+            }
           }));
         },
 
         onSubscriptionComplete: async ({ event, subscription, stripeSubscription, plan }) => {
           console.log("🎯 onSubscriptionComplete DÉCLENCHÉ !");
-          
+
           const e = event as Stripe.Event;
-          const sub = subscription as Subscription;
-          const stripeSub = stripeSubscription as Stripe.Subscription;
-          const p = plan;
+          const sub = subscription as Subscription; console.log("subscription:", sub)
+          const stripeSub = stripeSubscription as Stripe.Subscription; console.log('stripe subscription: ', stripeSub)
+          const p = plan; console.log("plan: ", plan)
 
           console.log("✅ Nouvelle souscription créée via webhook Stripe:", {
             eventType: e.type,
@@ -196,11 +295,30 @@ export const auth = betterAuth({
             statusStripe: stripeSub.status,
             planName: p?.name || 'unknown',
           });
+          
+          
+          const user = await findUserForSubscription({ stripeCustomerId: subscription.stripeCustomerId });
+          console.log("user: ", user)
+          if (user) {
+            const interval = stripeSub.items.data[0]?.price?.recurring?.interval;
+            const billingPeriod = interval === 'year' ? 'yearly' : interval === 'month' ? 'monthly' : undefined;
 
+            const subscriptionEmail = await createSubscriptionWelcomeEmail({
+              user: { name: user.name, email: user.email },
+              plan: { name: p.name, price: p.priceId },
+              subscription: {
+                billingPeriod,
+                nextBillingDate: formatDate(sub.periodEnd || new Date()),
+                nextBillingAmount: ((stripeSub.items.data[0]?.price?.unit_amount || 0) / 100).toString()
+              },
+              features: []
+            })
+            await sendEmail(subscriptionEmail)
+          }
         },
         onSubscriptionUpdate: async ({ subscription }) => {
           console.log("🔄 onSubscriptionUpdate DÉCLENCHÉ !");
-          
+
           // Logs détaillés pour debug
           console.log("📊 Détails de la mise à jour:", {
             referenceId: subscription.referenceId,
@@ -208,7 +326,7 @@ export const auth = betterAuth({
             status: subscription.status,
             cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
           });
-          
+
           await prisma.subscription.updateMany({
             where: { stripeSubscriptionId: subscription.id },
             data: {
@@ -216,18 +334,17 @@ export const auth = betterAuth({
               cancelAtPeriodEnd: !!subscription.cancelAtPeriodEnd,
             },
           });
-          
+
           // Si l'abonnement est marqué pour annulation, le signaler
           if (subscription.cancelAtPeriodEnd) {
             console.log("⚠️ Abonnement programmé pour annulation à la fin de la période");
           }
-          
+
           console.log("✅ Subscription updated:", subscription.id);
         },
-
         onSubscriptionCancel: async ({ subscription }) => {
           console.log("❌ onSubscriptionCancel DÉCLENCHÉ !");
-          
+
           await prisma.subscription.updateMany({
             where: { referenceId: subscription.referenceId },
             data: { status: "canceled" },
@@ -237,10 +354,33 @@ export const auth = betterAuth({
             where: { id: subscription.referenceId },
             data: { stripeSubscriptionId: null },
           });
-          
+
           console.log("✅ Subscription cancelled:", subscription.referenceId);
         },
+        onSubscriptionDeleted: async ({ subscription }) => {
+          console.log("🗑️ onSubscriptionDeleted DÉCLENCHÉ !");
+          await prisma.subscription.deleteMany({
+            where: { stripeSubscriptionId: subscription.stripeSubscriptionId },
+          });
+          console.log("✅ Subscription deleted:", subscription.stripeSubscriptionId);
+        }
       },
+      onEvent: async (event) => {
+        console.log("📢 Événement Stripe reçu:", event.type);
+        switch (event.type) {
+          case "invoice.payment_failed":
+            const invoice = event.data.object as Stripe.Invoice;
+            console.log(`⚠️ Paiement échoué pour la facture ${invoice.id} du client ${invoice.customer}`);
+            break;
+          case "customer.subscription.trial_will_end":
+            const subscription = event.data.object as Stripe.Subscription;
+            console.log(`⏳ La période d'essai de l'abonnement ${subscription.id} du client ${subscription.customer} va bientôt se terminer.`);
+            break;
+          // Gérer d'autres types d'événements si nécessaire
+          default:
+            console.log(`ℹ️ Événement non géré: ${event.type}`);
+        }
+      }
     }),
   ],
 });
