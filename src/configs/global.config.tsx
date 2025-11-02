@@ -19,10 +19,10 @@ export const globalconfig: GlobalConfig = {
     // Description du site
     description: "Description de Acme",
     // Favicon du site
-    favicon: "/images/favicon.png",
+    favicon: "/images/favicon.ico",
     // Logo du site
     logo: {
-        src: "/images/logo.png",
+        src: "/vercel.svg",
         alt: "", // Placeholder to avoid circular reference
     },
 };
