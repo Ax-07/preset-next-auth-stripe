@@ -278,9 +278,11 @@ export const restoreSubscription = async () => {
     });
 
     console.log("✅ Résultat de l'API restoreSubscription:", JSON.stringify(data, null, 2));
+    return data; // Retourner les données
 
-  } catch {
-    console.warn("⚠️ Erreur avec Better Auth, restauration non supportée pour le moment.");
+  } catch (error) {
+    console.warn("⚠️ Erreur avec Better Auth, restauration non supportée pour le moment.", error);
+    throw error; // Relancer l'erreur pour que le composant puisse la gérer
   }
 };
 
