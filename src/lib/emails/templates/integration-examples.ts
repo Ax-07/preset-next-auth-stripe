@@ -58,7 +58,12 @@ export const sendResetPasswordCallback = async ({ user, url }: {
 export const sendSubscriptionWelcomeCallback = async (data: {
   user: { name: string; email: string };
   plan: { name: string; price?: string };
-  subscription: any;
+  subscription: {
+    billingPeriod?: "monthly" | "yearly";
+    nextBillingDate?: string;
+    nextBillingAmount?: string;
+    [key: string]: unknown;
+  };
 }) => {
   try {
     const emailData = await createSubscriptionWelcomeEmail({
