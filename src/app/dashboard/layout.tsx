@@ -8,18 +8,18 @@ import { redirect } from "next/navigation";
 import { PropsWithChildren } from "react";
 
 export default async function Layout({ children }: PropsWithChildren) {
-    const user = await getUser();
-  
-    if (!user) {
-      redirect("/auth/signin");
-    }
+  const user = await getUser();
 
-    // Préparer les données utilisateur pour la sidebar
-    const sidebarUser = {
-      name: user.name,
-      email: user.email,
-      avatar: user.image || null
-    };
+  if (!user) {
+    redirect("/auth/signin");
+  }
+
+  // Préparer les données utilisateur pour la sidebar
+  const sidebarUser = {
+    name: user.name,
+    email: user.email,
+    avatar: user.image || null,
+  };
 
   return (
     <SidebarProvider>
