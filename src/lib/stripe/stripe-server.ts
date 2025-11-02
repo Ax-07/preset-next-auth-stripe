@@ -6,10 +6,11 @@ import { PLANS } from "./stripe-plan";
 import { stripeClient } from "./stripe";
 import type Stripe from "stripe";
 import type { StripePlan } from "@/lib/stripe/types/stripe";
+import { prisma } from "../database/prisma.client";
 
 // Déterminer l'URL de base en fonction de l'environnement
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL 
-  || process.env.BETTER_AUTH_URL 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+  || process.env.BETTER_AUTH_URL
   || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
 /**
@@ -20,27 +21,27 @@ const baseUrl = process.env.NEXT_PUBLIC_APP_URL
 export const subscribe = async (plan: string) => {
   try {
     console.log("🔄 Début de la souscription au plan:", plan);
-    
-    
+
+
     console.log("🌐 Base URL utilisée:", baseUrl);
-    
+
     // Récupérer les abonnements actifs de l'utilisateur
-    const subscriptions = await auth.api.listActiveSubscriptions({ 
-      headers: await headers() 
+    const subscriptions = await auth.api.listActiveSubscriptions({
+      headers: await headers()
     });
-    
+
     console.log("📋 Abonnements existants:", subscriptions);
-    
+
     const subscriptionId = subscriptions[0]?.id;
-    
+
     // Préparer le payload pour Better Auth
     const payload: Parameters<typeof auth.api.upgradeSubscription>[0]['body'] = {
       plan,
-      successUrl: `${baseUrl}/dashboard?subscription=success`,
+      successUrl: `${baseUrl}/dashboard/subscription`,
       cancelUrl: `${baseUrl}/pricing`,
       disableRedirect: true, // Important : ne pas rediriger automatiquement
     };
-    
+
     // Si l'utilisateur a déjà un abonnement, l'inclure pour upgrade/downgrade
     if (subscriptionId) {
       console.log("🔄 Mise à jour de l'abonnement existant:", subscriptionId);
@@ -48,15 +49,15 @@ export const subscribe = async (plan: string) => {
     } else {
       console.log("✨ Création d'un nouvel abonnement");
     }
-    
+
     // Appeler l'API Better Auth pour créer la session de checkout
     const result = await auth.api.upgradeSubscription({
       headers: await headers(),
       body: payload,
     });
-    
+
     console.log("✅ Résultat de l'API:", result);
-    
+
     return result;
   } catch (error) {
     console.error("❌ Erreur dans subscribe():", error);
@@ -186,40 +187,40 @@ export const getStripePlans = async (): Promise<{
  * @returns URL vers le Customer Portal Stripe
  */
 export const cancelSubscription = async () => {
-  const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() }); 
+  const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() });
   console.log("📋 Abonnements actifs:", subscriptions);
-  
+
   if (!subscriptions || subscriptions.length === 0) {
     console.log("⚠️ Aucun abonnement actif trouvé pour l'utilisateur.");
     throw new Error("Aucun abonnement actif à annuler");
   }
-  
-  const subscriptionId = subscriptions[0].id; 
+
+  const subscriptionId = subscriptions[0].id;
   const stripeCustomerId = subscriptions[0].stripeCustomerId;
-  
+
   console.log("🎯 ID de l'abonnement à annuler:", subscriptionId);
   console.log("👤 Stripe Customer ID:", stripeCustomerId);
-  
+
   if (!subscriptionId || !stripeCustomerId) {
     console.error("❌ Données d'abonnement manquantes");
     throw new Error("Données d'abonnement invalides");
   }
-  
+
   // MÉTHODE 1 : Via Better Auth (essayer d'abord)
   console.log("🔄 Tentative via Better Auth API...");
-  console.log("🌐 URL de retour:", `${baseUrl}/dashboard?subscription=canceled`);
-  
+  console.log("🌐 URL de retour:", `${baseUrl}/dashboard/subscription`);
+
   try {
     const data = await auth.api.cancelSubscription({
       body: {
         subscriptionId,
-        returnUrl: `${baseUrl}/dashboard?subscription=canceled`,
+        returnUrl: `${baseUrl}/dashboard/subscription`,
       },
       headers: await headers(),
     });
-    
+
     console.log("✅ Résultat de l'API cancelSubscription:", JSON.stringify(data, null, 2));
-    
+
     // Vérifier si une URL est retournée
     if (data && typeof data === 'object' && 'url' in data) {
       console.log("🔗 URL du Customer Portal (via Better Auth):", data.url);
@@ -230,19 +231,56 @@ export const cancelSubscription = async () => {
     }
   } catch (betterAuthError) {
     console.warn("⚠️ Erreur avec Better Auth, utilisation de l'API Stripe directement:", betterAuthError);
-    
+
     // MÉTHODE 2 : Créer directement une session du Customer Portal via Stripe
     console.log("🔄 Création directe d'une session Customer Portal via Stripe...");
-    
+
     const portalSession = await stripeClient.billingPortal.sessions.create({
       customer: stripeCustomerId,
-      return_url: `${baseUrl}/dashboard?subscription=canceled`,
+      return_url: `${baseUrl}/dashboard/subscription`,
     });
-    
+
     console.log("✅ Session Customer Portal créée:", portalSession.id);
     console.log("🔗 URL du Customer Portal (via Stripe directement):", portalSession.url);
-    
+
     return { url: portalSession.url };
+  }
+};
+
+export const restoreSubscription = async () => {
+  // Récupérer les abonnements actifs de l'utilisateur
+  const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() });
+  console.log("📋 Abonnements actifs:", subscriptions);
+
+  if (!subscriptions || subscriptions.length === 0) {
+    console.log("⚠️ Aucun abonnement actif trouvé pour l'utilisateur.");
+    throw new Error("Aucun abonnement actif à annuler");
+  }
+
+  const subscriptionId = subscriptions[0].id;
+  const stripeCustomerId = subscriptions[0].stripeCustomerId;
+
+  console.log("🎯 ID de l'abonnement à annuler:", subscriptionId);
+  console.log("👤 Stripe Customer ID:", stripeCustomerId);
+
+  if (!subscriptionId || !stripeCustomerId) {
+    console.error("❌ Données d'abonnement manquantes");
+    throw new Error("Données d'abonnement invalides");
+  }
+
+  try {
+    const data = await auth.api.restoreSubscription({
+      body: {
+        subscriptionId,
+      },
+      // This endpoint requires session cookies.
+      headers: await headers(),
+    });
+
+    console.log("✅ Résultat de l'API restoreSubscription:", JSON.stringify(data, null, 2));
+
+  } catch {
+    console.warn("⚠️ Erreur avec Better Auth, restauration non supportée pour le moment.");
   }
 };
 
@@ -269,17 +307,17 @@ export const getUserInvoices = async (limit: number = 10) => {
   try {
     // Récupérer la session utilisateur
     const session = await auth.api.getSession({ headers: await headers() });
-    
+
     if (!session?.user) {
       return { success: false, error: "Utilisateur non connecté" };
     }
 
     // Récupérer le customer ID Stripe depuis Better Auth
     const subscriptions = await auth.api.listActiveSubscriptions({ headers: await headers() });
-    
+
     // Si l'utilisateur a des abonnements, récupérer le customer ID
     let customerId: string | null = null;
-    
+
     if (subscriptions && subscriptions.length > 0 && subscriptions[0].stripeCustomerId) {
       customerId = subscriptions[0].stripeCustomerId;
     } else {
@@ -322,8 +360,8 @@ export const getUserInvoices = async (limit: number = 10) => {
       amountPaid: invoice.amount_paid / 100, // Montant payé
     }));
 
-    return { 
-      success: true, 
+    return {
+      success: true,
       data: formattedInvoices,
       hasMore: invoices.has_more,
     };
@@ -333,3 +371,19 @@ export const getUserInvoices = async (limit: number = 10) => {
   }
 };
 
+/**
+ * Récupère l’utilisateur depuis les données Stripe / Better-Auth
+ * @param opts 
+ * @returns 
+ */
+export async function findUserForSubscription(
+  opts: { referenceId?: string; stripeCustomerId?: string }
+) {
+  if (opts.referenceId) {
+    return prisma.user.findUnique({ where: { id: opts.referenceId } });
+  }
+  if (opts.stripeCustomerId) {
+    return prisma.user.findFirst({ where: { stripeCustomerId: opts.stripeCustomerId } });
+  }
+  return null;
+}
