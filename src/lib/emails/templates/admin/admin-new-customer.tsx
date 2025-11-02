@@ -50,7 +50,7 @@ export default function AdminNewCustomer({
   subscriptionDetails,
   userStats,
   companyName = "Votre App",
-  logoUrl,
+  ...props
 }: AdminNewCustomerProps) {
   const preview = `Nouveau client : ${userName} - ${planName || 'Inscription gratuite'}`;
 
@@ -128,7 +128,7 @@ export default function AdminNewCustomer({
         )}
         {isTrialUser && (
           <EmailText size="small" color="default" margin="small">
-            <strong>Durée d'essai :</strong> {trialDays} jours
+            <strong>Durée d&apos;essai :</strong> {trialDays} jours
           </EmailText>
         )}
         {subscriptionDetails && (
@@ -153,7 +153,7 @@ export default function AdminNewCustomer({
           <EmailSpacer size="medium" />
           <EmailCard variant="default" padding="medium">
             <EmailText size="small" color="default" margin="small">
-              <strong>📊 Informations d'Acquisition</strong>
+              <strong>📊 Informations d&apos;Acquisition</strong>
             </EmailText>
             {referralSource && (
               <EmailText size="small" color="gray" margin="small">
@@ -242,7 +242,7 @@ export default function AdminNewCustomer({
           {isFirstPayingCustomer && (
             <>
               <br />
-              • 🎉 <strong>Célébrer le premier client payant avec l'équipe !</strong>
+              • 🎉 <strong>Célébrer le premier client payant avec l&apos;équipe !</strong>
             </>
           )}
         </EmailText>
@@ -255,13 +255,13 @@ export default function AdminNewCustomer({
           <strong>📝 Notes Importantes</strong>
         </EmailText>
         <EmailText size="small" color="gray" margin="none">
-          • Ce client vient de s'inscrire et mérite une attention particulière
+          • Ce client vient de s&apos;inscrire et mérite une attention particulière
           <br />
           • Surveiller son engagement dans les premiers jours
           <br />
           • Répondre rapidement à ses éventuelles questions
           <br />
-          • Analyser son parcours pour optimiser l'expérience d'autres clients
+          • Analyser son parcours pour optimiser l&apos;expérience d&apos;autres clients
           {isPaidPlan && (
             <>
               <br />
