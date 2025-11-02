@@ -197,7 +197,7 @@ export const auth = betterAuth({
           // Modify user data before update
           return { data: { ...userData, updatedAt: new Date() } };
         },
-        after: async (user) => {
+        after: async (_user) => {
           // Perform actions after user update
         }
       }
@@ -245,7 +245,7 @@ export const auth = betterAuth({
                   await sendEmail(trialStartedEmail)
                 }
               },
-              onTrialEnd: async ({ subscription }, request) => {
+              onTrialEnd: async ({ subscription }, _request) => {
                 // Appelé lorsque la période d'essai se termine
                 const user = await findUserForSubscription({ stripeCustomerId: subscription.stripeCustomerId });
                 console.log("user n'a pas été récupérer")
