@@ -34,7 +34,6 @@ export const SubscriptionDeleted = ({
   exportDataUrl,
   refundInfo,
   companyName = "Votre App",
-  logoUrl,
 }: SubscriptionDeletedProps) => {
   const preview = `Votre abonnement ${planName} a été supprimé définitivement`;
 
@@ -133,7 +132,7 @@ export const SubscriptionDeleted = ({
             </EmailButton>
             <EmailSpacer size="small" />
             <EmailText size="small" color="red" align="center">
-              ⚠️ Lien d'export valide uniquement jusqu'au {dataRetentionDate}
+              ⚠️ Lien d&apos;export valide uniquement jusqu&apos;au {dataRetentionDate}
             </EmailText>
             <EmailSpacer size="small" />
           </>
@@ -154,7 +153,7 @@ export const SubscriptionDeleted = ({
 
       <EmailCard variant="info" padding="medium">
         <EmailText size="small" color="default" margin="small">
-          <strong>📞 Besoin d'Aide ?</strong>
+          <strong>📞 Besoin d&apos;Aide ?</strong>
         </EmailText>
         <EmailText size="small" color="gray" margin="none">
           Si cette suppression vous semble incorrecte ou si vous avez des questions :
@@ -174,7 +173,7 @@ export const SubscriptionDeleted = ({
           <strong>🙏 Merci</strong>
         </EmailText>
         <EmailText size="small" color="gray" margin="none">
-          Merci d'avoir utilisé {companyName}. Bien que cette suppression marque 
+          Merci d&apos;avoir utilisé {companyName}. Bien que cette suppression marque 
           la fin de notre collaboration, nous gardons un excellent souvenir 
           du temps passé ensemble.
           <br /><br />

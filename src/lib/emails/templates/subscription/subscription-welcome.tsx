@@ -27,7 +27,6 @@ export default function SubscriptionWelcome({
   billingUrl,
   features = [],
   companyName = "Votre App",
-  logoUrl,
 }: SubscriptionWelcomeProps) {
   const preview = `Bienvenue dans ${planName} ! Votre abonnement est maintenant actif.`;
   const billingText = billingPeriod === "yearly" ? "annuel" : "mensuel";
@@ -114,10 +113,10 @@ export default function SubscriptionWelcome({
 
       <EmailCard variant="default" padding="medium">
         <EmailText size="small" color="default" margin="small">
-          <strong>🤝 Besoin d'aide ?</strong>
+          <strong>🤝 Besoin d&apos;aide ?</strong>
         </EmailText>
         <EmailText size="small" color="gray" margin="none">
-          Notre équipe support est là pour vous accompagner. N'hésitez pas à nous contacter 
+          Notre équipe support est là pour vous accompagner. N&apos;hésitez pas à nous contacter 
           si vous avez des questions sur votre abonnement ou nos fonctionnalités.
         </EmailText>
       </EmailCard>

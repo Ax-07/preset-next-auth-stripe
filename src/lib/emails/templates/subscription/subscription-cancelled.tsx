@@ -33,7 +33,6 @@ export default function SubscriptionCancelled({
   exportDataUrl,
   feedbackUrl,
   companyName = "Votre App",
-  logoUrl,
 }: SubscriptionCancelledProps) {
   const preview = `Votre abonnement ${planName} a été annulé`;
 
@@ -57,10 +56,10 @@ export default function SubscriptionCancelled({
           <strong>Plan annulé :</strong> {planName}
         </EmailText>
         <EmailText size="small" color="default" margin="small">
-          <strong>Date d'annulation :</strong> {cancelledDate}
+          <strong>Date d&apos;annulation :</strong> {cancelledDate}
         </EmailText>
         <EmailText size="small" color="default" margin="small">
-          <strong>Accès jusqu'au :</strong> {accessEndDate}
+          <strong>Accès jusqu&apos;au :</strong> {accessEndDate}
         </EmailText>
         <EmailText size="small" color="gray" margin="none">
           <strong>Compte :</strong> {userEmail}
@@ -91,7 +90,7 @@ export default function SubscriptionCancelled({
           <strong>🔄 Que se passe-t-il maintenant ?</strong>
         </EmailText>
         <EmailText size="small" color="default" margin="none">
-          • Vous gardez l'accès complet jusqu'au <strong>{accessEndDate}</strong>
+          • Vous gardez l&apos;accès complet jusqu&apos;au <strong>{accessEndDate}</strong>
           <br />
           • Aucun prélèvement automatique ne sera effectué
           <br />
@@ -147,7 +146,7 @@ export default function SubscriptionCancelled({
         <>
           <EmailCard variant="default" padding="medium">
             <EmailText size="small" color="default" margin="small">
-              <strong>📝 Raison de l'annulation</strong>
+              <strong>📝 Raison de l&apos;annulation</strong>
             </EmailText>
             <EmailText size="small" color="gray" margin="none">
               {reason}
@@ -162,10 +161,10 @@ export default function SubscriptionCancelled({
           <strong>💬 Vous nous manquerez !</strong>
         </EmailText>
         <EmailText size="small" color="gray" margin="none">
-          Merci d'avoir fait confiance à {companyName}. Nous espérons vous revoir bientôt !
+          Merci d&apos;avoir fait confiance à {companyName}. Nous espérons vous revoir bientôt !
           <br /><br />
           Si vous avez des questions ou si nous pouvons faire quelque chose pour 
-          améliorer votre expérience, n'hésitez pas à nous contacter.
+          améliorer votre expérience, n&apos;hésitez pas à nous contacter.
         </EmailText>
       </EmailCard>
 

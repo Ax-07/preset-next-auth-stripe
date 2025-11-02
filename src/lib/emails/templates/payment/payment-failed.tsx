@@ -29,7 +29,6 @@ export default function PaymentFailed({
   nextRetryDate,
   invoiceUrl,
   companyName = "Votre App",
-  logoUrl,
 }: PaymentFailedProps) {
   const preview = `Échec du paiement pour ${planName} - Action requise`;
 
@@ -121,8 +120,8 @@ export default function PaymentFailed({
             <>Nous réessaierons automatiquement le {nextRetryDate}. 
             Si le problème persiste, votre abonnement pourrait être suspendu.</>
           ) : (
-            <>Si ce problème n'est pas résolu sous 7 jours, votre abonnement 
-            pourrait être suspendu et vous perdrez l'accès aux fonctionnalités premium.</>
+            <>Si ce problème n&apos;est pas résolu sous 7 jours, votre abonnement 
+            pourrait être suspendu et vous perdrez l&apos;accès aux fonctionnalités premium.</>
           )}
         </EmailText>
       </EmailCard>
@@ -147,7 +146,7 @@ export default function PaymentFailed({
       <EmailSpacer size="small" />
 
       <EmailText size="small" color="light" align="center">
-        Besoin d'aide ? Contactez notre support, nous sommes là pour vous aider.
+        Besoin d&apos;aide ? Contactez notre support, nous sommes là pour vous aider.
       </EmailText>
     </EmailLayout>
   );

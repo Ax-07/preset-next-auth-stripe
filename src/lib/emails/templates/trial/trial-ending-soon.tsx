@@ -36,7 +36,6 @@ export default function TrialEndingSoon({
   featuresUsed = [],
   discount,
   companyName = "Votre App",
-  logoUrl,
 }: TrialEndingSoonProps) {
   const preview = `Plus que ${daysRemaining} jour${daysRemaining > 1 ? 's' : ''} d'essai gratuit`;
   const billingText = billingPeriod === "yearly" ? "annuel" : "mensuel";
@@ -52,20 +51,20 @@ export default function TrialEndingSoon({
       </EmailText>
 
       <EmailText color="default">
-        Votre période d'essai gratuite pour <strong>{planName}</strong> se termine 
+        Votre période d&apos;essai gratuite pour <strong>{planName}</strong> se termine 
         dans <strong>{daysRemaining} jour{daysRemaining > 1 ? 's' : ''}</strong>. 
         Nous espérons que vous avez apprécié découvrir toutes nos fonctionnalités !
       </EmailText>
 
       <EmailCard variant="warning" padding="medium">
         <EmailText size="small" color="default" margin="small">
-          <strong>Fin de l'essai :</strong> {trialEndDate}
+          <strong>Fin de l&apos;essai :</strong> {trialEndDate}
         </EmailText>
         <EmailText size="small" color="default" margin="small">
           <strong>Plan :</strong> {planName}
         </EmailText>
         <EmailText size="small" color="default" margin="small">
-          <strong>Prix après l'essai :</strong> {fullPrice} ({billingText})
+          <strong>Prix après l&apos;essai :</strong> {fullPrice} ({billingText})
         </EmailText>
         <EmailText size="small" color="gray" margin="none">
           <strong>Compte :</strong> {userEmail}
@@ -141,20 +140,20 @@ export default function TrialEndingSoon({
           <br />
           Votre essai se terminera automatiquement et aucun paiement ne sera effectué.
           <br /><br />
-          <strong>Puis-je changer d'avis plus tard ?</strong>
+          <strong>Puis-je changer d&apos;avis plus tard ?</strong>
           <br />
           Bien sûr ! Vous pourrez vous réabonner à tout moment.
           <br /><br />
           <strong>Mes données seront-elles conservées ?</strong>
           <br />
-          Vos données sont sauvegardées pendant 30 jours après la fin de l'essai.
+          Vos données sont sauvegardées pendant 30 jours après la fin de l&apos;essai.
         </EmailText>
       </EmailCard>
 
       <EmailSpacer size="small" />
 
       <EmailText size="small" color="light" align="center">
-        Merci d'avoir testé {companyName} ! 
+        Merci d&apos;avoir testé {companyName} ! 
         <br />
         Une question ? Notre support est là pour vous aider.
       </EmailText>

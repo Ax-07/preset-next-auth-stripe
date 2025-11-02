@@ -42,7 +42,6 @@ export const WelcomeEmail = ({
   features,
   nextSteps,
   companyName = "Votre App",
-  logoUrl,
 }: WelcomeEmailProps) => {
   const preview = `Bienvenue dans ${companyName} ! Votre compte a été créé avec succès.`;
 
@@ -131,7 +130,7 @@ export const WelcomeEmail = ({
           <strong>Email :</strong> {userEmail}
         </EmailText>
         <EmailText size="small" color="default" margin="small">
-          <strong>Date d'inscription :</strong> {registrationDate}
+          <strong>Date d&apos;inscription :</strong> {registrationDate}
         </EmailText>
         <EmailText size="small" color="default" margin="small">
           <strong>Méthode :</strong> {getSignupMethodText()}
@@ -224,7 +223,7 @@ export const WelcomeEmail = ({
           <br />
           • Utilisez un mot de passe fort et unique
           <br />
-          • Contactez-nous immédiatement en cas d'activité suspecte
+          • Contactez-nous immédiatement en cas d&apos;activité suspecte
           <br />
           • Ne partagez jamais vos informations de connexion
         </EmailText>
@@ -236,11 +235,11 @@ export const WelcomeEmail = ({
         <>
           <EmailCard variant="info" padding="medium">
             <EmailText size="small" color="default" margin="small">
-              <strong>💬 Besoin d'aide ?</strong>
+              <strong>💬 Besoin d&apos;aide ?</strong>
             </EmailText>
             <EmailText size="small" color="gray" margin="none">
               Notre équipe support est disponible 24h/7j pour répondre à toutes vos questions.
-              N'hésitez pas à nous contacter !
+              N&apos;hésitez pas à nous contacter !
             </EmailText>
           </EmailCard>
           <EmailSpacer size="small" />
@@ -265,7 +264,7 @@ export const WelcomeEmail = ({
           Merci de nous avoir fait confiance en choisissant {companyName}. 
           Nous nous engageons à vous offrir la meilleure expérience possible.
           <br /><br />
-          Si vous avez des questions ou des suggestions, n'hésitez pas à nous en faire part.
+          Si vous avez des questions ou des suggestions, n&apos;hésitez pas à nous en faire part.
         </EmailText>
       </EmailCard>
 

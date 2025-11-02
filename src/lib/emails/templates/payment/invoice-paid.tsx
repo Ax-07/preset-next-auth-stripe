@@ -22,7 +22,6 @@ interface InvoicePaidProps extends UserEmailProps {
 
 export default function InvoicePaid({
   userName,
-  userEmail,
   invoiceNumber,
   paidAmount,
   planName,
@@ -33,7 +32,6 @@ export default function InvoicePaid({
   invoiceUrl,
   receiptUrl,
   companyName = "Votre App",
-  logoUrl,
 }: InvoicePaidProps) {
   const preview = `Paiement confirmé - Facture ${invoiceNumber}`;
   const billingText = billingPeriod === "yearly" ? "annuel" : "mensuel";

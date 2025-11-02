@@ -47,7 +47,7 @@ export default function EmailFooter({
             </Link>
             {" | "}
             <Link href="/terms" className="text-blue-500 underline">
-              Conditions d'utilisation
+              Conditions d&apos;utilisation
             </Link>
           </Text>
         )}

@@ -23,7 +23,6 @@ interface TrialEndingProps extends UserEmailProps {
 
 export const TrialEnding = ({
   userName,
-  userEmail,
   planName,
   trialEndDate,
   fullPrice,
@@ -32,7 +31,6 @@ export const TrialEnding = ({
   featuresUsed = [],
   usageStats = [],
   companyName = "Votre App",
-  logoUrl,
 }: TrialEndingProps) => {
   const preview = `Votre période d'essai ${planName} se termine aujourd'hui`;
   const billingText = billingPeriod === "yearly" ? "annuel" : "mensuel";
@@ -40,7 +38,7 @@ export const TrialEnding = ({
   return (
     <EmailLayout preview={preview} companyName={companyName}>
       <EmailHeading level={1} align="center" color="default">
-        ⏰ Fin de Votre Période d'Essai
+        ⏰ Fin de Votre Période d&apos;Essai
       </EmailHeading>
 
       <EmailText size="large" align="center" color="gray">
@@ -48,20 +46,20 @@ export const TrialEnding = ({
       </EmailText>
 
       <EmailText color="default">
-        Votre période d'essai gratuite de <strong>{planName}</strong> se termine 
-        aujourd'hui ({trialEndDate}). Nous espérons que vous avez eu l'occasion 
+        Votre période d&apos;essai gratuite de <strong>{planName}</strong> se termine 
+        aujourd&apos;hui ({trialEndDate}). Nous espérons que vous avez eu l&apos;occasion 
         de découvrir tout le potentiel de nos fonctionnalités !
       </EmailText>
 
       <EmailCard variant="info" padding="medium">
         <EmailText size="small" color="default" margin="small">
-          <strong>📊 Votre expérience d'essai</strong>
+          <strong>📊 Votre expérience d&apos;essai</strong>
         </EmailText>
         <EmailText size="small" color="default" margin="small">
           <strong>Plan testé :</strong> {planName}
         </EmailText>
         <EmailText size="small" color="default" margin="small">
-          <strong>Fin de l'essai :</strong> {trialEndDate}
+          <strong>Fin de l&apos;essai :</strong> {trialEndDate}
         </EmailText>
         <EmailText size="small" color="gray" margin="none">
           <strong>Prix pour continuer :</strong> {fullPrice} ({billingText})
@@ -111,7 +109,7 @@ export const TrialEnding = ({
           <br />
           • Vos données sont conservées pendant 30 jours
           <br />
-          • Vous pouvez vous abonner à tout moment pour retrouver l'accès
+          • Vous pouvez vous abonner à tout moment pour retrouver l&apos;accès
           <br />
           • Aucun paiement automatique ne sera effectué
         </EmailText>
@@ -138,8 +136,8 @@ export const TrialEnding = ({
           <strong>💝 Merci pour votre confiance !</strong>
         </EmailText>
         <EmailText size="small" color="gray" margin="none">
-          Nous espérons que cette période d'essai vous a permis de découvrir 
-          la valeur de {companyName}. Si vous décidez de continuer l'aventure 
+          Nous espérons que cette période d&apos;essai vous a permis de découvrir 
+          la valeur de {companyName}. Si vous décidez de continuer l&apos;aventure 
           avec nous, nous serons ravis de vous accompagner !
           <br /><br />
           Des questions ? Notre équipe support reste disponible pour vous aider.
@@ -149,7 +147,7 @@ export const TrialEnding = ({
       <EmailSpacer size="small" />
 
       <EmailText size="small" color="light" align="center">
-        Merci d'avoir testé {companyName} ! 🙏
+        Merci d&apos;avoir testé {companyName} ! 🙏
         <br />
         Vous pouvez vous réabonner à tout moment.
       </EmailText>

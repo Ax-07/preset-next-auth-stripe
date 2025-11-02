@@ -30,7 +30,6 @@ interface FeedbackRequestProps extends UserEmailProps {
 
 export default function FeedbackRequest({
   userName,
-  userEmail,
   timeSinceSignup,
   userActivity,
   feedbackType,
@@ -41,7 +40,6 @@ export default function FeedbackRequest({
   testimonialRequest = false,
   productRoadmapUrl,
   companyName = "Votre App",
-  logoUrl,
 }: FeedbackRequestProps) {
   const preview = `Votre avis nous intéresse ! Partagez votre expérience avec ${companyName}`;
 
@@ -219,7 +217,7 @@ export default function FeedbackRequest({
           <br />
           • Le développement de nouvelles fonctionnalités
           <br />
-          • L'amélioration de l'expérience utilisateur  
+          • L&apos;amélioration de l&apos;expérience utilisateur  
           <br />
           • La priorisation de notre roadmap produit
           <br />
@@ -238,7 +236,7 @@ export default function FeedbackRequest({
             <EmailText size="small" color="gray" margin="none">
               Si vous êtes satisfait de notre service, nous serions honorés si vous 
               acceptiez de partager votre expérience publiquement. Cela nous aide 
-              énormément à faire découvrir notre solution à d'autres personnes.
+              énormément à faire découvrir notre solution à d&apos;autres personnes.
             </EmailText>
           </EmailCard>
           <EmailSpacer size="medium" />
@@ -268,7 +266,7 @@ export default function FeedbackRequest({
           Merci de prendre le temps de nous aider à améliorer {companyName}. 
           Votre feedback est la base de notre amélioration continue.
           <br /><br />
-          Si vous préférez ne plus recevoir ce type d'email, vous pouvez 
+          Si vous préférez ne plus recevoir ce type d&apos;email, vous pouvez 
           nous le faire savoir en répondant simplement à ce message.
         </EmailText>
       </EmailCard>

@@ -36,7 +36,6 @@ interface AbandonedProcessProps extends UserEmailProps {
 
 export default function AbandonedProcess({
   userName,
-  userEmail,
   processType,
   abandonedAt,
   progress,
@@ -45,7 +44,6 @@ export default function AbandonedProcess({
   urgency,
   alternativeAction,
   companyName = "Votre App",
-  logoUrl,
 }: AbandonedProcessProps) {
   const preview = `Continuez là où vous vous êtes arrêté - ${companyName}`;
 
@@ -275,7 +273,7 @@ export default function AbandonedProcess({
 
       <EmailCard variant="info" padding="medium">
         <EmailText size="small" color="default" margin="small">
-          <strong>❓ Besoin d'Aide ?</strong>
+          <strong>❓ Besoin d&apos;Aide ?</strong>
         </EmailText>
         <EmailText size="small" color="gray" margin="none">
           Si vous rencontrez des difficultés ou avez des questions, notre équipe 

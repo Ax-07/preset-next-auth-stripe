@@ -36,7 +36,6 @@ export const AccountDeleted = ({
   hadActiveSubscription = false,
   refundInfo,
   companyName = "Votre App",
-  ...props
 }: AccountDeletedProps) => {
   const preview = `Votre compte ${companyName} a été supprimé définitivement`;
 
@@ -49,7 +48,7 @@ export const AccountDeleted = ({
       case "gdpr_request":
         return "Suite à votre demande RGPD";
       case "inactivity":
-        return "Pour cause d'inactivité prolongée";
+        return "Pour cause d&apos;inactivité prolongée";
       default:
         return "";
     }
@@ -151,7 +150,7 @@ export const AccountDeleted = ({
             </EmailButton>
             <EmailSpacer size="small" />
             <EmailText size="small" color="red" align="center">
-              ⚠️ Lien valide jusqu'au {new Date(Date.now() + dataRetentionDays * 24 * 60 * 60 * 1000).toLocaleDateString('fr-FR')}
+              ⚠️ Lien valide jusqu&apos;au {new Date(Date.now() + dataRetentionDays * 24 * 60 * 60 * 1000).toLocaleDateString("fr-FR")}
             </EmailText>
           </div>
           <EmailSpacer size="medium" />
