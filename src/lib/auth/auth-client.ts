@@ -5,11 +5,11 @@ import { AUTH_MESSAGES, formatErrorMessage, getErrorMessage } from "./auth-messa
 import { stripeClient } from "@better-auth/stripe/client"
 
 export const authClient = createAuthClient({
-      plugins: [
-        stripeClient({
-            subscription: true // expose client.subscription.
-        })
-    ]
+  plugins: [
+    stripeClient({
+      subscription: true // expose client.subscription.
+    })
+  ]
 })
 export const { useSession, signIn, signOut, signUp } = authClient
 
@@ -67,11 +67,12 @@ export const useAuthentification = () => {
 
   const signInWithProvider = async (provider: ProviderEnum) => {
     await signIn.social(
-      { provider, callbackURL: "/dashboard" },
+      { 
+        provider, 
+        callbackURL: "/dashboard",
+      },
       {
-        onSuccess: () => {
-          toast.success(AUTH_MESSAGES.success.signIn);
-        },
+        onSuccess: () => {},
         onError: (error) => {
           console.error("Erreur lors de la connexion:", error);
           const errorMessage = getErrorMessage(error.error.code, AUTH_MESSAGES.error.signIn);
@@ -193,20 +194,21 @@ export const useProfile = () => {
     if (!confirm(AUTH_MESSAGES.confirm.deleteAccount)) {
       return;
     }
-
-    try {
-      // Suppression directe du compte
-      await deleteUser({
-        callbackURL: "/"
-      });
-      toast.success(AUTH_MESSAGES.success.accountDeleted);
-      router.push("/profile/delete/verify");
-      router.refresh();
-    } catch (error: unknown) {
-      console.error("Erreur lors de la suppression:", error);
-      const errorMessage = (error as { error?: { message?: string }; message?: string })?.error?.message || (error as { message?: string })?.message || "Erreur inconnue";
-      toast.error(formatErrorMessage(AUTH_MESSAGES.error.accountDelete, errorMessage));
-    }
+    // Suppression directe du compte
+    await deleteUser({
+      callbackURL: "/"
+    }, {
+      onSuccess: () => {
+        console.log("Compte supprimé avec succès");
+        toast.success(AUTH_MESSAGES.success.accountDeleted);
+        router.refresh();
+      },
+      onError: (error) => {
+        console.error("Erreur lors de la suppression du compte:", error);
+        const errorMessage = getErrorMessage(error.error.code, AUTH_MESSAGES.error.accountDelete);
+        toast.error(formatErrorMessage(errorMessage, error.error.message));
+      }
+    });
   };
 
   return { user, updateProfile, forgetUserPassword, resetUserPassword, changePassword, changeEmail, removeProfile };
