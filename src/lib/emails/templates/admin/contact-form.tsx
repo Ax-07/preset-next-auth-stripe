@@ -5,7 +5,6 @@ import {
   EmailButton,
   EmailCard,
   EmailSpacer,
-  UserEmailProps,
 } from "../components";
 
 interface ContactFormProps {
@@ -41,7 +40,7 @@ export default function ContactForm({
   replyToUrl,
   ticketId,
   companyName = "Votre App",
-  logoUrl,
+  ...props
 }: ContactFormProps) {
   const preview = `Nouveau message de contact de ${userName} - ${subject}`;
 
@@ -223,26 +222,26 @@ export default function ContactForm({
           <strong>⏰ Actions Recommandées</strong>
         </EmailText>
         <EmailText size="small" color="default" margin="none">
-          {priority === "urgent" && "• Répondre dans l'heure"}
+          {priority === "urgent" && "• Répondre dans l&apos;heure"}
           {priority === "high" && "• Répondre dans les 4 heures"}
           {priority === "medium" && "• Répondre dans les 24 heures"}
           {priority === "low" && "• Répondre dans les 48 heures"}
           <br />
-          • Vérifier le plan de l'utilisateur pour le niveau de support
+          • Vérifier le plan de l&apos;utilisateur pour le niveau de support
           <br />
-          • Examiner l'historique des tickets précédents
+          • Examiner l&apos;historique des tickets précédents
           <br />
           • Ajouter des étiquettes appropriées au ticket
           {category === "billing" && (
             <>
               <br />
-              • ⚠️ Demande de facturation - vérifier les permissions d'accès
+              • ⚠️ Demande de facturation - vérifier les permissions d&apos;accès
             </>
           )}
           {category === "bug" && (
             <>
               <br />
-              • 🐛 Signalement de bug - transférer à l'équipe technique
+              • 🐛 Signalement de bug - transférer à l&apos;équipe technique
             </>
           )}
         </EmailText>
