@@ -33,7 +33,7 @@ export const DesktopHeader: React.FC<DeskTopHeaderProps>  = ({className, user}) 
         <Link href="/" className="flex items-center gap-2" aria-label="Home">
           <Image
             src={globalconfig.logo.src}
-            className="size-8 bg-white"
+            className="size-8"
             alt={globalconfig.logo.alt}
             width={32}
             height={32}
