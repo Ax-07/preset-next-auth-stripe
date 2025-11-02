@@ -14,7 +14,7 @@ export const RestoreSubscriptionBtn = () => {
 
       console.log("📋 Résultat brut de restoreSubscription:", result);
       console.log("📋 Type de résultat:", typeof result);
-      console.log("📋 Clés disponibles:", result ? Object.keys(result) : "null");
+      console.log("📋 Clés disponibles:", result && typeof result === "object" ? Object.keys(result) : "non-object");
 
       // Better Auth retourne une URL vers le Customer Portal Stripe
       if (result && typeof result === "object" && "url" in result) {
