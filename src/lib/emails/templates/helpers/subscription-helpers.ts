@@ -1,5 +1,5 @@
 import { prepareEmailData, EMAIL_CONFIG } from "./email-renderer";
-import { SubscriptionWelcome, SubscriptionCancelled, SubscriptionUpdated, SubscriptionDeleted } from "../subscription";
+import { SubscriptionWelcome, SubscriptionCancelled, SubscriptionUpdated, SubscriptionDeleted, SubscriptionRestored } from "../subscription";
 
 /**
  * HELPERS POUR LES ABONNEMENTS
@@ -9,6 +9,7 @@ import { SubscriptionWelcome, SubscriptionCancelled, SubscriptionUpdated, Subscr
  * - Annulation d'abonnement
  * - Mise à jour d'abonnement
  * - Suppression d'abonnement
+ * - Restauration d'abonnement
  */
 
 /**
@@ -70,7 +71,7 @@ export async function createSubscriptionCancelledEmail(data: {
     refundAmount: data.cancellation.refundAmount,
     refundDate: data.cancellation.refundDate,
     reason: data.cancellation.reason,
-    reactivateUrl: `${EMAIL_CONFIG.BASE_URL}/dashboard/billing/reactivate`,
+    reactivateUrl: `${EMAIL_CONFIG.BASE_URL}/dashboard/subscription`,
     companyName: EMAIL_CONFIG.COMPANY_NAME,
     logoUrl: EMAIL_CONFIG.LOGO_URL,
   });
@@ -147,6 +148,46 @@ export async function createSubscriptionDeletedEmail(data: {
 }
 
 /**
+ * Helper pour générer l'email de restauration d'abonnement
+ */
+export async function createSubscriptionRestoredEmail(data: {
+  user: { name: string; email: string };
+  plan: { name: string };
+  restoration: {
+    date: string;
+    nextBillingDate: string;
+    nextBillingAmount?: string;
+    billingPeriod?: "monthly" | "yearly";
+    previousCancellationDate?: string;
+    wasDowngraded?: boolean;
+  };
+  features?: string[];
+}) {
+  const emailComponent = SubscriptionRestored({
+    userName: data.user.name || "Utilisateur",
+    userEmail: data.user.email,
+    planName: data.plan.name,
+    restoredDate: data.restoration.date,
+    nextBillingDate: data.restoration.nextBillingDate,
+    nextBillingAmount: data.restoration.nextBillingAmount || "0",
+    billingPeriod: data.restoration.billingPeriod || "monthly",
+    wasDowngraded: data.restoration.wasDowngraded || false,
+    previousCancellationDate: data.restoration.previousCancellationDate,
+    dashboardUrl: `${EMAIL_CONFIG.BASE_URL}/dashboard`,
+    billingUrl: `${EMAIL_CONFIG.BASE_URL}/dashboard/billing`,
+    supportUrl: `${EMAIL_CONFIG.BASE_URL}/support`,
+    features: data.features || [],
+    companyName: EMAIL_CONFIG.COMPANY_NAME,
+  });
+
+  return prepareEmailData(emailComponent, {
+    to: data.user.email,
+    subject: `🎉 Votre abonnement ${data.plan.name} a été restauré - ${EMAIL_CONFIG.COMPANY_NAME}`,
+    from: EMAIL_CONFIG.DEFAULT_FROM,
+  });
+}
+
+/**
  * Types pour les abonnements
  */
 export interface SubscriptionUser {
@@ -173,4 +214,13 @@ export interface CancellationData {
   reason?: string;
   refundAmount?: string;
   refundDate?: string;
+}
+
+export interface RestorationData {
+  date: string;
+  nextBillingDate: string;
+  nextBillingAmount: string;
+  billingPeriod?: "monthly" | "yearly";
+  previousCancellationDate?: string;
+  wasDowngraded?: boolean;
 }
