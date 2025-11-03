@@ -335,24 +335,32 @@ export const auth = betterAuth({
             },
           });
 
-          // Si l'abonnement est marqué pour annulation, le signaler
-          if (subscription.cancelAtPeriodEnd) {
-            console.log("⚠️ Abonnement programmé pour annulation à la fin de la période");
-          }
-
-          console.log("✅ Subscription updated:", subscription.id);
-
           const user = await findUserForSubscription({ stripeCustomerId: subscription.stripeCustomerId });
-          if (user) {
+          // Si l'abonnement est marqué pour annulation, le signaler
+          if (user && subscription.cancelAtPeriodEnd) {
+            console.log("⚠️ Abonnement programmé pour annulation à la fin de la période");
+            const subscriptionUpdatedEmail = await createSubscriptionCancelledEmail({
+              user: { name: user.name, email: user.email },
+              plan: { name: subscription.plan as string },
+              cancellation: {
+                date: formatDate(new Date()),
+                accessEndDate: formatDate(subscription.periodEnd || new Date()),
+              }
+            });
+            await sendEmail(subscriptionUpdatedEmail);
+          }
+          // Sinon, c'est une mise à jour normale (upgrade/downgrade)
+          if (user && !subscription.cancelAtPeriodEnd) {
             const subscriptionUpdatedEmail = await createSubscriptionUpdatedEmail({
               user: { name: user.name, email: user.email },
-              oldPlan: { name: "Previous Plan", price: "0" },
+              oldPlan: { name: subscription.plan || "Previous Plan", price: "0" },
               newPlan: { name: "Updated Plan", price: "0" },
               changeType: "upgrade",
               effectiveDate: formatDate(new Date()),
             });
             await sendEmail(subscriptionUpdatedEmail);
           }
+          console.log("✅ Subscription updated:", subscription.id);
         },
         onSubscriptionCancel: async ({ subscription }) => {
           console.log("❌ onSubscriptionCancel DÉCLENCHÉ !");
