@@ -1,8 +1,9 @@
 // Templates d'abonnement
 export { default as SubscriptionWelcome } from "./subscription-welcome";
 export { default as SubscriptionCancelled } from "./subscription-cancelled";
-export { SubscriptionUpdated } from "./subscription-updated";
-export { SubscriptionDeleted } from "./subscription-deleted";
+export { default as SubscriptionRestored } from "./subscription-restored";
+export { default as SubscriptionUpdated } from "./subscription-updated";
+export { default as SubscriptionDeleted } from "./subscription-deleted";
 
 // Types pour les templates d'abonnement
 export interface BaseSubscriptionEmailProps {

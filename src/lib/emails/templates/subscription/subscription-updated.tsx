@@ -27,7 +27,7 @@ interface SubscriptionUpdatedProps extends UserEmailProps {
   changes?: string[];
 }
 
-export const SubscriptionUpdated = ({
+export default function SubscriptionUpdated({
   userName,
   oldPlan,
   newPlan,
@@ -40,7 +40,7 @@ export const SubscriptionUpdated = ({
   invoiceUrl,
   changes = [],
   companyName = "Votre App",
-}: SubscriptionUpdatedProps) => {
+}: SubscriptionUpdatedProps) {
   const preview = `Votre abonnement a été mis à jour vers ${newPlan.name}`;
   const billingText = billingPeriod === "yearly" ? "annuel" : "mensuel";
   

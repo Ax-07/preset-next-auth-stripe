@@ -22,7 +22,7 @@ interface SubscriptionDeletedProps extends UserEmailProps {
   };
 }
 
-export const SubscriptionDeleted = ({
+export default function SubscriptionDeleted({
   userName,
   userEmail,
   planName,
@@ -34,7 +34,7 @@ export const SubscriptionDeleted = ({
   exportDataUrl,
   refundInfo,
   companyName = "Votre App",
-}: SubscriptionDeletedProps) => {
+}: SubscriptionDeletedProps) {
   const preview = `Votre abonnement ${planName} a été supprimé définitivement`;
 
   const getReasonText = () => {
