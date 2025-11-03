@@ -325,7 +325,8 @@ export const auth = betterAuth({
           console.log("📊 Détails de la mise à jour:", {
             referenceId: subscription.referenceId,
             stripeSubscriptionId: subscription.id,
-            activeStatut: activeSubscription.data?.[0]?.status,
+            activePlan: activeSubscription.data?.[0]?.plan,
+            newPlan: subscription.plan,
             newStatus: subscription.status,
             cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
           });
@@ -353,11 +354,11 @@ export const auth = betterAuth({
             await sendEmail(subscriptionUpdatedEmail);
           }
           // Sinon, c'est une mise à jour normale (upgrade/downgrade)
-          if (user && !subscription.cancelAtPeriodEnd) {
+          if (user && !subscription.cancelAtPeriodEnd && subscription.plan === activeSubscription.data?.[0]?.plan) {
             const subscriptionUpdatedEmail = await createSubscriptionUpdatedEmail({
               user: { name: user.name, email: user.email },
-              oldPlan: { name: subscription.plan || "Previous Plan", price: "0" },
-              newPlan: { name: "Updated Plan", price: "0" },
+              oldPlan: { name: activeSubscription.data?.[0]?.plan, price: "0" },
+              newPlan: { name: subscription.plan as string, price: "0" },
               changeType: "upgrade",
               effectiveDate: formatDate(new Date()),
             });
