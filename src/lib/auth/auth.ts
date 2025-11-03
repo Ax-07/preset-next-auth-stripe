@@ -4,7 +4,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/database/prisma.client";
 import { stripe, Subscription } from "@better-auth/stripe"
 import { stripeClient } from "../stripe/stripe";
-import { findUserForSubscription, getStripePlans } from "../stripe/stripe-server";
+import { findUserForSubscription, getActiveSubscription, getStripePlans } from "../stripe/stripe-server";
 import Stripe from "stripe";
 import { sendEmail } from "../emails/mail.service";
 import { createAccountDeletedEmail, createPasswordResetEmail, createPaymentFailedEmail, createSubscriptionCancelledEmail, createSubscriptionDeletedEmail, createSubscriptionUpdatedEmail, createSubscriptionWelcomeEmail, createTrialEndingEmail, createTrialEndingSoonEmail, createTrialExpiredEmail, createTrialStartedEmail, createVerificationEmail, createWelcomeEmail } from "../emails/templates/helpers";
@@ -319,11 +319,14 @@ export const auth = betterAuth({
         onSubscriptionUpdate: async ({ subscription }) => {
           console.log("🔄 onSubscriptionUpdate DÉCLENCHÉ !");
 
+          const activeSubscription = await getActiveSubscription();
+
           // Logs détaillés pour debug
           console.log("📊 Détails de la mise à jour:", {
             referenceId: subscription.referenceId,
             stripeSubscriptionId: subscription.id,
-            status: subscription.status,
+            activeStatut: activeSubscription.data?.[0]?.status,
+            newStatus: subscription.status,
             cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
           });
 
