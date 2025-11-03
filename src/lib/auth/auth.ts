@@ -7,7 +7,7 @@ import { stripeClient } from "../stripe/stripe";
 import { findUserForSubscription, getStripePlans } from "../stripe/stripe-server";
 import Stripe from "stripe";
 import { sendEmail } from "../emails/mail.service";
-import { createAccountDeletedEmail, createPasswordResetEmail, createSubscriptionWelcomeEmail, createTrialEndingEmail, createTrialExpiredEmail, createTrialStartedEmail, createVerificationEmail, createWelcomeEmail } from "../emails/templates/helpers";
+import { createAccountDeletedEmail, createPasswordResetEmail, createPaymentFailedEmail, createSubscriptionCancelledEmail, createSubscriptionDeletedEmail, createSubscriptionUpdatedEmail, createSubscriptionWelcomeEmail, createTrialEndingEmail, createTrialEndingSoonEmail, createTrialExpiredEmail, createTrialStartedEmail, createVerificationEmail, createWelcomeEmail } from "../emails/templates/helpers";
 import { formatDate } from "@/utils/formatDate";
 
 export const auth = betterAuth({
@@ -250,14 +250,14 @@ export const auth = betterAuth({
                 const user = await findUserForSubscription({ stripeCustomerId: subscription.stripeCustomerId });
                 console.log("user n'a pas été récupérer")
                 if (user) {
-                  const trialStartedEmail = await createTrialEndingEmail({
+                  const trialEndingEmail = await createTrialEndingEmail({
                     user: { name: user.name, email: user?.email },
                     plan: { name: p.name, price: p.price.toString() },
                     trial: {
                       endDate: formatDate(subscription.periodEnd || new Date())
                     }
                   })
-                  await sendEmail(trialStartedEmail)
+                  await sendEmail(trialEndingEmail)
                 }
               },
               onTrialExpired: async (subscription) => {
@@ -265,14 +265,14 @@ export const auth = betterAuth({
                 const user = await findUserForSubscription({ stripeCustomerId: subscription.stripeCustomerId });
                 console.log("user n'a pas été récupérer")
                 if (user) {
-                  const trialStartedEmail = await createTrialExpiredEmail({
+                  const trialExpiredEmail = await createTrialExpiredEmail({
                     user: { name: user.name, email: user?.email },
                     plan: { name: p.name, price: p.price.toString() },
                     trial: {
                       expiredDate: formatDate(subscription.periodEnd || new Date())
                     }
                   })
-                  await sendEmail(trialStartedEmail)
+                  await sendEmail(trialExpiredEmail)
                 }
               }
             }
@@ -295,8 +295,8 @@ export const auth = betterAuth({
             statusStripe: stripeSub.status,
             planName: p?.name || 'unknown',
           });
-          
-          
+
+
           const user = await findUserForSubscription({ stripeCustomerId: subscription.stripeCustomerId });
           console.log("user: ", user)
           if (user) {
@@ -341,6 +341,18 @@ export const auth = betterAuth({
           }
 
           console.log("✅ Subscription updated:", subscription.id);
+
+          const user = await findUserForSubscription({ stripeCustomerId: subscription.stripeCustomerId });
+          if (user) {
+            const subscriptionUpdatedEmail = await createSubscriptionUpdatedEmail({
+              user: { name: user.name, email: user.email },
+              oldPlan: { name: "Previous Plan", price: "0" },
+              newPlan: { name: "Updated Plan", price: "0" },
+              changeType: "upgrade",
+              effectiveDate: formatDate(new Date()),
+            });
+            await sendEmail(subscriptionUpdatedEmail);
+          }
         },
         onSubscriptionCancel: async ({ subscription }) => {
           console.log("❌ onSubscriptionCancel DÉCLENCHÉ !");
@@ -356,6 +368,22 @@ export const auth = betterAuth({
           });
 
           console.log("✅ Subscription cancelled:", subscription.referenceId);
+
+          const user = await findUserForSubscription({ stripeCustomerId: subscription.stripeCustomerId });
+          if (user) {
+            const subscriptionUpdatedEmail = await createSubscriptionCancelledEmail({
+              user: { name: user.name, email: user.email },
+              plan: { name: "Previous Plan" },
+              cancellation: {
+                date: formatDate(new Date()),
+                accessEndDate: formatDate(subscription.periodEnd || new Date()),
+                reason: "User cancelled",
+                refundAmount: undefined,
+                refundDate: undefined
+              }
+            });
+            await sendEmail(subscriptionUpdatedEmail);
+          }
         },
         onSubscriptionDeleted: async ({ subscription }) => {
           console.log("🗑️ onSubscriptionDeleted DÉCLENCHÉ !");
@@ -363,18 +391,60 @@ export const auth = betterAuth({
             where: { stripeSubscriptionId: subscription.stripeSubscriptionId },
           });
           console.log("✅ Subscription deleted:", subscription.stripeSubscriptionId);
+
+          const user = await findUserForSubscription({ stripeCustomerId: subscription.stripeCustomerId });
+          if (user) {
+            const subscriptionUpdatedEmail = await createSubscriptionDeletedEmail({
+              user: { name: user.name, email: user.email },
+              plan: { name: "Previous Plan" },
+              deletedDate: formatDate(new Date()),
+              reason: "cancelled_by_user",
+            });
+            await sendEmail(subscriptionUpdatedEmail);
+          }
         }
       },
       onEvent: async (event) => {
         console.log("📢 Événement Stripe reçu:", event.type);
+        const user = await findUserForSubscription({ stripeCustomerId: (event.data.object as Stripe.Invoice).customer as string });
+        const invoice = event.data.object as Stripe.Invoice;
+        const subscription = event.data.object as Stripe.Subscription;
         switch (event.type) {
           case "invoice.payment_failed":
-            const invoice = event.data.object as Stripe.Invoice;
             console.log(`⚠️ Paiement échoué pour la facture ${invoice.id} du client ${invoice.customer}`);
+            if (user) {
+              const subscriptionUpdatedEmail = await createPaymentFailedEmail({
+                user: { name: user.name, email: user.email },
+                plan: { name: "Previous Plan" },
+                payment: {
+                  amount: invoice.amount_paid.toString(),
+                }
+              });
+              await sendEmail(subscriptionUpdatedEmail);
+            }
             break;
           case "customer.subscription.trial_will_end":
-            const subscription = event.data.object as Stripe.Subscription;
             console.log(`⏳ La période d'essai de l'abonnement ${subscription.id} du client ${subscription.customer} va bientôt se terminer.`);
+            if (user) {
+              const planPrice = subscription.items.data[0]?.price;
+              const interval = planPrice?.recurring?.interval;
+              const billingPeriod = interval === 'year' ? 'yearly' : interval === 'month' ? 'monthly' : undefined;
+              
+              const subscriptionUpdatedEmail = await createTrialEndingSoonEmail({
+                user: { name: user.name, email: user.email },
+                plan: { name: planPrice?.nickname || 'Unknown Plan', price: ((planPrice?.unit_amount || 0) / 100).toString() },
+                trial: {
+                  endDate: formatDate(new Date(subscription.trial_end! * 1000)),
+                  daysRemaining: Math.ceil((subscription.trial_end! * 1000 - Date.now()) / (1000 * 60 * 60 * 24)),
+                },
+                billingPeriod,
+                discount: {
+                  percentage: 0,
+                  validUntil: formatDate(new Date()),
+                },
+              });
+              await sendEmail(subscriptionUpdatedEmail);
+            }
             break;
           // Gérer d'autres types d'événements si nécessaire
           default:
