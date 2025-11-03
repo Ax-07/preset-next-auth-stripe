@@ -9,6 +9,7 @@ import Stripe from "stripe";
 import { sendEmail } from "../emails/mail.service";
 import { createAccountDeletedEmail, createPasswordResetEmail, createPaymentFailedEmail, createSubscriptionCancelledEmail, createSubscriptionDeletedEmail, createSubscriptionUpdatedEmail, createSubscriptionWelcomeEmail, createTrialEndingEmail, createTrialEndingSoonEmail, createTrialExpiredEmail, createTrialStartedEmail, createVerificationEmail, createWelcomeEmail } from "../emails/templates/helpers";
 import { formatDate } from "@/utils/formatDate";
+import { createSubscriptionRestoredEmail } from "../emails/templates/helpers/subscription-helpers";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -320,7 +321,6 @@ export const auth = betterAuth({
           console.log("🔄 onSubscriptionUpdate DÉCLENCHÉ !");
 
           const activeSubscription = await getActiveSubscription();
-
           // Logs détaillés pour debug
           console.log("📊 Détails de la mise à jour:", {
             referenceId: subscription.referenceId,
@@ -340,10 +340,10 @@ export const auth = betterAuth({
           });
 
           const user = await findUserForSubscription({ stripeCustomerId: subscription.stripeCustomerId });
-          // Si l'abonnement est marqué pour annulation, le signaler
+          // Si l'utilisateur annule son abonnement (cancelAtPeriodEnd = true)
           if (user && subscription.cancelAtPeriodEnd) {
             console.log("⚠️ Abonnement programmé pour annulation à la fin de la période");
-            const subscriptionUpdatedEmail = await createSubscriptionCancelledEmail({
+            const subscriptionCancelledEmail = await createSubscriptionCancelledEmail({
               user: { name: user.name, email: user.email },
               plan: { name: subscription.plan as string },
               cancellation: {
@@ -351,7 +351,20 @@ export const auth = betterAuth({
                 accessEndDate: formatDate(subscription.periodEnd || new Date()),
               }
             });
-            await sendEmail(subscriptionUpdatedEmail);
+            await sendEmail(subscriptionCancelledEmail);
+          }
+          // Si l'utilisateur restore son abonnement (cancelAtPeriodEnd passe de true à false)
+          else if (user && !subscription.cancelAtPeriodEnd && activeSubscription.data?.[0]?.plan !== subscription.plan) {
+            console.log("✅ Abonnement restauré ou modifié avant la fin de la période");
+            const subscriptionRestoredEmail = await createSubscriptionRestoredEmail({
+              user: { name: user.name, email: user.email },
+              plan: { name: subscription.plan as string },
+              restoration: {
+                date: formatDate(new Date()),
+                nextBillingDate: formatDate(subscription.periodEnd || new Date()),
+              }
+            });
+            await sendEmail(subscriptionRestoredEmail);
           }
           // Sinon, c'est une mise à jour normale (upgrade/downgrade)
           if (user && !subscription.cancelAtPeriodEnd && subscription.plan === activeSubscription.data?.[0]?.plan) {
@@ -441,7 +454,7 @@ export const auth = betterAuth({
               const planPrice = subscription.items.data[0]?.price;
               const interval = planPrice?.recurring?.interval;
               const billingPeriod = interval === 'year' ? 'yearly' : interval === 'month' ? 'monthly' : undefined;
-              
+
               const subscriptionUpdatedEmail = await createTrialEndingSoonEmail({
                 user: { name: user.name, email: user.email },
                 plan: { name: planPrice?.nickname || 'Unknown Plan', price: ((planPrice?.unit_amount || 0) / 100).toString() },
