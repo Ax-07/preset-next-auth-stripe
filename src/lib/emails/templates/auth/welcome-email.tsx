@@ -52,7 +52,7 @@ export const WelcomeEmail = ({
       <EmailText>
         <strong>Nom :</strong> {userName}<br />
         <strong>Email :</strong> {userEmail}<br />
-        <strong>Date d’inscription :</strong> {registrationDate}<br />
+        <strong>Date d&apos;inscription :</strong> {registrationDate}<br />
         <strong>Méthode :</strong> {signupMethodLabel}<br />
         <strong>Statut email :</strong> {isEmailVerified ? "Vérifié" : "À vérifier"}
       </EmailText>
@@ -84,7 +84,7 @@ export const WelcomeEmail = ({
 
       <EmailSpacer size="small" />
       <EmailText align="center" color="light">
-        Merci d’avoir choisi {companyName}.
+        Merci d&apos;avoir choisi {companyName}.
       </EmailText>
 
       {unsubscribeUrl && (
