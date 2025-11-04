@@ -7,7 +7,7 @@ import { stripeClient } from "../stripe/stripe";
 import { findUserForSubscription, getActiveSubscription, getStripePlans } from "../stripe/stripe-server";
 import Stripe from "stripe";
 import { sendEmail } from "../emails/mail.service";
-import { createAccountDeletedEmail, createPasswordResetEmail, createPaymentFailedEmail, createSubscriptionCancelledEmail, createSubscriptionDeletedEmail, createSubscriptionUpdatedEmail, createSubscriptionWelcomeEmail, createTrialEndingEmail, createTrialEndingSoonEmail, createTrialExpiredEmail, createTrialStartedEmail, createVerificationEmail, createWelcomeEmail } from "../emails/templates/helpers";
+import { createAccountDeletedEmail, createAdminNewCustomerEmail, createPasswordResetEmail, createPaymentFailedEmail, createSubscriptionCancelledEmail, createSubscriptionDeletedEmail, createSubscriptionUpdatedEmail, createSubscriptionWelcomeEmail, createTrialEndingEmail, createTrialEndingSoonEmail, createTrialExpiredEmail, createTrialStartedEmail, createVerificationEmail, createWelcomeEmail } from "../emails/templates/helpers";
 import { formatDate } from "@/utils/formatDate";
 import { createSubscriptionRestoredEmail } from "../emails/templates/helpers/subscription-helpers";
 
@@ -189,7 +189,14 @@ export const auth = betterAuth({
               isEmailVerified: true
             });
 
+            const adminNewCustomerEmail = await createAdminNewCustomerEmail({
+              user: { name: user.name, email: user.email },
+              registeredAt: formatDate(user.createdAt),
+              signupMethod: user.emailVerified ? "google" : "email",
+            })
+
             await sendEmail(welcomeEmail);
+            await sendEmail(adminNewCustomerEmail);
           }
         }
       },
@@ -231,6 +238,7 @@ export const auth = betterAuth({
               days: p.freeTrial?.days || 0,
               onTrialStart: async (subscription) => {
                 // Appelé lorsque la période d'essai commence
+                // écoute: customer.subscription.created avec status 'trialing'
                 const user = await findUserForSubscription({ stripeCustomerId: subscription.stripeCustomerId });
                 console.log("user n'a pas été récupérer")
                 if (user) {
@@ -281,6 +289,9 @@ export const auth = betterAuth({
         },
 
         onSubscriptionComplete: async ({ event, subscription, stripeSubscription, plan }) => {
+          // Déclenché quand Stripe crée l’abonnement et que le plugin a traité l’événement
+          // (ex.: après checkout.session.completed / customer.subscription.created).
+          // Attention: le statut peut être `trialing` en cas d’essai, pas forcément `active`.
           console.log("🎯 onSubscriptionComplete DÉCLENCHÉ !");
 
           const e = event as Stripe.Event;
@@ -318,6 +329,12 @@ export const auth = betterAuth({
           }
         },
         onSubscriptionUpdate: async ({ subscription }) => {
+          // Déclenché sur tout customer.subscription.updated :
+          // - changement de plan / prix
+          // - annulation PROGRAMMÉE: cancel_at_period_end = true
+          // - reprise / modification avant la fin de période
+          // - autres mises à jour (quantité, proration, etc.)
+          // 👉 Envoyer ici l’email “annulation programmée” quand cancelAtPeriodEnd === true.
           console.log("🔄 onSubscriptionUpdate DÉCLENCHÉ !");
 
           const activeSubscription = await getActiveSubscription();
@@ -380,6 +397,10 @@ export const auth = betterAuth({
           console.log("✅ Subscription updated:", subscription.id);
         },
         onSubscriptionCancel: async ({ subscription }) => {
+          // Déclenché lors de l’annulation EFFECTIVE (fin d’accès) :
+          // - immédiate, ou
+          // - à la fin de la période si une annulation programmée était en place.
+          // 👉 Envoyer ici l’email “annulation effective” (ne pas dupliquer avec onSubscriptionDeleted).
           console.log("❌ onSubscriptionCancel DÉCLENCHÉ !");
 
           await prisma.subscription.updateMany({
@@ -411,6 +432,9 @@ export const auth = betterAuth({
           }
         },
         onSubscriptionDeleted: async ({ subscription }) => {
+          // Déclenché quand l’abonnement est SUPPRIMÉ (fin d’accès).
+          // Selon la version du plugin / contexte Stripe, peut correspondre au même moment
+          // que l’annulation effective. Rends cet envoi idempotent pour éviter les doublons.
           console.log("🗑️ onSubscriptionDeleted DÉCLENCHÉ !");
           await prisma.subscription.deleteMany({
             where: { stripeSubscriptionId: subscription.stripeSubscriptionId },
