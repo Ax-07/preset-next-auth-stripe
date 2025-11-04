@@ -78,7 +78,6 @@ export async function createWelcomeEmail(data: {
     signupMethod: data.signupMethod,
     isEmailVerified: data.isEmailVerified ?? true,
     dashboardUrl: `${EMAIL_CONFIG.BASE_URL}/dashboard`,
-    profileUrl: `${EMAIL_CONFIG.BASE_URL}/dashboard/profile`,
     supportUrl: `${EMAIL_CONFIG.BASE_URL}/support`,
     companyName: EMAIL_CONFIG.COMPANY_NAME,
     logoUrl: EMAIL_CONFIG.LOGO_URL,
