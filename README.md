@@ -22,6 +22,37 @@ pnpm prisma-migrate
 pnpm dev
 ```
 
+**Variables d'environnement requises :**
+```env
+DATABASE_URL=postgresql://user:password@localhost:5432/mydb
+
+# Better Auth
+
+BETTER_AUTH_URL=http://localhost:3000 # Base URL de votre application (optionnel)
+BETTER_AUTH_SECRET="votre_secret_genere_ici" # Générez avec: openssl rand -base64 32
+
+AUTH_GITHUB_ID="votre client_id_github"
+AUTH_GITHUB_SECRET="votre client_secret_github"
+
+GOOGLE_CLIENT_ID="votre client_id_google"
+GOOGLE_CLIENT_SECRET="votre client_secret_google"
+
+AUTH_TRUST_HOST=true
+
+# NEXT_PUBLIC_APP_URL="https://<your-app>.vercel.app/"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+
+EMAIL_SERVICE="gmail"
+EMAIL_HOST="smtp.gmail.com"
+EMAIL_PORT=587
+EMAIL_PASS="votre_app_password"
+EMAIL_USER="votre_email@gmail.com"
+
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_1234567890abcdef"
+STRIPE_SECRET_KEY="sk_test_1234567890abcdef"
+STRIPE_WEBHOOK_SECRET="whsec_1234567890abcdef"
+```
+
 🎉 **Votre application est prête sur [http://localhost:3000](http://localhost:3000) !**
 
 **📚 Documentation complète : [`docs/README.md`](../docs/README.md)**
