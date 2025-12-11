@@ -35,7 +35,13 @@ export const subscribe = async (plan: string) => {
     const subscriptionId = subscriptions[0]?.id;
 
     // Préparer le payload pour Better Auth
-    const payload: Parameters<typeof auth.api.upgradeSubscription>[0]['body'] = {
+    const payload: {
+      plan: string;
+      successUrl: string;
+      cancelUrl: string;
+      disableRedirect: boolean;
+      subscriptionId?: string;
+    } = {
       plan,
       successUrl: `${baseUrl}/dashboard/subscription`,
       cancelUrl: `${baseUrl}/pricing`,
