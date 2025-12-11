@@ -31,7 +31,12 @@ export const ResetPasswordForm = ({ token }: { token: string }) => {
   });
 
   const onSubmit = async (data: z.infer<typeof resetPasswordFormSchema>) => {
-    await resetUserPassword(token, data.password);
+    try {
+      await resetUserPassword(token, data.password);
+    } catch (error) {
+      // Error is already handled by the hook
+      console.error('Password reset error:', error);
+    }
   };
 
   return (
