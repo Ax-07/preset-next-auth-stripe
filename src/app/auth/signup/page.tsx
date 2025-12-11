@@ -5,8 +5,8 @@ export default function SignUpPage() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle>Create an account</CardTitle>
-        <CardDescription>Enter your information below to create your account</CardDescription>
+        <CardTitle>Créer un compte</CardTitle>
+        <CardDescription>Entrez vos informations ci-dessous pour créer votre compte</CardDescription>
       </CardHeader>
       <CardContent>
         <SignupForm />
