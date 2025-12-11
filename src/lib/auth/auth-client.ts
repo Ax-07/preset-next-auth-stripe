@@ -102,7 +102,7 @@ export const useAuthentification = () => {
 }
 
 export const useProfile = () => {
-  const { updateUser, deleteUser, forgetPassword, resetPassword, changePassword: changePasswordClient, changeEmail: changeEmailClient } = authClient;
+  const { updateUser, deleteUser, changePassword: changePasswordClient, changeEmail: changeEmailClient } = authClient;
   const router = useRouter();
   const user = useSession().data?.user;
 
@@ -120,7 +120,7 @@ export const useProfile = () => {
   };
 
   const forgetUserPassword = async (email: string) => {
-    return await forgetPassword({
+    return await authClient.requestPasswordReset({
       email,
       redirectTo: "/auth/reset-password"
     }, {
@@ -138,7 +138,7 @@ export const useProfile = () => {
   };
 
   const resetUserPassword = async (token: string, newPassword: string) => {
-    return await resetPassword({
+    return await authClient.resetPassword({
       newPassword,
       token,
     }, {
