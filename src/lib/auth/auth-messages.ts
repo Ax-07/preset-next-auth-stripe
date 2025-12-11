@@ -30,10 +30,16 @@ export const AUTH_MESSAGES = {
     profileUpdate: "Erreur lors de la mise à jour de l'utilisateur",
     accountDelete: "Erreur lors de la suppression du compte",
     emailVerification: "Erreur lors de la vérification de l'email",
-    invalidToken: "Le lien est invalide ou a expiré",
+    invalidToken: "Le lien est invalide",
+    expiredToken: "Le lien a expiré. Veuillez en demander un nouveau.",
     emailNotVerified: "Veuillez vérifier votre email avant de vous connecter",
     passwordMismatch: "Les mots de passe ne correspondent pas",
     generic: "Une erreur est survenue. Veuillez réessayer.",
+    invalidCredentials:"Email ou mot de passe incorrect",
+    emailAlreadyExists: "Cet email est déjà utilisé",
+    userNotFound: "Utilisateur non trouvé",
+
+
   },
 
   // Messages de validation
@@ -53,6 +59,7 @@ export const AUTH_MESSAGES = {
     checkEmail: "Veuillez vérifier votre boîte de réception et suivre les instructions.",
     checkSpam: "Si vous n'avez pas reçu l'email, vérifiez votre dossier spam.",
     linkExpired: "Le lien de vérification est invalide ou a expiré.",
+    emailVerified: "Votre email a déjà été vérifié.",
   },
 
   // Confirmations
@@ -87,11 +94,11 @@ export const AUTH_ERROR_CODES = {
 export function getErrorMessage(errorCode?: string, defaultMessage?: string): string {
   const errorMessages: Record<string, string> = {
     [AUTH_ERROR_CODES.EMAIL_NOT_VERIFIED]: AUTH_MESSAGES.error.emailNotVerified,
-    [AUTH_ERROR_CODES.INVALID_CREDENTIALS]: "Email ou mot de passe incorrect",
-    [AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS]: "Cet email est déjà utilisé",
+    [AUTH_ERROR_CODES.INVALID_CREDENTIALS]: AUTH_MESSAGES.error.invalidCredentials,
+    [AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS]: AUTH_MESSAGES.error.emailAlreadyExists,
     [AUTH_ERROR_CODES.INVALID_TOKEN]: AUTH_MESSAGES.error.invalidToken,
-    [AUTH_ERROR_CODES.TOKEN_EXPIRED]: "Le lien a expiré. Veuillez en demander un nouveau.",
-    [AUTH_ERROR_CODES.USER_NOT_FOUND]: "Utilisateur introuvable",
+    [AUTH_ERROR_CODES.TOKEN_EXPIRED]: AUTH_MESSAGES.error.expiredToken,
+    [AUTH_ERROR_CODES.USER_NOT_FOUND]: AUTH_MESSAGES.error.userNotFound,
   };
 
   return errorCode && errorMessages[errorCode] 
