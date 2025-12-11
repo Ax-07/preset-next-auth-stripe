@@ -12,16 +12,29 @@ import { useAuthentification } from "@/lib/auth/auth-client";
 import { AUTH_MESSAGES } from "@/lib/auth/auth-messages";
 
 const signupFormSchema = z.object({
-  name: z.string().min(2, AUTH_MESSAGES.validation.nameMin).max(100, AUTH_MESSAGES.validation.nameMax),
-  email: z.string().email(AUTH_MESSAGES.validation.emailInvalid).min(1, AUTH_MESSAGES.validation.emailRequired),
-  password: z.string().min(8, AUTH_MESSAGES.validation.passwordMin).max(100, AUTH_MESSAGES.validation.passwordMax),
-  confirmPassword: z.string().min(8, AUTH_MESSAGES.validation.passwordMin).max(100, AUTH_MESSAGES.validation.passwordMax),
+  name: z.string().min(2, AUTH_MESSAGES.validation.nameMin).max(100, AUTH_MESSAGES.validation.nameMax).nonempty(),
+  email: z
+    .email(AUTH_MESSAGES.validation.emailInvalid)
+    .min(1, AUTH_MESSAGES.validation.emailRequired)
+    .nonempty(),
+  password: z
+    .string()
+    .min(8, AUTH_MESSAGES.validation.passwordMin)
+    .max(100, AUTH_MESSAGES.validation.passwordMax)
+    .nonempty(),
+  confirmPassword: z
+    .string()
+    .min(8, AUTH_MESSAGES.validation.passwordMin)
+    .max(100, AUTH_MESSAGES.validation.passwordMax)
+    .nonempty(),
 });
 
 export const SignupForm = () => {
-  const { signUpWithCredential } = useAuthentification()
+  const { signUpWithCredential } = useAuthentification();
   const form = useForm<z.infer<typeof signupFormSchema>>({
     resolver: zodResolver(signupFormSchema),
+    mode: "onChange", // <- au lieu de "onBlur"
+    reValidateMode: "onBlur",
     defaultValues: {
       name: "",
       email: "",
@@ -30,13 +43,16 @@ export const SignupForm = () => {
     },
   });
 
+  const isSubmitting = form.formState.isSubmitting;
+  const isValidForm = form.formState.isValid;
+
   const onSubmit = async (data: z.infer<typeof signupFormSchema>) => {
     // Vérification de la correspondance des mots de passe
     if (data.password !== data.confirmPassword) {
       form.setError("confirmPassword", { message: AUTH_MESSAGES.validation.passwordMismatch });
       return;
     }
-    signUpWithCredential(data);
+    await signUpWithCredential(data);
   };
 
   return (
@@ -62,7 +78,7 @@ export const SignupForm = () => {
             <FormItem>
               <FormLabel>{"Email"}</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="" autoComplete="email" {...field} />
+                <Input type="email" placeholder="" autoComplete="email" {...field} required />
               </FormControl>
               <FormDescription>{"Nous ne partagerons jamais votre e-mail."}</FormDescription>
               <FormMessage />
@@ -99,8 +115,10 @@ export const SignupForm = () => {
         />
         <FieldGroup>
           <Field>
-            <Button type="submit">Créer un compte</Button>
-            <Button variant="outline" type="button">
+            <Button type="submit" disabled={isSubmitting || !isValidForm}>
+              {isSubmitting ? "Création en cours..." : "Créer un compte"}
+            </Button>
+            <Button variant="outline" type="button" disabled={isSubmitting}>
               <FcGoogle className="mr-2 inline-block" />
               {"S'inscrire avec Google"}
             </Button>
