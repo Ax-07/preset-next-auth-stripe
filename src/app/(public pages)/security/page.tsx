@@ -1,4 +1,3 @@
-import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -325,7 +324,7 @@ export default function SecurityPage() {
                 <div className="grid gap-6 md:grid-cols-2">
                   {category.features.map((feature, featureIndex) => (
                     <div key={featureIndex} className="flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-green-500 mt-1 shrink-0" />
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <h4 className="font-semibold">{feature.title}</h4>

@@ -1,7 +1,7 @@
 // app/(pages)/pricing/page.tsx
 
 import PricingClient from "@/lib/stripe/components/pricing";
-import { getStripePlans } from "@/lib/stripe/stripe-server";
+import { getStripePlans } from "@/lib/stripe/stripe-plan";
 
 export default async function PricingPage() {
   // Récupérer les plans directement depuis le serveur

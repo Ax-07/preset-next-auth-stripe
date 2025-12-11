@@ -1,9 +1,9 @@
 // app/dashboard/pricing/page.tsx
 
 import PricingClient from "@/lib/stripe/components/pricing";
-import { getStripePlans } from "@/lib/stripe/stripe-server";
 import { getUser } from "@/lib/auth/auth-server";
 import { redirect } from "next/navigation";
+import { getStripePlans } from "@/lib/stripe/stripe-plan";
 
 export default async function DashboardPricingPage() {
   const user = await getUser();
