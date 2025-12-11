@@ -9,23 +9,34 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Field, FieldGroup } from "@/components/ui/field";
 import { useProfile } from "@/lib/auth/auth-client";
 import { AUTH_MESSAGES } from "@/lib/auth/auth-messages";
+import { useState } from "react";
 
 const forgetPasswordFormSchema = z.object({
-  email: z.string().email(AUTH_MESSAGES.validation.emailInvalid).min(1, AUTH_MESSAGES.validation.emailRequired),
+  email: z.email(AUTH_MESSAGES.validation.emailInvalid).min(1, AUTH_MESSAGES.validation.emailRequired).nonempty(),
 });
 
 export const ForgetPasswordForm = () => {
-    const { forgetUserPassword } = useProfile();
+  const { forgetUserPassword } = useProfile();
   const form = useForm<z.infer<typeof forgetPasswordFormSchema>>({
     resolver: zodResolver(forgetPasswordFormSchema),
+    mode: "onChange",
+    reValidateMode: "onBlur",
     defaultValues: {
       email: "",
     },
   });
 
+  const isValidForm = form.formState.isValid;
+  const isSubmitting = form.formState.isSubmitting;
+
   const onSubmit = async (data: z.infer<typeof forgetPasswordFormSchema>) => {
     console.log(data);
-    await forgetUserPassword(data.email);
+    try {
+      await forgetUserPassword(data.email);
+    } catch (error) {
+      // Error is already handled by the hook
+      console.error("Password reset error:", error);
+    }
   };
 
   return (
@@ -38,7 +49,7 @@ export const ForgetPasswordForm = () => {
             <FormItem>
               <FormLabel>{"Email"}</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="" autoComplete="email" {...field} />
+                <Input type="email" placeholder="" autoComplete="email" {...field} required />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -46,7 +57,7 @@ export const ForgetPasswordForm = () => {
         />
         <FieldGroup>
           <Field>
-            <Button type="submit">Réinitialiser le mot de passe</Button>
+            <Button type="submit" disabled={!isValidForm || isSubmitting}>Réinitialiser le mot de passe</Button>
           </Field>
         </FieldGroup>
       </form>
