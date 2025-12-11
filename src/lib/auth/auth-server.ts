@@ -21,6 +21,11 @@ export const signOut = async () => {
   redirect("/");
 };
 
+/**
+ * Vérifie le token de vérification d'email.
+ * @param token Le token de vérification d'email.
+ * @returns 
+ */
 export const verifyEmail = async (token: string) => {
   try {
     const result = await auth.api.verifyEmail({
