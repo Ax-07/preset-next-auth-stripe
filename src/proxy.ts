@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 // Cette fonction middleware sera appelée pour chaque requête
-export function middleware() {
+export function proxy() {
   // Better Auth gère déjà le rate limiting sur /api/auth/*
   // Vous n'avez donc rien à faire ici pour l'authentification
   
