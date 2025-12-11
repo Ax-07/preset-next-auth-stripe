@@ -13,19 +13,24 @@ import Link from "next/link";
 import { AUTH_MESSAGES } from "@/lib/auth/auth-messages";
 
 const signinFormSchema = z.object({
-  email: z.string().email(AUTH_MESSAGES.validation.emailInvalid).min(1, AUTH_MESSAGES.validation.emailRequired),
-  password: z.string().min(8, AUTH_MESSAGES.validation.passwordMin).max(100, AUTH_MESSAGES.validation.passwordMax),
+  email: z.email(AUTH_MESSAGES.validation.emailInvalid).min(1, AUTH_MESSAGES.validation.emailRequired).nonempty(),
+  password: z.string().min(8, AUTH_MESSAGES.validation.passwordMin).max(100, AUTH_MESSAGES.validation.passwordMax).nonempty(),
 });
 
 export const SigninForm = () => {
   const { signInWithCredential, signInWithProvider } = useAuthentification()
   const form = useForm<z.infer<typeof signinFormSchema>>({
     resolver: zodResolver(signinFormSchema),
+    mode: "onChange",
+    reValidateMode: "onBlur",
     defaultValues: {
       email: "",
       password: "",
     },
   });
+
+    const isSubmitting = form.formState.isSubmitting;
+  const isValidForm = form.formState.isValid;
 
   const onSubmit = async (data: z.infer<typeof signinFormSchema>) => {
     console.log(data);
@@ -42,7 +47,7 @@ export const SigninForm = () => {
             <FormItem>
               <FormLabel>{"Email"}</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="" autoComplete="email" {...field} />
+                <Input type="email" placeholder="" autoComplete="email" {...field} required/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -55,7 +60,7 @@ export const SigninForm = () => {
             <FormItem>
               <FormLabel>{"Mot de passe"}</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="" autoComplete="new-password" {...field} />
+                <Input type="password" placeholder="" autoComplete="new-password" {...field} required/>
               </FormControl>
               <FormDescription><Link href="/auth/forget-password">{"Mot de passe oublié ?"}</Link></FormDescription>
               <FormMessage />
@@ -64,7 +69,7 @@ export const SigninForm = () => {
         />
         <FieldGroup>
           <Field>
-            <Button type="submit">Se connecter</Button>
+            <Button type="submit" disabled={isSubmitting || !isValidForm}>Se connecter</Button>
             <Button variant="outline" type="button" onClick={() => signInWithProvider("google")}>
               <FcGoogle className="mr-2 inline-block" />
               {"Se connecter avec Google"}
