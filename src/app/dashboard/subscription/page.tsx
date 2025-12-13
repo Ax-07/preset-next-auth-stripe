@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CancelSubscriptionBtn } from "@/lib/stripe/components/cancel-subscription-btn";
 import { RestoreSubscriptionBtn } from "@/lib/stripe/components/restore-subscription-btn";
-import { getActiveSubscription } from "@/lib/stripe/stripe-server";
+import { getActiveSubscription } from "@/lib/stripe/stripe-client";
 import { formatDate } from "@/utils/formatDate";
 import Link from "next/link";
 import React from "react";
