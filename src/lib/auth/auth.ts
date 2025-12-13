@@ -4,13 +4,14 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/database/prisma.client";
 import { stripe, Subscription } from "@better-auth/stripe"
 import { stripeClient } from "../stripe/stripe";
-import { findUserForSubscription, getActiveSubscription } from "../stripe/stripe-server";
+import { findUserForSubscription } from "../stripe/stripe-server";
 import Stripe from "stripe";
 import { sendEmail } from "../emails/mail.service";
 import { createAccountDeletedEmail, createAdminNewCustomerEmail, createPasswordResetEmail, createPaymentFailedEmail, createSubscriptionCancelledEmail, createSubscriptionDeletedEmail, createSubscriptionUpdatedEmail, createSubscriptionWelcomeEmail, createTrialEndingEmail, createTrialEndingSoonEmail, createTrialExpiredEmail, createTrialStartedEmail, createVerificationEmail, createWelcomeEmail } from "../emails/templates/helpers";
 import { formatDate } from "@/utils/formatDate";
 import { createSubscriptionRestoredEmail } from "../emails/templates/helpers/subscription-helpers";
 import { getStripePlans } from "../stripe/stripe-plan";
+import { getActiveSubscription } from "../stripe/stripe-client";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
